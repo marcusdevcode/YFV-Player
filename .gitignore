@@ -1,0 +1,16 @@
+node_modules
+dist
+src-tauri/target
+src-tauri/gen
+.DS_Store
+# Secrets: never commit. Only the *.example templates are tracked.
+*.key
+*.pem
+*.p12
+.env
+.env.*
+!*.example
+# keys/public.pub is public and IS committed (the app and CI need it)
+*.log
+# sidecar binaries are built in CI / locally
+src-tauri/binaries

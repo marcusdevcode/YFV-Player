@@ -1,0 +1,64 @@
+:root {
+  --bg: #000;
+  --panel: #1a1a1a;
+  --panel-2: #2a2a2a;
+  --border: #444;
+  --text: #fff;
+  --muted: #bbb;
+  --accent: #8b0000;
+  --accent-border: #ff0000;
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; overflow: hidden; }
+.app { position: relative; height: 100vh; width: 100vw; display: flex; flex-direction: column; }
+
+button {
+  display: flex; align-items: center; justify-content: center;
+  padding: 8px 12px; font-size: 14px; cursor: pointer; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
+  transition: background .2s, border-color .2s; flex-shrink: 0;
+}
+button:hover { background: #3a3a3a; }
+button.active { background: var(--accent); border-color: var(--accent-border); }
+button.primary { background: var(--accent); border-color: var(--accent-border); }
+button svg { width: 16px; height: 16px; fill: currentColor; }
+
+.empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.empty h1 { margin: 0; font-weight: 600; }
+.empty-actions { display: flex; gap: 12px; }
+
+.player { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; background: #000; }
+.video-wrapper { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.video-wrapper video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.player-error { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,.8); padding: 12px 18px; border-radius: 8px; }
+
+.controls {
+  display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  background: rgba(26,26,26,.9); transition: opacity .4s ease, transform .4s ease;
+}
+.player.is-fullscreen .controls { position: absolute; left: 0; right: 0; bottom: 0; padding: 20px; backdrop-filter: blur(5px); }
+.player.hide-interface { cursor: none; }
+.player.hide-interface .controls { opacity: 0; transform: translateY(10px); pointer-events: none; }
+.button-group { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.timeline { display: flex; align-items: center; flex: 1; gap: 10px; min-width: 150px; }
+.timeline input[type="range"] { flex: 1; margin: 0; cursor: pointer; accent-color: var(--accent); }
+.time { font: 13px ui-monospace, monospace; color: var(--muted); min-width: 35px; text-align: center; }
+
+.update-banner {
+  position: absolute; z-index: 20; top: 12px; right: 12px; display: flex; gap: 10px; align-items: center;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 13px;
+}
+
+.modal-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.6); }
+.modal { width: min(460px, calc(100vw - 32px)); background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.modal h2 { margin: 0 0 4px; font-size: 18px; }
+.modal-sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.modal-error { color: #ff8080; font-size: 14px; overflow-wrap: anywhere; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.progress { height: 10px; border-radius: 5px; background: var(--panel-2); overflow: hidden; }
+.progress-bar { height: 100%; background: var(--accent-border); transition: width .1s linear; }
+.progress-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+
+.volume { display: flex; align-items: center; gap: 6px; }
+.volume input[type="range"] { width: 80px; margin: 0; cursor: pointer; accent-color: var(--accent); }
