@@ -1,13 +1,5 @@
-:root {
-  --bg: #000;
-  --panel: #1a1a1a;
-  --panel-2: #2a2a2a;
-  --border: #444;
-  --text: #fff;
-  --muted: #bbb;
-  --accent: #8b0000;
-  --accent-border: #ff0000;
-}
+/* Color variables (--bg, --text, ...) come from the theme: src/theme/defaults.css holds the dark values
+   until the theme engine applies the active theme. */
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
 body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; overflow: hidden; }
@@ -16,26 +8,28 @@ body { background: var(--bg); color: var(--text); font-family: system-ui, sans-s
 button {
   display: flex; align-items: center; justify-content: center;
   padding: 8px 12px; font-size: 14px; cursor: pointer; border-radius: 6px;
-  border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--border); background: var(--button-bg); color: var(--button-text);
   transition: background .2s, border-color .2s; flex-shrink: 0;
 }
-button:hover { background: #3a3a3a; }
-button.active { background: var(--accent); border-color: var(--accent-border); }
-button.primary { background: var(--accent); border-color: var(--accent-border); }
-button svg { width: 16px; height: 16px; fill: currentColor; }
+button:hover { background: var(--button-hover); }
+button.active, button.primary { background: var(--accent); border-color: var(--accent-border); color: var(--accent-text); }
+svg.icon, button svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+.badge svg.icon { width: 20px; height: 20px; }
+.edge-tab svg.icon { width: 18px; height: 18px; }
+.grip svg.icon { width: 14px; height: 14px; display: block; }
 
-.empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.empty { flex: 1; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
 .empty h1 { margin: 0; font-weight: 600; }
 .empty-actions { display: flex; gap: 12px; }
 
-.player { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; background: #000; }
+.player { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; background: var(--player-bg); }
 .video-wrapper { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; cursor: default; }
 .video-wrapper video { width: 100%; height: 100%; object-fit: contain; display: block; }
-.player-error { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,.8); padding: 12px 18px; border-radius: 8px; }
+.player-error { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--overlay-bg); color: var(--overlay-text); padding: 12px 18px; border-radius: 8px; }
 
 .controls {
   display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-  background: rgba(26,26,26,.9); transition: opacity .4s ease, transform .4s ease;
+  background: var(--controls-bg); color: var(--controls-text); transition: opacity .4s ease, transform .4s ease;
 }
 .player.is-fullscreen .controls { position: absolute; left: 0; right: 0; bottom: 0; padding: 20px; backdrop-filter: blur(5px); }
 .player.hide-interface { cursor: none; }
@@ -54,14 +48,14 @@ button:disabled, input:disabled { cursor: default; }
   background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 13px;
 }
 
-.modal-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.6); }
+.modal-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: var(--backdrop); }
 .modal { width: min(460px, calc(100vw - 32px)); background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
 .modal h2 { margin: 0 0 4px; font-size: 18px; }
 .modal-sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
-.modal-error { color: #ff8080; font-size: 14px; overflow-wrap: anywhere; }
+.modal-error { color: var(--error-text); font-size: 14px; overflow-wrap: anywhere; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
-.progress { height: 10px; border-radius: 5px; background: var(--panel-2); overflow: hidden; }
-.progress-bar { height: 100%; background: var(--accent-border); transition: width .1s linear; }
+.progress { height: 10px; border-radius: 5px; background: var(--progress-track); overflow: hidden; }
+.progress-bar { height: 100%; background: var(--progress-bar); transition: width .1s linear; }
 .progress-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13px; color: var(--muted); }
 
 .volume { display: flex; align-items: center; gap: 6px; }
@@ -69,6 +63,136 @@ button:disabled, input:disabled { cursor: default; }
 
 .drop-hint {
   position: absolute; inset: 12px; z-index: 50; display: flex; align-items: center; justify-content: center;
-  border: 2px dashed var(--accent); border-radius: 12px; background: rgba(0, 0, 0, .6);
+  border: 2px dashed var(--accent); border-radius: 12px; background: var(--drop-hint-bg);
   font-size: 22px; pointer-events: none;
 }
+
+/* ---- Layout: playlist badges | sidebar (320px) | stage ---- */
+.shell { flex: 1; min-height: 0; display: flex; overflow: hidden; }
+.shell.side-right { flex-direction: row-reverse; }
+.shell.is-fullscreen .dock, .shell.is-fullscreen .edge-tab { display: none; }
+
+/* The playlist panel (badges + 320px track list). It slides in from, and out to, its own edge:
+   the box shrinks to nothing while the content moves toward the edge at the same time. */
+.dock { flex: 0 0 384px; width: 384px; overflow: hidden; transition: flex-basis .28s ease; }
+.dock-inner { width: 384px; height: 100%; display: flex; transition: transform .28s ease, visibility 0s; }
+.side-right .dock-inner { flex-direction: row-reverse; }
+.dock.closed { flex-basis: 0; }
+.dock.closed .dock-inner { transform: translateX(-100%); visibility: hidden; transition: transform .28s ease, visibility 0s .28s; }
+.side-right .dock.closed .dock-inner { transform: translateX(100%); }
+@media (prefers-reduced-motion: reduce) { .dock, .dock-inner { transition: none !important; } }
+
+/* The small tab on the video's edge that shows or hides the panel */
+.edge-tab { position: absolute; top: 50%; z-index: 30; transform: translateY(-50%); width: 20px; height: 56px; padding: 0; justify-content: center; font-size: 18px; opacity: .55; background: var(--button-bg); transition: opacity .2s; }
+.edge-tab:hover { opacity: 1; }
+.edge-tab.left { left: 0; border-radius: 0 8px 8px 0; border-left: none; }
+.edge-tab.right { right: 0; border-radius: 8px 0 0 8px; border-right: none; }
+.stage { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; position: relative; background: var(--player-bg); }
+.muted { color: var(--muted); }
+.pad { padding: 12px; }
+.spacer { flex: 1; }
+.warn { color: var(--warning-text); }
+.error-text { color: var(--error-text); }
+
+/* Playlist badges */
+.badges { flex: 0 0 64px; width: 64px; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 0; background: var(--badges-bg); border-right: 1px solid var(--border); overflow-y: auto; }
+.side-right .badges { border-right: none; border-left: 1px solid var(--border); }
+.badge { width: 44px; height: 44px; padding: 0; border-radius: 50%; border: 2px solid transparent; font-size: 13px; font-weight: 700; color: var(--badge-text); justify-content: center; }
+.badge.active { border-color: var(--badge-active); }
+.badge.tool { background: var(--button-bg); color: var(--button-text); font-size: 18px; font-weight: 400; }
+
+/* Sidebar */
+.sidebar { flex: 0 0 320px; width: 320px; display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-right: 1px solid var(--border); }
+.side-right .sidebar { border-right: none; border-left: 1px solid var(--border); }
+.side-head { display: flex; align-items: center; gap: 8px; padding: 10px; border-bottom: 1px solid var(--border); }
+.side-title { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.side-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.side-empty { padding: 20px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.track-list { flex: 1; overflow-y: auto; padding: 6px; }
+.track { position: relative; display: flex; align-items: center; gap: 4px; border-radius: 6px; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
+.track.current { background: var(--track-current); }
+.track.dragging { opacity: .5; }
+.track.drop-before { border-top-color: var(--drop-indicator); }
+.track.drop-after { border-bottom-color: var(--drop-indicator); }
+.grip { cursor: grab; padding: 6px 4px; color: var(--muted); user-select: none; touch-action: none; }
+.track-main { flex: 1; min-width: 0; justify-content: flex-start; gap: 8px; padding: 4px; background: transparent; border-color: transparent; text-align: left; }
+.track-main:hover, .track-menu-btn:hover { background: var(--track-hover); }
+.track-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.track-menu-btn { padding: 4px 8px; background: transparent; border-color: transparent; }
+.row-menu { position: absolute; right: 6px; top: 100%; z-index: 20; min-width: 210px; display: flex; flex-direction: column; gap: 2px; padding: 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow); }
+.row-menu button { justify-content: flex-start; background: transparent; border-color: transparent; font-size: 13px; }
+.row-menu button:hover:not(:disabled) { background: var(--panel); }
+.danger-text { color: var(--error-text); }
+
+/* Thumbnails */
+.thumb { object-fit: cover; background: var(--thumb-bg); border-radius: 4px; flex-shrink: 0; }
+.thumb.mini { width: 64px; height: 36px; }
+.thumb.cover { width: 48px; height: 48px; border-radius: 8px; }
+.thumb.placeholder { background: linear-gradient(135deg, var(--panel-2), var(--panel)); }
+
+/* Modals */
+.modal-backdrop { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: var(--backdrop); }
+.modal { width: min(440px, 92vw); max-height: 88vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 18px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; }
+.modal.wide { width: min(680px, 94vw); }
+.modal h2 { margin: 0; font-size: 18px; }
+.modal-actions { display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.row input[type="text"], .row input:not([type]), input.name { flex: 1; min-width: 0; }
+input:not([type]), input[type="text"], select { padding: 7px 10px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+button.danger { background: var(--danger-bg); border-color: var(--danger-border); color: var(--accent-text); }
+.file-list { margin: 6px 0 0; padding-left: 18px; }
+.manager-list { display: flex; flex-direction: column; gap: 8px; max-height: 46vh; overflow-y: auto; }
+.manager-row { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 8px; border: 1px solid transparent; }
+.manager-row.active { border-color: var(--border); background: var(--row-selected); }
+.manager-row input[type="color"] { width: 34px; height: 34px; padding: 0; border: none; background: none; cursor: pointer; }
+.drop-area { display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; padding: 34px 12px; border: 2px dashed var(--border); border-radius: 12px; color: var(--muted); }
+.staged { display: flex; flex-direction: column; max-height: 30vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+.staged-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; cursor: pointer; }
+.staged-row:nth-child(odd) { background: var(--row-stripe); }
+.staged-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Notices */
+.notice { position: absolute; top: 12px; right: 12px; z-index: 120; display: flex; gap: 12px; align-items: center; padding: 10px 14px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; max-width: 70vw; }
+label { cursor: pointer; }
+.field { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.field select { min-width: 200px; }
+/* Titles in any script read in their own direction, whatever side the panel is on. */
+.track-title, .side-title strong, .staged-title { unicode-bidi: plaintext; }
+
+/* Right-to-left languages: the layout stays left-to-right, so the playlist panel sits exactly on
+   the side that was chosen; only the text inside the panels and dialogs follows the language. */
+.shell, .dock, .dock-inner, .stage, .controls { direction: ltr; }
+html[dir="rtl"] :is(.sidebar, .badges, .modal, .notice, .update-banner, .empty, .drop-hint, .row-menu, .player-error) { direction: rtl; }
+
+/* ---- Themes dialog ---- */
+.modal.themes { width: min(780px, 96vw); max-height: 92vh; }
+.modal.themes .grow { flex: 1; }
+.theme-scroll { overflow-y: auto; min-height: 120px; padding-right: 4px; display: flex; flex-direction: column; gap: 6px; }
+.theme-scroll h3 { margin: 10px 0 2px; font-size: 15px; }
+.theme-group { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+.theme-group h4 { margin: 0 0 4px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.color-row { display: grid; grid-template-columns: minmax(0, 1fr) 36px 26px 110px 96px 30px; gap: 8px; align-items: center; }
+.color-row.own .color-label, .icon-row.own .color-label { font-weight: 600; }
+.color-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.color-row input[type="color"] { width: 36px; height: 28px; padding: 0; border: 1px solid var(--border); border-radius: 6px; background: none; cursor: pointer; }
+.color-row input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); }
+.color-row input.hex { width: 100%; padding: 4px 6px; font: 12px ui-monospace, monospace; }
+.mini-btn { padding: 2px 6px; font-size: 14px; }
+.icon-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) minmax(0, 150px) auto 30px; gap: 8px; align-items: center; }
+.icon-preview { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px; }
+.icon-preview svg.icon { width: 18px; height: 18px; }
+.icon-name { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.modal-backdrop.picker-backdrop { z-index: 140; }
+.modal.picker { width: min(640px, 94vw); max-height: 84vh; }
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; overflow-y: auto; min-height: 160px; }
+.icon-tile { flex-direction: column; gap: 4px; padding: 8px 4px; font-size: 11px; min-width: 0; }
+.icon-tile span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-tile svg.icon { width: 24px; height: 24px; }
+.icon-tile.active { background: var(--accent); border-color: var(--accent-border); color: var(--accent-text); outline: 2px solid var(--accent-border); }
+
+.field.check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
+
+/* The real color over a checkerboard, so transparency is visible */
+.swatch { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border); overflow: hidden; display: block;
+  background: conic-gradient(#999 25%, #ddd 0 50%, #999 0 75%, #ddd 0) 0 0 / 10px 10px; }
+.swatch i { display: block; width: 100%; height: 100%; }

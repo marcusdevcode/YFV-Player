@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
+import { tr, useT } from "../translate";
 
 type Phase = "idle" | "checking" | "available" | "downloading" | "uptodate" | "error";
 
@@ -14,6 +15,7 @@ export default function UpdateBanner() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [message, setMessage] = useState("");
   const [progress, setProgress] = useState(0);
+  const { t } = useT();
 
   // Result messages stay until the user closes them (no timers).
   const flash = useCallback((p: Phase, msg: string) => {
@@ -30,11 +32,11 @@ export default function UpdateBanner() {
           setUpdate(u);
           setPhase("available");
         } else if (manual) {
-          flash("uptodate", "You're up to date.");
+          flash("uptodate", tr("update.uptodate"));
         }
       } catch {
         // Offline, no release yet, or running in dev: only tell the user if they asked.
-        if (manual) flash("error", "Couldn't check for updates. Check your connection and try again.");
+        if (manual) flash("error", tr("update.checkFailed"));
       }
     },
     [flash],
@@ -65,7 +67,7 @@ export default function UpdateBanner() {
       });
       await relaunch();
     } catch {
-      flash("error", "Update failed. Try again later.");
+      flash("error", tr("update.failed"));
     }
   }
 
@@ -73,21 +75,21 @@ export default function UpdateBanner() {
 
   return (
     <div className="update-banner" role="status">
-      {phase === "checking" && <span>Checking for updates…</span>}
+      {phase === "checking" && <span>{t("update.checking")}</span>}
       {phase === "available" && update && (
         <>
-          <span>{__APP_NAME__} {update.version} is available</span>
+          <span>{t("update.available", { name: __APP_NAME__, version: update.version })}</span>
           <button className="primary" onClick={() => void install()}>
-            Install and restart
+            {t("update.install")}
           </button>
-          <button onClick={() => setPhase("idle")}>Later</button>
+          <button onClick={() => setPhase("idle")}>{t("update.later")}</button>
         </>
       )}
-      {phase === "downloading" && <span>Downloading update… {progress ? `${progress}%` : ""}</span>}
+      {phase === "downloading" && <span>{t("update.downloading")} {progress ? `${progress}%` : ""}</span>}
       {(phase === "uptodate" || phase === "error") && (
         <>
           <span>{message}</span>
-          <button onClick={() => setPhase("idle")}>Close</button>
+          <button onClick={() => setPhase("idle")}>{t("common.close")}</button>
         </>
       )}
     </div>

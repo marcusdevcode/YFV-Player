@@ -29,11 +29,11 @@ export const appInfo = {
   updaterEndpoint: `${repoUrl}/releases/latest/download/latest.json`,
 };
 
-// `node scripts/app-info.mjs <field>` prints one field (used by the CI workflow).
+// `node scripts/package-info.mjs <field>` prints one field (used by the CI workflow).
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const field = process.argv[2];
   if (!field || !(field in appInfo)) {
-    console.error(`Usage: node scripts/app-info.mjs <${Object.keys(appInfo).join("|")}>`);
+    console.error(`Usage: node scripts/package-info.mjs <${Object.keys(appInfo).join("|")}>`);
     process.exit(1);
   }
   console.log(appInfo[field]);

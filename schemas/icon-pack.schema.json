@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "icon-pack.schema.json",
+  "title": "Icon pack",
+  "description": "A set of icons made of path shapes, drawn in the current text color. Files: src/icons/builtin.json and src/icons/icomoon.json (made by scripts/import-icomoon.mjs).",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional link to this schema, for editors."
+    },
+    "schemaVersion": {
+      "const": 1,
+      "title": "Schema version",
+      "description": "Version of this file format.",
+      "default": 1
+    },
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Icon set id, used before the colon in an icon reference.",
+      "pattern": "^[a-z][a-z0-9]*$",
+      "examples": [
+        "builtin",
+        "icomoon"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "description": "Name of the pack.",
+      "minLength": 1
+    },
+    "icons": {
+      "type": "object",
+      "title": "Icons",
+      "description": "The icons by name.",
+      "patternProperties": {
+        "^[A-Za-z0-9_-]+$": {
+          "type": "object",
+          "title": "Icon",
+          "description": "One icon.",
+          "properties": {
+            "viewBox": {
+              "type": "string",
+              "title": "View box",
+              "description": "SVG viewBox: 'minX minY width height'.",
+              "pattern": "^\\d+(\\.\\d+)? \\d+(\\.\\d+)? \\d+(\\.\\d+)? \\d+(\\.\\d+)?$",
+              "examples": [
+                "0 0 24 24"
+              ]
+            },
+            "paths": {
+              "type": "array",
+              "title": "Paths",
+              "description": "SVG path data of each shape.",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "viewBox",
+            "paths"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "icons"
+  ],
+  "additionalProperties": false
+}

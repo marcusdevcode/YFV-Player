@@ -69,17 +69,47 @@ The first Docker run is slow (it downloads the toolchains and builds the Rust de
 
 Extra arguments go to `tauri build`: `npm run build:app -- --bundles app` builds just the app without an installer (useful on macOS, where the `.dmg` step sometimes fails with "resource busy").
 
-`npm start`, `npm run tauri` and every `build:*` script go through `scripts/tauri.mjs`. It takes the product name, bundle identifier, version, window title and updater endpoint from `package.json` (the only place they are defined) and finds the signing key for you. Do not run `tauri` or `cargo tauri` directly, or that information is missing.
+`npm start`, `npm run tauri` and every `build:*` script go through `scripts/run-tauri.mjs`. It takes the product name, bundle identifier, version, window title and updater endpoint from `package.json` (the only place they are defined) and finds the signing key for you. Do not run `tauri` or `cargo tauri` directly, or that information is missing.
 
 ### Release steps
 
-1. Change `version` in `package.json` (the only place; `scripts/tauri.mjs` syncs `src-tauri/Cargo.toml`).
+1. Change `version` in `package.json` (the only place; `scripts/run-tauri.mjs` syncs `src-tauri/Cargo.toml`).
 2. `npm run release` builds everything, then publishes it. To only build, use `npm run release:build`; to publish what is already built, `npm run release:publish`.
 3. Check `release/v<version>/`: installers named `<name>_<version>_<os>-<cpu>.<ext>` and `latest.json` (the updater file, with signatures). Collecting a new version also **deletes the older `release/v*` folders** on this computer, so only the newest one is kept. (Releases already on GitHub are never touched by the scripts.)
 4. `release:publish` (`scripts/release-version.js`) reads name, version and repository from `package.json`, checks that all six platforms are in `release/v<version>/`, that `gh` is installed and logged in, and that the release does not exist yet, asks you to confirm, then runs `gh release create`. Options: `--yes` (no question), `--draft`, `--dry-run` (print the command only), `--allow-partial`. It runs as the GitHub account logged in with `gh auth login` on this machine.
 5. Commit and push your code yourself first (`git add . && git commit && git push`): `gh release create` makes the tag from the pushed code. The repository must be public for the updater to read the release.
 
 A release with a platform missing makes `latest.json` list only the built platforms, and users of the others get no update, so build everything before publishing.
+
+## Adding a language
+
+1. Copy `src/locales/en.json` to `src/locales/<code>.json` (for example `fr.json`).
+2. Set `name` (the language in its own language), `dir` (`ltr` or `rtl`) and `sidebarSide` (`left` or `right`: where the playlist panel goes by default), and translate the texts in `strings`. A text you leave out falls back to English. Plural texts use `.one` / `.two` / `.few` / `.many` / `.other` as the language needs; `.other` must exist.
+3. Nothing else: the file appears in Settings and in View -> Language (the Rust build reads the folder). Use `{name}` style placeholders exactly as in `en.json`.
+
+The names of the native menu items are still English only.
+
+## Themes, icons and the JSON standards
+
+Every data file the app reads or writes has a JSON Schema in `schemas/` (draft 2020-12). Each property has a title, description, type, default, examples and constraints (pattern, enum, min/max), so editors can validate and explain files.
+
+| What | Schema | Files |
+|---|---|---|
+| General settings | `settings.schema.json` | `settings/settings.json` in the app data folder (language, theme, panel, volume); example: `schemas/examples/settings.json` |
+| Language | `locale.schema.json` | `src/locales/<code>.json` |
+| Theme | `theme.schema.json` | built-in: `src/builtin-themes/dark.json`, `light.json`; yours: `themes/<id>.json` in the app data folder; export/import files; example: `schemas/examples/theme.json` |
+| Icon pack | `icon-pack.schema.json` | `src/icons/builtin.json`, `src/icons/icomoon.json` |
+| Color/icon registry | `theme-registry.schema.json` | `src/theme/registry.json` |
+
+**Sources of truth.** `src/theme/registry.json` lists every color token (title, description, CSS variable, dark and light value) and every icon slot (with its default icon). `src/locales/en.json` lists every text. `npm run schemas` generates from them: the theme and locale schemas, the two built-in themes and `src/theme/defaults.css`. Never edit those generated files by hand. `npm run validate:json` checks all JSON files against the schemas (with ajv), that the generated files are current, that icon references exist, and that translations keep the same `{placeholders}` as English. Run both after changing the registry or `en.json`.
+
+**Add a themeable color:** add it to `registry.json`, use `var(--<cssVar>)` in `src/styles.css`, run `npm run schemas` (optionally add `theme.color.<id>` names to the language files).
+**Add an icon slot:** add it to `registry.json`, use `<Icon slot="..." />`, run `npm run schemas`.
+**Update the IcoMoon pack:** unzip the IcoMoon download and run `node scripts/import-icomoon.mjs <unzipped folder>`; then `npm run validate:json`.
+
+**How a theme is chosen.** The general settings hold `theme`: `"system"` (the default) follows the operating system's light/dark setting live; picking a theme in View -> Themes saves its id. A theme is based on `dark` or `light` and lists only the colors and icons it changes. Built-in themes cannot be edited; "create from this one" makes an editable copy.
+
+The app validates files with a small validator (`src/schema.ts`) because ajv builds code at run time, which the app's content security policy forbids.
 
 ## Update-signing keys (read this if you copy the repo)
 
@@ -89,7 +119,7 @@ The app updates itself from GitHub Releases. To be sure an update really comes f
 |---|---|---|
 | `keys/private.key` | Your **private** key. Secret. | **No**, ignored by `*.key` in `.gitignore` |
 | `keys/private.key.example` | A placeholder that shows where the key goes. | Yes |
-| `keys/public.pub` | The **public** key (safe to share). Read automatically by `scripts/tauri.mjs`. | **Yes**, commit it |
+| `keys/public.pub` | The **public** key (safe to share). Read automatically by `scripts/run-tauri.mjs`. | **Yes**, commit it |
 
 **The repository does not contain a working private key.** If you copy or fork this project you must make your own, otherwise your builds can't be signed the way the app expects:
 
@@ -111,7 +141,7 @@ The app updates itself from GitHub Releases. To be sure an update really comes f
 
 ## macOS: "is damaged and can't be opened"
 
-Without an Apple Developer ID the app cannot be properly signed or notarized. `scripts/tauri.mjs` signs the whole `.app` ad-hoc (`-`), which fixes the false "damaged" message, but macOS still warns that the developer is unverified on first launch: right-click the app, choose **Open**, then **Open** again (or run `xattr -cr "/Applications/<name>.app"`). To remove the warning for everyone you need a paid Apple Developer ID: set `APPLE_SIGNING_IDENTITY` plus the notarization variables (`APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`) before building and the script uses them instead.
+Without an Apple Developer ID the app cannot be properly signed or notarized. `scripts/run-tauri.mjs` signs the whole `.app` ad-hoc (`-`), which fixes the false "damaged" message, but macOS still warns that the developer is unverified on first launch: right-click the app, choose **Open**, then **Open** again (or run `xattr -cr "/Applications/<name>.app"`). To remove the warning for everyone you need a paid Apple Developer ID: set `APPLE_SIGNING_IDENTITY` plus the notarization variables (`APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`) before building and the script uses them instead.
 
 ## Not covered by these keys
 
@@ -119,7 +149,11 @@ macOS and Windows code signing (so the OS doesn't warn on first launch) needs se
 
 ## Troubleshooting
 
-- **`.dmg` fails on macOS ("resource busy", or Finder "Can't set statusbar visible"):** the DMG tool styles its window through Finder. `scripts/tauri.mjs` sets `CI=true` for macOS builds so Tauri skips that step (the DMG then has the default window layout). If it still fails, build only the app: `npm run build:app -- --bundles app`.
+- **The Dock says "app" while running `npm start` on macOS:** a bare dev program is named after its file, and Cargo calls it `app`. `scripts/run-tauri.mjs` therefore starts it through `scripts/dev-runner.sh` under a link named like `productName` in package.json, so the Dock shows that name. Built apps get the name from the app bundle (`CFBundleName`), which is also `productName`.
+
+- **`.dmg` fails on macOS ("resource busy", or Finder "Can't set statusbar visible"):** the DMG tool styles its window through Finder. `scripts/run-tauri.mjs` sets `CI=true` for macOS builds so Tauri skips that step (the DMG then has the default window layout). If it still fails, build only the app: `npm run build:app -- --bundles app`.
 - **"Open with" doesn't show the app:** it only works in an installed build, not in `npm start`. After installing a new build, macOS can take a moment (or `killall Finder`) to refresh the list. Drag and drop does work in `npm start`.
+- **When playback positions are saved:** not while a video plays (no disk writes). The page only reports the position to the program in memory (`position_note`); it is written to the positions file when you pause, when the video is replaced, and by the program itself when it exits (`flush_position` in `src-tauri/src/app_data.rs`). A force-quit or crash therefore loses the position since the last pause.
+- **Where playlists are stored:** `library.json`, a `thumbnails/` folder and a `settings/` folder (panel open/closed and side, last video, volume, positions) in the app data folder (macOS: `~/Library/Application Support/<identifier>/`). Delete them to start fresh.
 - **A video won't play (error 4):** the file's codec isn't supported by the system's web view (typically VP9/AV1 or MKV/AVI). H.264/AAC MP4 works everywhere.
 - **Don't commit large media files.** Keep test videos outside the repository.

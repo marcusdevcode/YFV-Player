@@ -18,7 +18,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
-import { appInfo, root } from "./app-info.mjs";
+import { appInfo, root } from "./package-info.mjs";
 
 const args = process.argv.slice(2);
 const env = { ...process.env };
@@ -59,6 +59,17 @@ const cargoFile = resolve(root, "src-tauri/Cargo.toml");
 const cargo = readFileSync(cargoFile, "utf8");
 const synced = cargo.replace(/^version = ".*"$/m, `version = "${appInfo.version}"`);
 if (synced !== cargo) writeFileSync(cargoFile, synced);
+
+// --- macOS: name the Dock icon of the dev app after the product name ---------------------------
+// A built app takes its Dock name from the bundle, but `npm start` runs the bare program, which
+// Cargo must call "app". scripts/dev-runner.sh starts it under a link named like the product.
+if (process.platform === "darwin" && args[0] === "dev") {
+  const host = spawnSync("rustc", ["-vV"], { encoding: "utf8" }).stdout?.match(/^host: (.+)$/m)?.[1];
+  if (host) {
+    env[`CARGO_TARGET_${host.toUpperCase().replaceAll("-", "_")}_RUNNER`] = resolve(root, "scripts/dev-runner.sh");
+    env.APP_DEV_NAME = appInfo.name;
+  }
+}
 
 // --- macOS: build the .dmg without Finder ----------------------------------------------------
 // The DMG tool styles its window with AppleScript through Finder, which randomly fails ("Can't set

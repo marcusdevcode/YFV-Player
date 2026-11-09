@@ -1,13 +1,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { appInfo } from "./scripts/app-info.mjs";
+import { appInfo } from "./scripts/package-info.mjs";
 
-// The app's name comes from package.json only (via scripts/app-info.mjs).
+// The app's name comes from package.json only (via scripts/package-info.mjs).
 export default defineConfig({
   plugins: [
     react(),
     {
-      name: "app-info-html",
+      name: "insert-package-info-in-html",
       transformIndexHtml: (html) => html.replaceAll("%APP_NAME%", appInfo.name),
     },
   ],

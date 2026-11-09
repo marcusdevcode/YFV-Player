@@ -14,7 +14,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
-import { appInfo, root } from "./app-info.mjs";
+import { appInfo, root } from "./package-info.mjs";
 
 const flags = new Set(process.argv.slice(2));
 const { name, version, repoUrl } = appInfo;

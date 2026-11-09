@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "theme-registry.schema.json",
+  "title": "Theme registry",
+  "description": "Lists every color token and icon slot a theme can set (src/theme/registry.json). The theme schema and the built-in themes are generated from it.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional link to this schema, for editors."
+    },
+    "schemaVersion": {
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "groups": {
+      "type": "object",
+      "description": "Groups the colors are listed under in the editor.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "colors": {
+      "type": "object",
+      "description": "Color tokens by id.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "cssVar": {
+            "type": "string",
+            "pattern": "^--[a-z0-9-]+$",
+            "description": "CSS custom property the token sets."
+          },
+          "group": {
+            "type": "string",
+            "description": "Group id (a key of 'groups')."
+          },
+          "title": {
+            "type": "string",
+            "description": "Name shown in the editor."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the color is used for."
+          },
+          "dark": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+            "description": "Value in the built-in dark theme."
+          },
+          "light": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+            "description": "Value in the built-in light theme."
+          }
+        },
+        "required": [
+          "cssVar",
+          "group",
+          "title",
+          "description",
+          "dark",
+          "light"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "iconSlots": {
+      "type": "object",
+      "description": "Icon slots by id.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "default": {
+            "type": "string",
+            "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "default"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "groups",
+    "colors",
+    "iconSlots"
+  ],
+  "additionalProperties": false
+}

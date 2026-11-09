@@ -48,6 +48,10 @@ fn content_type(path: &Path) -> &'static str {
         Some("flac") => "audio/flac",
         Some("wav") => "audio/wav",
         Some("ogg") | Some("opus") => "audio/ogg",
+        Some("jpg") | Some("jpeg") => "image/jpeg",
+        Some("png") => "image/png",
+        Some("webp") => "image/webp",
+        Some("gif") => "image/gif",
         _ => "application/octet-stream",
     }
 }
@@ -89,6 +93,16 @@ fn handle(req: Request, files: &Mutex<HashMap<String, PathBuf>>) {
         let _ = req.respond(Response::empty(StatusCode(404)));
         return;
     };
+    // The page reads video frames for thumbnails, which needs CORS. Only registered files, under an
+    // unguessable token, are ever served, and only on 127.0.0.1.
+    if *req.method() == Method::Options {
+        let resp = Response::empty(StatusCode(204))
+            .with_header(header("Access-Control-Allow-Origin", "*"))
+            .with_header(header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS"))
+            .with_header(header("Access-Control-Allow-Headers", "Range"));
+        let _ = req.respond(resp);
+        return;
+    }
     let Ok(mut file) = File::open(&path) else {
         let _ = req.respond(Response::empty(StatusCode(404)));
         return;
@@ -122,6 +136,8 @@ fn handle(req: Request, files: &Mutex<HashMap<String, PathBuf>>) {
         header("Content-Type", content_type(&path)),
         header("Accept-Ranges", "bytes"),
         header("Cache-Control", "no-store"),
+        header("Access-Control-Allow-Origin", "*"),
+        header("Access-Control-Expose-Headers", "Content-Range, Content-Length, Accept-Ranges"),
     ];
     if status == 206 {
         headers.push(header("Content-Range", &format!("bytes {start}-{end}/{len}")));

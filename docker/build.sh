@@ -16,7 +16,7 @@ rsync -a --delete \
 
 cd "$work"
 npm ci
-node scripts/tauri.mjs build "$@"
+node scripts/run-tauri.mjs build "$@"
 
 rm -rf /out/*
 cp -R "$work/${bundle_dir}/." /out/

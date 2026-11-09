@@ -3,7 +3,7 @@
   "productName": "YFV Player",
   "description": "A cross-platform video player that plays video with a separate audio track and can merge them into one file.",
   "private": true,
-  "version": "0.1.3",
+  "version": "0.1.4",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "author": {
@@ -18,12 +18,12 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "tauri": "node scripts/tauri.mjs",
-    "start": "node scripts/tauri.mjs dev",
-    "dev:app": "node scripts/tauri.mjs dev",
-    "build:app": "node scripts/tauri.mjs build",
-    "build:mac-arm64": "node scripts/tauri.mjs build --target aarch64-apple-darwin",
-    "build:mac-x64": "node scripts/tauri.mjs build --target x86_64-apple-darwin",
+    "tauri": "node scripts/run-tauri.mjs",
+    "start": "node scripts/run-tauri.mjs dev",
+    "dev:app": "node scripts/run-tauri.mjs dev",
+    "build:app": "node scripts/run-tauri.mjs build",
+    "build:mac-arm64": "node scripts/run-tauri.mjs build --target aarch64-apple-darwin",
+    "build:mac-x64": "node scripts/run-tauri.mjs build --target x86_64-apple-darwin",
     "build:mac": "npm run build:mac-arm64 && npm run build:mac-x64",
     "docker:linux-x64": "node scripts/docker-build.mjs linux x64",
     "docker:linux-arm64": "node scripts/docker-build.mjs linux arm64",
@@ -32,10 +32,12 @@
     "docker:linux": "npm run docker:linux-x64 && npm run docker:linux-arm64",
     "docker:win": "npm run docker:win-x64 && npm run docker:win-arm64",
     "docker:all": "npm run docker:linux && npm run docker:win",
-    "release:collect": "node scripts/release.mjs",
+    "release:collect": "node scripts/collect-release.mjs",
     "release": "npm run release:build && npm run release:publish",
     "release:build": "npm run build:mac && npm run docker:all && npm run release:collect",
-    "release:publish": "node scripts/release-version.js"
+    "release:publish": "node scripts/release-version.js",
+    "schemas": "node scripts/generate-schemas.mjs",
+    "validate:json": "node scripts/validate-json.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.4",
@@ -51,6 +53,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.2.1",
+    "ajv": "^8.20.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.6"
   }

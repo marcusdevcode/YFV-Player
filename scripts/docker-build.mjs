@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 // Builds the Linux or Windows release inside Docker, on this machine.
 //   node scripts/docker-build.mjs <linux|windows> <x64|arm64>
-// Result: release/docker/<os>-<arch>/ (collected into one release by scripts/release.mjs).
+// Result: release/docker/<os>-<arch>/ (collected into one release by scripts/collect-release.mjs).
 // The signing key is passed to the container through the environment, never copied into it.
 
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
-import { appInfo, root } from "./app-info.mjs";
+import { appInfo, root } from "./package-info.mjs";
 
 const [os, arch] = process.argv.slice(2);
 

@@ -1,0 +1,19 @@
+{
+  "$schema": "../theme.schema.json",
+  "schemaVersion": 1,
+  "id": "ocean",
+  "name": "Ocean",
+  "base": "dark",
+  "description": "Example custom theme based on the dark theme.",
+  "author": "Example",
+  "colors": {
+    "accent": "#0b5cad",
+    "accentBorder": "#4da3ff",
+    "progressBar": "#4da3ff",
+    "trackCurrent": "#0b5cad59"
+  },
+  "icons": {
+    "play": "icomoon:play3",
+    "pause": "icomoon:pause3"
+  }
+}

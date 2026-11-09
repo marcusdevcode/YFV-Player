@@ -1,0 +1,15 @@
+{
+  "$schema": "../settings.schema.json",
+  "schemaVersion": 1,
+  "language": "en",
+  "theme": "system",
+  "sidebar": {
+    "open": true,
+    "side": "left"
+  },
+  "player": {
+    "volume": 1,
+    "muted": false,
+    "pauseVideoInBackground": true
+  }
+}

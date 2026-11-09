@@ -1,0 +1,418 @@
+{
+ "$schema": "../../schemas/theme-registry.schema.json",
+ "schemaVersion": 1,
+ "groups": {
+  "window": {
+   "title": "Window",
+   "description": "Colors used across the whole window."
+  },
+  "buttons": {
+   "title": "Buttons",
+   "description": "Ordinary buttons."
+  },
+  "panels": {
+   "title": "Panels",
+   "description": "Playlist panel, dialogs, inputs and badges."
+  },
+  "player": {
+   "title": "Player",
+   "description": "Video area and control bar."
+  },
+  "playlist": {
+   "title": "Playlist",
+   "description": "Track lists and previews."
+  },
+  "dialogs": {
+   "title": "Dialogs and overlays",
+   "description": "Dimming, shadows and drop hints."
+  },
+  "feedback": {
+   "title": "Messages and warnings",
+   "description": "Errors, warnings and dangerous actions."
+  }
+ },
+ "colors": {
+  "background": {
+   "cssVar": "--bg",
+   "group": "window",
+   "title": "Window background",
+   "description": "Background behind everything else.",
+   "dark": "#000000",
+   "light": "#ffffff"
+  },
+  "text": {
+   "cssVar": "--text",
+   "group": "window",
+   "title": "Text",
+   "description": "Main text and icon color.",
+   "dark": "#ffffff",
+   "light": "#1b1b1b"
+  },
+  "textMuted": {
+   "cssVar": "--muted",
+   "group": "window",
+   "title": "Secondary text",
+   "description": "Less important text: hints, times, counts.",
+   "dark": "#bbbbbb",
+   "light": "#5f6368"
+  },
+  "border": {
+   "cssVar": "--border",
+   "group": "window",
+   "title": "Borders",
+   "description": "Lines around panels, buttons, inputs and dialogs.",
+   "dark": "#444444",
+   "light": "#c9c9c9"
+  },
+  "accent": {
+   "cssVar": "--accent",
+   "group": "window",
+   "title": "Accent",
+   "description": "Primary buttons, switched-on toggles and slider handles.",
+   "dark": "#8b0000",
+   "light": "#c62828"
+  },
+  "accentBorder": {
+   "cssVar": "--accent-border",
+   "group": "window",
+   "title": "Accent outline",
+   "description": "Outline of accent elements.",
+   "dark": "#ff0000",
+   "light": "#e53935"
+  },
+  "accentText": {
+   "cssVar": "--accent-text",
+   "group": "window",
+   "title": "Text on accent",
+   "description": "Text and icons on accent-colored buttons.",
+   "dark": "#ffffff",
+   "light": "#ffffff"
+  },
+  "buttonBackground": {
+   "cssVar": "--button-bg",
+   "group": "buttons",
+   "title": "Button",
+   "description": "Background of ordinary buttons.",
+   "dark": "#2a2a2a",
+   "light": "#ececec"
+  },
+  "buttonHover": {
+   "cssVar": "--button-hover",
+   "group": "buttons",
+   "title": "Button under the mouse",
+   "description": "Background of a button while the pointer is over it.",
+   "dark": "#3a3a3a",
+   "light": "#dcdcdc"
+  },
+  "buttonText": {
+   "cssVar": "--button-text",
+   "group": "buttons",
+   "title": "Button text",
+   "description": "Text and icons on ordinary buttons.",
+   "dark": "#ffffff",
+   "light": "#1b1b1b"
+  },
+  "panel": {
+   "cssVar": "--panel",
+   "group": "panels",
+   "title": "Panel",
+   "description": "Playlist panel, dialogs and notices.",
+   "dark": "#1a1a1a",
+   "light": "#f5f5f5"
+  },
+  "panelRaised": {
+   "cssVar": "--panel-2",
+   "group": "panels",
+   "title": "Raised surface",
+   "description": "Text fields, menus and drop-downs.",
+   "dark": "#2a2a2a",
+   "light": "#e6e6e6"
+  },
+  "badgesBackground": {
+   "cssVar": "--badges-bg",
+   "group": "panels",
+   "title": "Playlist badge column",
+   "description": "Background of the narrow column with the round playlist badges.",
+   "dark": "#0d0d0d",
+   "light": "#e9e9ea"
+  },
+  "badgeText": {
+   "cssVar": "--badge-text",
+   "group": "panels",
+   "title": "Badge text",
+   "description": "Initials inside a playlist badge.",
+   "dark": "#ffffff",
+   "light": "#ffffff"
+  },
+  "badgeActiveBorder": {
+   "cssVar": "--badge-active",
+   "group": "panels",
+   "title": "Selected badge outline",
+   "description": "Ring around the selected playlist badge.",
+   "dark": "#ffffff",
+   "light": "#1b1b1b"
+  },
+  "playerBackground": {
+   "cssVar": "--player-bg",
+   "group": "player",
+   "title": "Video area",
+   "description": "Background around the video picture.",
+   "dark": "#000000",
+   "light": "#000000"
+  },
+  "controlsBackground": {
+   "cssVar": "--controls-bg",
+   "group": "player",
+   "title": "Control bar",
+   "description": "Background of the play/seek/volume bar.",
+   "dark": "#1a1a1ae6",
+   "light": "#f5f5f5e6"
+  },
+  "controlsText": {
+   "cssVar": "--controls-text",
+   "group": "player",
+   "title": "Control bar text",
+   "description": "Text and icons in the control bar.",
+   "dark": "#ffffff",
+   "light": "#1b1b1b"
+  },
+  "progressTrack": {
+   "cssVar": "--progress-track",
+   "group": "player",
+   "title": "Progress track",
+   "description": "The empty part of progress bars.",
+   "dark": "#2a2a2a",
+   "light": "#d4d4d4"
+  },
+  "progressBar": {
+   "cssVar": "--progress-bar",
+   "group": "player",
+   "title": "Progress bar",
+   "description": "The filled part of progress bars.",
+   "dark": "#ff0000",
+   "light": "#e53935"
+  },
+  "overlayBackground": {
+   "cssVar": "--overlay-bg",
+   "group": "player",
+   "title": "Message over the video",
+   "description": "Background of messages shown over the picture, such as playback errors.",
+   "dark": "#000000cc",
+   "light": "#000000cc"
+  },
+  "overlayText": {
+   "cssVar": "--overlay-text",
+   "group": "player",
+   "title": "Text over the video",
+   "description": "Text color of messages over the picture.",
+   "dark": "#ffffff",
+   "light": "#ffffff"
+  },
+  "trackCurrent": {
+   "cssVar": "--track-current",
+   "group": "playlist",
+   "title": "Playing track",
+   "description": "Highlight of the track that is playing.",
+   "dark": "#8b000059",
+   "light": "#c6282826"
+  },
+  "trackHover": {
+   "cssVar": "--track-hover",
+   "group": "playlist",
+   "title": "Track under the mouse",
+   "description": "Background of a track row while the pointer is over it.",
+   "dark": "#2a2a2a",
+   "light": "#e0e0e0"
+  },
+  "rowStripe": {
+   "cssVar": "--row-stripe",
+   "group": "playlist",
+   "title": "Alternate list rows",
+   "description": "Every second row in lists.",
+   "dark": "#ffffff08",
+   "light": "#00000008"
+  },
+  "rowSelected": {
+   "cssVar": "--row-selected",
+   "group": "playlist",
+   "title": "Selected list row",
+   "description": "Background of the selected playlist in the manager.",
+   "dark": "#ffffff0a",
+   "light": "#0000000d"
+  },
+  "thumbBackground": {
+   "cssVar": "--thumb-bg",
+   "group": "playlist",
+   "title": "Preview background",
+   "description": "Background behind preview images while they load.",
+   "dark": "#222222",
+   "light": "#d8d8d8"
+  },
+  "dropIndicator": {
+   "cssVar": "--drop-indicator",
+   "group": "playlist",
+   "title": "Reorder line",
+   "description": "Line showing where a dragged track will land.",
+   "dark": "#ff0000",
+   "light": "#e53935"
+  },
+  "backdrop": {
+   "cssVar": "--backdrop",
+   "group": "dialogs",
+   "title": "Dialog backdrop",
+   "description": "Dimming behind dialogs.",
+   "dark": "#000000a6",
+   "light": "#00000066"
+  },
+  "shadow": {
+   "cssVar": "--shadow",
+   "group": "dialogs",
+   "title": "Shadow",
+   "description": "Shadow under menus.",
+   "dark": "#0000009a",
+   "light": "#00000033"
+  },
+  "dropHintBackground": {
+   "cssVar": "--drop-hint-bg",
+   "group": "dialogs",
+   "title": "Drop hint",
+   "description": "Overlay shown while files are dragged over the window.",
+   "dark": "#00000099",
+   "light": "#ffffffcc"
+  },
+  "errorText": {
+   "cssVar": "--error-text",
+   "group": "feedback",
+   "title": "Error text",
+   "description": "Error messages and destructive menu entries.",
+   "dark": "#ff6b6b",
+   "light": "#c62828"
+  },
+  "warningText": {
+   "cssVar": "--warning-text",
+   "group": "feedback",
+   "title": "Warning text",
+   "description": "Warnings, such as a video without its audio file.",
+   "dark": "#e0a030",
+   "light": "#8a5a00"
+  },
+  "dangerBackground": {
+   "cssVar": "--danger-bg",
+   "group": "feedback",
+   "title": "Danger button",
+   "description": "Background of buttons that delete things.",
+   "dark": "#8b0000",
+   "light": "#c62828"
+  },
+  "dangerBorder": {
+   "cssVar": "--danger-border",
+   "group": "feedback",
+   "title": "Danger button outline",
+   "description": "Outline of buttons that delete things.",
+   "dark": "#ff0000",
+   "light": "#b71c1c"
+  }
+ },
+ "iconSlots": {
+  "play": {
+   "title": "Play",
+   "description": "Start playback.",
+   "default": "builtin:play"
+  },
+  "pause": {
+   "title": "Pause",
+   "description": "Pause playback.",
+   "default": "builtin:pause"
+  },
+  "rewind": {
+   "title": "Back 10 seconds",
+   "description": "Jump back in the video.",
+   "default": "builtin:rewind"
+  },
+  "forward": {
+   "title": "Forward 10 seconds",
+   "description": "Jump forward in the video.",
+   "default": "builtin:forward"
+  },
+  "loopVideo": {
+   "title": "Loop video",
+   "description": "Repeat the current video.",
+   "default": "builtin:loop"
+  },
+  "fullscreen": {
+   "title": "Enter fullscreen",
+   "description": "Switch to fullscreen.",
+   "default": "builtin:fullscreen"
+  },
+  "fullscreenExit": {
+   "title": "Leave fullscreen",
+   "description": "Leave fullscreen.",
+   "default": "builtin:fullscreenExit"
+  },
+  "volumeUp": {
+   "title": "Volume high",
+   "description": "Volume slider with a high volume.",
+   "default": "builtin:volumeUp"
+  },
+  "volumeDown": {
+   "title": "Volume low",
+   "description": "Volume slider with a low volume.",
+   "default": "builtin:volumeDown"
+  },
+  "volumeOff": {
+   "title": "Muted",
+   "description": "Muted or zero volume.",
+   "default": "builtin:volumeOff"
+  },
+  "capturePreview": {
+   "title": "Use frame as preview",
+   "description": "Save the current frame as the video's preview.",
+   "default": "builtin:camera"
+  },
+  "playlistLoop": {
+   "title": "Playlist loop",
+   "description": "Repeat the whole playlist.",
+   "default": "icomoon:repeat_on"
+  },
+  "addPlaylist": {
+   "title": "New playlist",
+   "description": "Create a playlist.",
+   "default": "builtin:plus"
+  },
+  "settings": {
+   "title": "Settings and manager",
+   "description": "Open the playlist manager.",
+   "default": "icomoon:cog"
+  },
+  "more": {
+   "title": "More actions",
+   "description": "Open the menu of a track.",
+   "default": "builtin:more"
+  },
+  "grip": {
+   "title": "Reorder handle",
+   "description": "Handle for dragging a track.",
+   "default": "builtin:grip"
+  },
+  "panelHideLeft": {
+   "title": "Hide panel (panel on the left)",
+   "description": "Tab that hides the playlist panel when it is on the left.",
+   "default": "builtin:chevronLeft"
+  },
+  "panelShowLeft": {
+   "title": "Show panel (panel on the left)",
+   "description": "Tab that shows the playlist panel when it is on the left.",
+   "default": "builtin:chevronRight"
+  },
+  "panelHideRight": {
+   "title": "Hide panel (panel on the right)",
+   "description": "Tab that hides the playlist panel when it is on the right.",
+   "default": "builtin:chevronRight"
+  },
+  "panelShowRight": {
+   "title": "Show panel (panel on the right)",
+   "description": "Tab that shows the playlist panel when it is on the right.",
+   "default": "builtin:chevronLeft"
+  }
+ }
+}

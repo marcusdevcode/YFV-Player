@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // Gathers every finished build into release/v<version>/ and writes latest.json for the updater.
-//   node scripts/release.mjs
+//   node scripts/collect-release.mjs
 // Finds: the macOS builds in src-tauri/target, and the Docker builds in release/docker/.
 // Nothing is uploaded. At the end it prints the command to publish the release yourself.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, copyFileSync, writeFileSync, statSync } from "node:fs";
 import { arch as hostArch, platform as hostPlatform } from "node:os";
 import { basename, join, resolve } from "node:path";
-import { appInfo, root } from "./app-info.mjs";
+import { appInfo, root } from "./package-info.mjs";
 
 const { id, name, version, repoUrl } = appInfo;
 const tag = `v${version}`;

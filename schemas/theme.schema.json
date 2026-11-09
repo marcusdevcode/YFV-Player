@@ -1,0 +1,739 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "theme.schema.json",
+  "title": "Theme",
+  "description": "A color and icon theme. A theme is based on the built-in 'dark' or 'light' theme: any color or icon it does not list is taken from that base. Used for the built-in themes, the themes you create, and theme export/import files.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional link to this schema, for editors."
+    },
+    "schemaVersion": {
+      "const": 1,
+      "title": "Schema version",
+      "description": "Version of this file format.",
+      "default": 1
+    },
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Unique, stable id: lowercase letters, digits and dashes. 'dark' and 'light' are the built-in themes.",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}$",
+      "examples": [
+        "dark",
+        "my-theme"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "description": "Name shown in the theme list.",
+      "minLength": 1,
+      "maxLength": 60,
+      "examples": [
+        "Dark",
+        "Ocean"
+      ]
+    },
+    "base": {
+      "enum": [
+        "dark",
+        "light"
+      ],
+      "title": "Base",
+      "description": "Built-in theme that supplies every color not set here, and decides the system control style (light or dark).",
+      "default": "dark"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional note about the theme.",
+      "maxLength": 300
+    },
+    "author": {
+      "type": "string",
+      "title": "Author",
+      "description": "Optional name of the creator.",
+      "maxLength": 80
+    },
+    "colors": {
+      "type": "object",
+      "title": "Colors",
+      "description": "Color of each element, by token. Only the ones you list differ from the base theme.",
+      "properties": {
+        "background": {
+          "type": "string",
+          "title": "Window background",
+          "description": "Background behind everything else. Group: Window. CSS variable: --bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#000000",
+          "examples": [
+            "#000000",
+            "#ffffff"
+          ],
+          "x-cssVariable": "--bg",
+          "x-group": "window"
+        },
+        "text": {
+          "type": "string",
+          "title": "Text",
+          "description": "Main text and icon color. Group: Window. CSS variable: --text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff",
+          "examples": [
+            "#ffffff",
+            "#1b1b1b"
+          ],
+          "x-cssVariable": "--text",
+          "x-group": "window"
+        },
+        "textMuted": {
+          "type": "string",
+          "title": "Secondary text",
+          "description": "Less important text: hints, times, counts. Group: Window. CSS variable: --muted. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#bbbbbb",
+          "examples": [
+            "#bbbbbb",
+            "#5f6368"
+          ],
+          "x-cssVariable": "--muted",
+          "x-group": "window"
+        },
+        "border": {
+          "type": "string",
+          "title": "Borders",
+          "description": "Lines around panels, buttons, inputs and dialogs. Group: Window. CSS variable: --border. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#444444",
+          "examples": [
+            "#444444",
+            "#c9c9c9"
+          ],
+          "x-cssVariable": "--border",
+          "x-group": "window"
+        },
+        "accent": {
+          "type": "string",
+          "title": "Accent",
+          "description": "Primary buttons, switched-on toggles and slider handles. Group: Window. CSS variable: --accent. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#8b0000",
+          "examples": [
+            "#8b0000",
+            "#c62828"
+          ],
+          "x-cssVariable": "--accent",
+          "x-group": "window"
+        },
+        "accentBorder": {
+          "type": "string",
+          "title": "Accent outline",
+          "description": "Outline of accent elements. Group: Window. CSS variable: --accent-border. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ff0000",
+          "examples": [
+            "#ff0000",
+            "#e53935"
+          ],
+          "x-cssVariable": "--accent-border",
+          "x-group": "window"
+        },
+        "accentText": {
+          "type": "string",
+          "title": "Text on accent",
+          "description": "Text and icons on accent-colored buttons. Group: Window. CSS variable: --accent-text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff",
+          "examples": [
+            "#ffffff",
+            "#ffffff"
+          ],
+          "x-cssVariable": "--accent-text",
+          "x-group": "window"
+        },
+        "buttonBackground": {
+          "type": "string",
+          "title": "Button",
+          "description": "Background of ordinary buttons. Group: Buttons. CSS variable: --button-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#2a2a2a",
+          "examples": [
+            "#2a2a2a",
+            "#ececec"
+          ],
+          "x-cssVariable": "--button-bg",
+          "x-group": "buttons"
+        },
+        "buttonHover": {
+          "type": "string",
+          "title": "Button under the mouse",
+          "description": "Background of a button while the pointer is over it. Group: Buttons. CSS variable: --button-hover. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#3a3a3a",
+          "examples": [
+            "#3a3a3a",
+            "#dcdcdc"
+          ],
+          "x-cssVariable": "--button-hover",
+          "x-group": "buttons"
+        },
+        "buttonText": {
+          "type": "string",
+          "title": "Button text",
+          "description": "Text and icons on ordinary buttons. Group: Buttons. CSS variable: --button-text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff",
+          "examples": [
+            "#ffffff",
+            "#1b1b1b"
+          ],
+          "x-cssVariable": "--button-text",
+          "x-group": "buttons"
+        },
+        "panel": {
+          "type": "string",
+          "title": "Panel",
+          "description": "Playlist panel, dialogs and notices. Group: Panels. CSS variable: --panel. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#1a1a1a",
+          "examples": [
+            "#1a1a1a",
+            "#f5f5f5"
+          ],
+          "x-cssVariable": "--panel",
+          "x-group": "panels"
+        },
+        "panelRaised": {
+          "type": "string",
+          "title": "Raised surface",
+          "description": "Text fields, menus and drop-downs. Group: Panels. CSS variable: --panel-2. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#2a2a2a",
+          "examples": [
+            "#2a2a2a",
+            "#e6e6e6"
+          ],
+          "x-cssVariable": "--panel-2",
+          "x-group": "panels"
+        },
+        "badgesBackground": {
+          "type": "string",
+          "title": "Playlist badge column",
+          "description": "Background of the narrow column with the round playlist badges. Group: Panels. CSS variable: --badges-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#0d0d0d",
+          "examples": [
+            "#0d0d0d",
+            "#e9e9ea"
+          ],
+          "x-cssVariable": "--badges-bg",
+          "x-group": "panels"
+        },
+        "badgeText": {
+          "type": "string",
+          "title": "Badge text",
+          "description": "Initials inside a playlist badge. Group: Panels. CSS variable: --badge-text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff",
+          "examples": [
+            "#ffffff",
+            "#ffffff"
+          ],
+          "x-cssVariable": "--badge-text",
+          "x-group": "panels"
+        },
+        "badgeActiveBorder": {
+          "type": "string",
+          "title": "Selected badge outline",
+          "description": "Ring around the selected playlist badge. Group: Panels. CSS variable: --badge-active. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff",
+          "examples": [
+            "#ffffff",
+            "#1b1b1b"
+          ],
+          "x-cssVariable": "--badge-active",
+          "x-group": "panels"
+        },
+        "playerBackground": {
+          "type": "string",
+          "title": "Video area",
+          "description": "Background around the video picture. Group: Player. CSS variable: --player-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#000000",
+          "examples": [
+            "#000000",
+            "#000000"
+          ],
+          "x-cssVariable": "--player-bg",
+          "x-group": "player"
+        },
+        "controlsBackground": {
+          "type": "string",
+          "title": "Control bar",
+          "description": "Background of the play/seek/volume bar. Group: Player. CSS variable: --controls-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#1a1a1ae6",
+          "examples": [
+            "#1a1a1ae6",
+            "#f5f5f5e6"
+          ],
+          "x-cssVariable": "--controls-bg",
+          "x-group": "player"
+        },
+        "controlsText": {
+          "type": "string",
+          "title": "Control bar text",
+          "description": "Text and icons in the control bar. Group: Player. CSS variable: --controls-text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff",
+          "examples": [
+            "#ffffff",
+            "#1b1b1b"
+          ],
+          "x-cssVariable": "--controls-text",
+          "x-group": "player"
+        },
+        "progressTrack": {
+          "type": "string",
+          "title": "Progress track",
+          "description": "The empty part of progress bars. Group: Player. CSS variable: --progress-track. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#2a2a2a",
+          "examples": [
+            "#2a2a2a",
+            "#d4d4d4"
+          ],
+          "x-cssVariable": "--progress-track",
+          "x-group": "player"
+        },
+        "progressBar": {
+          "type": "string",
+          "title": "Progress bar",
+          "description": "The filled part of progress bars. Group: Player. CSS variable: --progress-bar. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ff0000",
+          "examples": [
+            "#ff0000",
+            "#e53935"
+          ],
+          "x-cssVariable": "--progress-bar",
+          "x-group": "player"
+        },
+        "overlayBackground": {
+          "type": "string",
+          "title": "Message over the video",
+          "description": "Background of messages shown over the picture, such as playback errors. Group: Player. CSS variable: --overlay-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#000000cc",
+          "examples": [
+            "#000000cc",
+            "#000000cc"
+          ],
+          "x-cssVariable": "--overlay-bg",
+          "x-group": "player"
+        },
+        "overlayText": {
+          "type": "string",
+          "title": "Text over the video",
+          "description": "Text color of messages over the picture. Group: Player. CSS variable: --overlay-text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff",
+          "examples": [
+            "#ffffff",
+            "#ffffff"
+          ],
+          "x-cssVariable": "--overlay-text",
+          "x-group": "player"
+        },
+        "trackCurrent": {
+          "type": "string",
+          "title": "Playing track",
+          "description": "Highlight of the track that is playing. Group: Playlist. CSS variable: --track-current. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#8b000059",
+          "examples": [
+            "#8b000059",
+            "#c6282826"
+          ],
+          "x-cssVariable": "--track-current",
+          "x-group": "playlist"
+        },
+        "trackHover": {
+          "type": "string",
+          "title": "Track under the mouse",
+          "description": "Background of a track row while the pointer is over it. Group: Playlist. CSS variable: --track-hover. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#2a2a2a",
+          "examples": [
+            "#2a2a2a",
+            "#e0e0e0"
+          ],
+          "x-cssVariable": "--track-hover",
+          "x-group": "playlist"
+        },
+        "rowStripe": {
+          "type": "string",
+          "title": "Alternate list rows",
+          "description": "Every second row in lists. Group: Playlist. CSS variable: --row-stripe. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff08",
+          "examples": [
+            "#ffffff08",
+            "#00000008"
+          ],
+          "x-cssVariable": "--row-stripe",
+          "x-group": "playlist"
+        },
+        "rowSelected": {
+          "type": "string",
+          "title": "Selected list row",
+          "description": "Background of the selected playlist in the manager. Group: Playlist. CSS variable: --row-selected. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ffffff0a",
+          "examples": [
+            "#ffffff0a",
+            "#0000000d"
+          ],
+          "x-cssVariable": "--row-selected",
+          "x-group": "playlist"
+        },
+        "thumbBackground": {
+          "type": "string",
+          "title": "Preview background",
+          "description": "Background behind preview images while they load. Group: Playlist. CSS variable: --thumb-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#222222",
+          "examples": [
+            "#222222",
+            "#d8d8d8"
+          ],
+          "x-cssVariable": "--thumb-bg",
+          "x-group": "playlist"
+        },
+        "dropIndicator": {
+          "type": "string",
+          "title": "Reorder line",
+          "description": "Line showing where a dragged track will land. Group: Playlist. CSS variable: --drop-indicator. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ff0000",
+          "examples": [
+            "#ff0000",
+            "#e53935"
+          ],
+          "x-cssVariable": "--drop-indicator",
+          "x-group": "playlist"
+        },
+        "backdrop": {
+          "type": "string",
+          "title": "Dialog backdrop",
+          "description": "Dimming behind dialogs. Group: Dialogs and overlays. CSS variable: --backdrop. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#000000a6",
+          "examples": [
+            "#000000a6",
+            "#00000066"
+          ],
+          "x-cssVariable": "--backdrop",
+          "x-group": "dialogs"
+        },
+        "shadow": {
+          "type": "string",
+          "title": "Shadow",
+          "description": "Shadow under menus. Group: Dialogs and overlays. CSS variable: --shadow. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#0000009a",
+          "examples": [
+            "#0000009a",
+            "#00000033"
+          ],
+          "x-cssVariable": "--shadow",
+          "x-group": "dialogs"
+        },
+        "dropHintBackground": {
+          "type": "string",
+          "title": "Drop hint",
+          "description": "Overlay shown while files are dragged over the window. Group: Dialogs and overlays. CSS variable: --drop-hint-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#00000099",
+          "examples": [
+            "#00000099",
+            "#ffffffcc"
+          ],
+          "x-cssVariable": "--drop-hint-bg",
+          "x-group": "dialogs"
+        },
+        "errorText": {
+          "type": "string",
+          "title": "Error text",
+          "description": "Error messages and destructive menu entries. Group: Messages and warnings. CSS variable: --error-text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ff6b6b",
+          "examples": [
+            "#ff6b6b",
+            "#c62828"
+          ],
+          "x-cssVariable": "--error-text",
+          "x-group": "feedback"
+        },
+        "warningText": {
+          "type": "string",
+          "title": "Warning text",
+          "description": "Warnings, such as a video without its audio file. Group: Messages and warnings. CSS variable: --warning-text. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#e0a030",
+          "examples": [
+            "#e0a030",
+            "#8a5a00"
+          ],
+          "x-cssVariable": "--warning-text",
+          "x-group": "feedback"
+        },
+        "dangerBackground": {
+          "type": "string",
+          "title": "Danger button",
+          "description": "Background of buttons that delete things. Group: Messages and warnings. CSS variable: --danger-bg. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#8b0000",
+          "examples": [
+            "#8b0000",
+            "#c62828"
+          ],
+          "x-cssVariable": "--danger-bg",
+          "x-group": "feedback"
+        },
+        "dangerBorder": {
+          "type": "string",
+          "title": "Danger button outline",
+          "description": "Outline of buttons that delete things. Group: Messages and warnings. CSS variable: --danger-border. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ff0000",
+          "examples": [
+            "#ff0000",
+            "#b71c1c"
+          ],
+          "x-cssVariable": "--danger-border",
+          "x-group": "feedback"
+        }
+      },
+      "additionalProperties": false
+    },
+    "icons": {
+      "type": "object",
+      "title": "Icons",
+      "description": "Icon of each slot. Only the ones you list differ from the default icons.",
+      "properties": {
+        "play": {
+          "type": "string",
+          "title": "Play",
+          "description": "Start playback. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:play",
+          "examples": [
+            "builtin:play"
+          ]
+        },
+        "pause": {
+          "type": "string",
+          "title": "Pause",
+          "description": "Pause playback. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:pause",
+          "examples": [
+            "builtin:pause"
+          ]
+        },
+        "rewind": {
+          "type": "string",
+          "title": "Back 10 seconds",
+          "description": "Jump back in the video. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:rewind",
+          "examples": [
+            "builtin:rewind"
+          ]
+        },
+        "forward": {
+          "type": "string",
+          "title": "Forward 10 seconds",
+          "description": "Jump forward in the video. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:forward",
+          "examples": [
+            "builtin:forward"
+          ]
+        },
+        "loopVideo": {
+          "type": "string",
+          "title": "Loop video",
+          "description": "Repeat the current video. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:loop",
+          "examples": [
+            "builtin:loop"
+          ]
+        },
+        "fullscreen": {
+          "type": "string",
+          "title": "Enter fullscreen",
+          "description": "Switch to fullscreen. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:fullscreen",
+          "examples": [
+            "builtin:fullscreen"
+          ]
+        },
+        "fullscreenExit": {
+          "type": "string",
+          "title": "Leave fullscreen",
+          "description": "Leave fullscreen. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:fullscreenExit",
+          "examples": [
+            "builtin:fullscreenExit"
+          ]
+        },
+        "volumeUp": {
+          "type": "string",
+          "title": "Volume high",
+          "description": "Volume slider with a high volume. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:volumeUp",
+          "examples": [
+            "builtin:volumeUp"
+          ]
+        },
+        "volumeDown": {
+          "type": "string",
+          "title": "Volume low",
+          "description": "Volume slider with a low volume. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:volumeDown",
+          "examples": [
+            "builtin:volumeDown"
+          ]
+        },
+        "volumeOff": {
+          "type": "string",
+          "title": "Muted",
+          "description": "Muted or zero volume. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:volumeOff",
+          "examples": [
+            "builtin:volumeOff"
+          ]
+        },
+        "capturePreview": {
+          "type": "string",
+          "title": "Use frame as preview",
+          "description": "Save the current frame as the video's preview. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:camera",
+          "examples": [
+            "builtin:camera"
+          ]
+        },
+        "playlistLoop": {
+          "type": "string",
+          "title": "Playlist loop",
+          "description": "Repeat the whole playlist. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "icomoon:repeat_on",
+          "examples": [
+            "icomoon:repeat_on"
+          ]
+        },
+        "addPlaylist": {
+          "type": "string",
+          "title": "New playlist",
+          "description": "Create a playlist. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:plus",
+          "examples": [
+            "builtin:plus"
+          ]
+        },
+        "settings": {
+          "type": "string",
+          "title": "Settings and manager",
+          "description": "Open the playlist manager. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "icomoon:cog",
+          "examples": [
+            "icomoon:cog"
+          ]
+        },
+        "more": {
+          "type": "string",
+          "title": "More actions",
+          "description": "Open the menu of a track. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:more",
+          "examples": [
+            "builtin:more"
+          ]
+        },
+        "grip": {
+          "type": "string",
+          "title": "Reorder handle",
+          "description": "Handle for dragging a track. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:grip",
+          "examples": [
+            "builtin:grip"
+          ]
+        },
+        "panelHideLeft": {
+          "type": "string",
+          "title": "Hide panel (panel on the left)",
+          "description": "Tab that hides the playlist panel when it is on the left. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:chevronLeft",
+          "examples": [
+            "builtin:chevronLeft"
+          ]
+        },
+        "panelShowLeft": {
+          "type": "string",
+          "title": "Show panel (panel on the left)",
+          "description": "Tab that shows the playlist panel when it is on the left. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:chevronRight",
+          "examples": [
+            "builtin:chevronRight"
+          ]
+        },
+        "panelHideRight": {
+          "type": "string",
+          "title": "Hide panel (panel on the right)",
+          "description": "Tab that hides the playlist panel when it is on the right. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:chevronRight",
+          "examples": [
+            "builtin:chevronRight"
+          ]
+        },
+        "panelShowRight": {
+          "type": "string",
+          "title": "Show panel (panel on the right)",
+          "description": "Tab that shows the playlist panel when it is on the right. Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:chevronLeft",
+          "examples": [
+            "builtin:chevronLeft"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "base"
+  ],
+  "additionalProperties": false
+}

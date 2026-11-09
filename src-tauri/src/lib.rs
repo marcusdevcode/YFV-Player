@@ -1,5 +1,11 @@
+mod app_data;
 mod media_server;
 mod mp4;
+
+/// `LANGUAGES`: (code, name) for every file in src/locales, made by build.rs.
+mod languages {
+    include!(concat!(env!("OUT_DIR"), "/languages.rs"));
+}
 
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -8,7 +14,7 @@ use std::time::{Duration, Instant};
 
 use serde::Serialize;
 use tauri::image::Image;
-use tauri::menu::{AboutMetadataBuilder, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
+use tauri::menu::{AboutMetadataBuilder, CheckMenuItem, CheckMenuItemBuilder, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use mp4::mux::Phase;
@@ -101,6 +107,27 @@ fn merge_cancel(state: State<'_, MergeState>) {
 
 /// Files handed to the app from outside ("Open with", a second launch) while the page may not be
 /// loaded yet. Once the page asked for the launch file (`ready`), new ones are sent as events.
+/// The checkable items of the View -> Language menu, so the page can tick the current language.
+struct LanguageMenu(Vec<(String, CheckMenuItem<tauri::Wry>)>);
+
+/// The two tick items of View -> Playlist Position: (left, right).
+struct SidebarMenu(CheckMenuItem<tauri::Wry>, CheckMenuItem<tauri::Wry>);
+
+/// Tick "Left" or "Right" to match where the playlist panel is.
+#[tauri::command]
+fn menu_set_sidebar_side(side: String, menu: State<'_, SidebarMenu>) {
+    let _ = menu.0.set_checked(side == "left");
+    let _ = menu.1.set_checked(side == "right");
+}
+
+/// Tick the menu entry of the language that is selected in the app.
+#[tauri::command]
+fn menu_set_language(code: String, menu: State<'_, LanguageMenu>) {
+    for (item_code, item) in &menu.0 {
+        let _ = item.set_checked(*item_code == code);
+    }
+}
+
 #[derive(Default)]
 struct OpenState {
     ready: AtomicBool,
@@ -159,6 +186,7 @@ pub fn run() {
         .manage(server)
         .manage(MergeState::default())
         .manage(OpenState::default())
+        .manage(app_data::PositionNote::default())
         .setup(|app| {
             let open_video = MenuItemBuilder::with_id("open-video", "Open Video…")
                 .accelerator("CmdOrCtrl+O")
@@ -166,31 +194,72 @@ pub fn run() {
             let open_video_audio = MenuItemBuilder::with_id("open-video-audio", "Open Video + Separate Audio…")
                 .accelerator("CmdOrCtrl+Shift+O")
                 .build(app)?;
+            let add_videos = MenuItemBuilder::with_id("add-videos", "Add Videos to Playlist…")
+                .accelerator("CmdOrCtrl+Shift+A")
+                .build(app)?;
+            let import_playlist = MenuItemBuilder::with_id("import-playlist", "Import Playlist…").build(app)?;
+            let export_playlist = MenuItemBuilder::with_id("export-playlist", "Export Playlist…").build(app)?;
             let merge_av_item = MenuItemBuilder::with_id("merge-av", "Merge Video + Audio…").build(app)?;
             let check_updates = MenuItemBuilder::with_id("check-updates", "Check for Updates…").build(app)?;
 
-            let file = SubmenuBuilder::new(app, "File")
+            let settings_item = MenuItemBuilder::with_id("settings", "Settings…")
+                .accelerator("CmdOrCtrl+,")
+                .build(app)?;
+            #[allow(unused_mut)]
+            let mut file = SubmenuBuilder::new(app, "File")
                 .item(&open_video)
                 .item(&open_video_audio)
+                .item(&add_videos)
+                .separator()
+                .item(&import_playlist)
+                .item(&export_playlist)
                 .separator()
                 .item(&merge_av_item)
-                .separator()
-                .close_window()
+                .separator();
+            // On macOS Settings is in the app menu; elsewhere it is in File.
+            #[cfg(not(target_os = "macos"))]
+            {
+                file = file.item(&settings_item).separator();
+            }
+            let file = file.close_window().build()?;
+            let toggle_sidebar = MenuItemBuilder::with_id("toggle-sidebar", "Show/Hide Playlist Panel")
+                .accelerator("CmdOrCtrl+B")
+                .build(app)?;
+            let themes_item = MenuItemBuilder::with_id("themes", "Themes…").accelerator("CmdOrCtrl+Shift+T").build(app)?;
+            // View -> Playlist Position -> Left / Right (the page ticks the current one at startup).
+            let sidebar_left = CheckMenuItemBuilder::with_id("sidebar-left", "Left").checked(true).build(app)?;
+            let sidebar_right = CheckMenuItemBuilder::with_id("sidebar-right", "Right").build(app)?;
+            let position_menu = SubmenuBuilder::new(app, "Playlist Position")
+                .item(&sidebar_left)
+                .item(&sidebar_right)
                 .build()?;
-            let edit = SubmenuBuilder::new(app, "Edit")
-                .undo()
-                .redo()
+            app.manage(SidebarMenu(sidebar_left, sidebar_right));
+            // View -> Language: one tick item per file in src/locales (English is ticked until the
+            // page reports the saved language).
+            let mut language_items = Vec::new();
+            let mut language_menu = SubmenuBuilder::new(app, "Language");
+            for (code, name) in languages::LANGUAGES {
+                let item = CheckMenuItemBuilder::with_id(format!("language:{code}"), *name)
+                    .checked(*code == "en")
+                    .build(app)?;
+                language_menu = language_menu.item(&item);
+                language_items.push((code.to_string(), item));
+            }
+            let language_menu = language_menu.build()?;
+            app.manage(LanguageMenu(language_items));
+
+            let view = SubmenuBuilder::new(app, "View")
+                .item(&toggle_sidebar)
+                .item(&position_menu)
+                .item(&language_menu)
+                .item(&themes_item)
                 .separator()
-                .cut()
-                .copy()
-                .paste()
-                .select_all()
+                .fullscreen()
                 .build()?;
-            let view = SubmenuBuilder::new(app, "View").fullscreen().build()?;
             let window = SubmenuBuilder::new(app, "Window").minimize().maximize().build()?;
 
             // "About": icon, name, version, description and copyright, all from package.json
-            // (injected into the Tauri config by scripts/tauri.mjs).
+            // (injected into the Tauri config by scripts/run-tauri.mjs).
             let about_meta = {
                 let pkg = app.package_info();
                 let bundle = &app.config().bundle;
@@ -222,6 +291,18 @@ pub fn run() {
                 let app_menu = SubmenuBuilder::new(app, app.package_info().name.clone())
                     .about_with_text(&about_text, Some(about_meta.clone()))
                     .separator()
+                    .item(&settings_item)
+                    .separator()
+                    // There is no Edit menu, but on macOS Cmd+C / Cmd+V / Cmd+Z in text fields only
+                    // work through menu items, so the standard ones live here.
+                    .undo()
+                    .redo()
+                    .separator()
+                    .cut()
+                    .copy()
+                    .paste()
+                    .select_all()
+                    .separator()
                     .services()
                     .separator()
                     .hide()
@@ -232,24 +313,46 @@ pub fn run() {
                     .build()?;
                 menu = menu.item(&app_menu);
             }
-            let menu = menu.item(&file).item(&edit).item(&view).item(&window).item(&help).build()?;
+            let menu = menu.item(&file).item(&view).item(&window).item(&help).build()?;
             app.set_menu(menu)?;
             Ok(())
         })
         .on_menu_event(|app, event| {
             // Forward our own menu items to the frontend; predefined items handle themselves.
             let id = event.id().as_ref();
-            if matches!(id, "open-video" | "open-video-audio" | "merge-av" | "check-updates") {
+            if id.starts_with("language:") || matches!(
+                id,
+                "open-video"
+                    | "open-video-audio"
+                    | "merge-av"
+                    | "check-updates"
+                    | "add-videos"
+                    | "import-playlist"
+                    | "export-playlist"
+                    | "toggle-sidebar"
+                    | "settings"
+                    | "themes"
+                    | "sidebar-left"
+                    | "sidebar-right"
+            ) {
                 let _ = app.emit("menu", id);
             }
         })
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
-        .invoke_handler(tauri::generate_handler![media_url, media_duration, merge_av, merge_cancel, launch_path, launch_audio])
+        .invoke_handler(tauri::generate_handler![media_url, media_duration, merge_av, merge_cancel, launch_path, launch_audio,
+            app_data::library_load, app_data::library_save, app_data::thumbnail_save, app_data::thumbnail_import,
+            app_data::thumbnail_delete, app_data::trash_files, app_data::text_file_read, app_data::text_file_write,
+            app_data::settings_get, app_data::settings_set, app_data::settings_remove, app_data::theme_list, app_data::theme_save, app_data::theme_delete,
+            app_data::position_note, menu_set_language, menu_set_sidebar_side])
         .build(tauri::generate_context!())
         .expect("error while building the application")
         .run(|app, event| {
+            // The program is closing: write the last reported playback position to disk (once).
+            if matches!(event, tauri::RunEvent::Exit) {
+                app_data::flush_position(app);
+            }
             // macOS delivers "Open with" and double-clicked files as an event, not as arguments.
             #[cfg(any(target_os = "macos", target_os = "ios"))]
             if let tauri::RunEvent::Opened { urls } = &event {

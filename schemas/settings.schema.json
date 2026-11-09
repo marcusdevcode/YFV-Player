@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "settings.schema.json",
+  "title": "General settings",
+  "description": "The app's general settings file (settings/settings.json in the app data folder).",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional link to this schema, for editors."
+    },
+    "schemaVersion": {
+      "const": 1,
+      "title": "Schema version",
+      "description": "Version of this file format.",
+      "default": 1
+    },
+    "language": {
+      "type": "string",
+      "title": "Language",
+      "description": "Language code: the name of a file in src/locales (for example 'en' or 'he'). English until changed.",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]+)*$",
+      "default": "en",
+      "examples": [
+        "en",
+        "he"
+      ]
+    },
+    "theme": {
+      "type": "string",
+      "title": "Theme",
+      "description": "'system' follows the operating system's light/dark setting and switches with it. Otherwise the id of a built-in ('dark', 'light') or custom theme. Starts as 'system'; choosing a theme saves its id here.",
+      "pattern": "^(system|[a-z0-9][a-z0-9-]{0,62})$",
+      "default": "system",
+      "examples": [
+        "system",
+        "dark",
+        "light",
+        "my-theme"
+      ]
+    },
+    "sidebar": {
+      "type": "object",
+      "title": "Playlist panel",
+      "description": "State of the playlist panel.",
+      "properties": {
+        "open": {
+          "type": "boolean",
+          "title": "Open",
+          "description": "The panel is shown (true) or hidden (false).",
+          "default": true
+        },
+        "side": {
+          "enum": [
+            "left",
+            "right"
+          ],
+          "title": "Side",
+          "description": "Window edge the panel sits on. Starts as the language's default side.",
+          "default": "left"
+        }
+      },
+      "additionalProperties": false
+    },
+    "player": {
+      "type": "object",
+      "title": "Player",
+      "description": "Player preferences.",
+      "properties": {
+        "volume": {
+          "type": "number",
+          "title": "Volume",
+          "description": "Playback volume, 0 (silent) to 1 (full).",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        "muted": {
+          "type": "boolean",
+          "title": "Muted",
+          "description": "Sound is switched off.",
+          "default": false
+        },
+        "pauseVideoInBackground": {
+          "type": "boolean",
+          "title": "Pause video in the background",
+          "description": "When the window is not in front and the video has a separate audio file, the picture pauses and only the audio plays (saves resources). The video continues from the audio's position when the window comes back. Videos without a separate audio file are not affected.",
+          "default": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion"
+  ],
+  "additionalProperties": false
+}

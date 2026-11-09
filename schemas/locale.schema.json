@@ -1,0 +1,2540 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "locale.schema.json",
+  "title": "Language file",
+  "description": "A language: one file in src/locales named after the language code (en.json, he.json). English (en.json) is the base and must hold every text; other languages may leave texts out and get the English one instead.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional link to this schema, for editors."
+    },
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "description": "The language's name in that language, shown in Settings and the Language menu.",
+      "minLength": 1,
+      "maxLength": 40,
+      "examples": [
+        "English",
+        "עברית"
+      ]
+    },
+    "dir": {
+      "enum": [
+        "ltr",
+        "rtl"
+      ],
+      "title": "Text direction",
+      "description": "Reading direction: left-to-right or right-to-left.",
+      "default": "ltr"
+    },
+    "sidebarSide": {
+      "enum": [
+        "left",
+        "right"
+      ],
+      "title": "Default panel side",
+      "description": "Where the playlist panel is placed by default in this language. Changing the language resets the panel to this side.",
+      "default": "left"
+    },
+    "strings": {
+      "type": "object",
+      "title": "Texts",
+      "description": "The interface texts by key. A missing key falls back to English. Plural texts use <key>.one/.two/.few/.many/.other; '.other' is required for each plural text.",
+      "properties": {
+        "common.cancel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "common.cancel",
+          "description": "Words used on many buttons.",
+          "default": "Cancel",
+          "examples": [
+            "Cancel"
+          ]
+        },
+        "common.done": {
+          "type": "string",
+          "minLength": 1,
+          "title": "common.done",
+          "description": "Words used on many buttons.",
+          "default": "Done",
+          "examples": [
+            "Done"
+          ]
+        },
+        "common.close": {
+          "type": "string",
+          "minLength": 1,
+          "title": "common.close",
+          "description": "Words used on many buttons.",
+          "default": "Close",
+          "examples": [
+            "Close"
+          ]
+        },
+        "common.delete": {
+          "type": "string",
+          "minLength": 1,
+          "title": "common.delete",
+          "description": "Words used on many buttons.",
+          "default": "Delete",
+          "examples": [
+            "Delete"
+          ]
+        },
+        "common.add": {
+          "type": "string",
+          "minLength": 1,
+          "title": "common.add",
+          "description": "Words used on many buttons.",
+          "default": "Add",
+          "examples": [
+            "Add"
+          ]
+        },
+        "common.reset": {
+          "type": "string",
+          "minLength": 1,
+          "title": "common.reset",
+          "description": "Words used on many buttons.",
+          "default": "Reset",
+          "examples": [
+            "Reset"
+          ]
+        },
+        "filter.video": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.video",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "Video",
+          "examples": [
+            "Video"
+          ]
+        },
+        "filter.audio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.audio",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "Audio",
+          "examples": [
+            "Audio"
+          ]
+        },
+        "filter.image": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.image",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "Image",
+          "examples": [
+            "Image"
+          ]
+        },
+        "filter.media": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.media",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "Video and audio",
+          "examples": [
+            "Video and audio"
+          ]
+        },
+        "filter.playlist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.playlist",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "Playlist",
+          "examples": [
+            "Playlist"
+          ]
+        },
+        "filter.mp4": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.mp4",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "MP4 video",
+          "examples": [
+            "MP4 video"
+          ]
+        },
+        "app.openVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "app.openVideo",
+          "description": "Main window.",
+          "default": "Open video",
+          "examples": [
+            "Open video"
+          ]
+        },
+        "app.openVideoAudio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "app.openVideoAudio",
+          "description": "Main window.",
+          "default": "Open video + separate audio",
+          "examples": [
+            "Open video + separate audio"
+          ]
+        },
+        "app.addToPlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "app.addToPlaylist",
+          "description": "Main window.",
+          "default": "Add videos to a playlist",
+          "examples": [
+            "Add videos to a playlist"
+          ]
+        },
+        "app.dropToAdd": {
+          "type": "string",
+          "minLength": 1,
+          "title": "app.dropToAdd",
+          "description": "Main window.",
+          "default": "Drop to add",
+          "examples": [
+            "Drop to add"
+          ]
+        },
+        "app.hidePanel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "app.hidePanel",
+          "description": "Main window.",
+          "default": "Hide the playlist panel",
+          "examples": [
+            "Hide the playlist panel"
+          ]
+        },
+        "app.showPanel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "app.showPanel",
+          "description": "Main window.",
+          "default": "Show the playlist panel",
+          "examples": [
+            "Show the playlist panel"
+          ]
+        },
+        "add.title": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.title",
+          "description": "The Add videos dialog.",
+          "default": "Add videos",
+          "examples": [
+            "Add videos"
+          ]
+        },
+        "add.addAs": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.addAs",
+          "description": "The Add videos dialog.",
+          "default": "Add as",
+          "examples": [
+            "Add as"
+          ]
+        },
+        "add.modeVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.modeVideo",
+          "description": "The Add videos dialog.",
+          "default": "Video only",
+          "examples": [
+            "Video only"
+          ]
+        },
+        "add.modePair": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.modePair",
+          "description": "The Add videos dialog.",
+          "default": "Video + separate audio",
+          "examples": [
+            "Video + separate audio"
+          ]
+        },
+        "add.toPlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.toPlaylist",
+          "description": "The Add videos dialog.",
+          "default": "To playlist",
+          "examples": [
+            "To playlist"
+          ]
+        },
+        "add.newDefault": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.newDefault",
+          "description": "The Add videos dialog. Keep the placeholders {name} in the text.",
+          "default": "New playlist \"{name}\"",
+          "examples": [
+            "New playlist \"{name}\""
+          ],
+          "x-placeholders": [
+            "name"
+          ]
+        },
+        "add.defaultName": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.defaultName",
+          "description": "The Add videos dialog.",
+          "default": "My playlist",
+          "examples": [
+            "My playlist"
+          ]
+        },
+        "add.dropVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.dropVideo",
+          "description": "The Add videos dialog.",
+          "default": "Drop video files here",
+          "examples": [
+            "Drop video files here"
+          ]
+        },
+        "add.dropPair": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.dropPair",
+          "description": "The Add videos dialog.",
+          "default": "Drop video and audio files here",
+          "examples": [
+            "Drop video and audio files here"
+          ]
+        },
+        "add.browse": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.browse",
+          "description": "The Add videos dialog.",
+          "default": "Browse…",
+          "examples": [
+            "Browse…"
+          ]
+        },
+        "add.noAudio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.noAudio",
+          "description": "The Add videos dialog.",
+          "default": "no audio file",
+          "examples": [
+            "no audio file"
+          ]
+        },
+        "add.ignored.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.ignored.one",
+          "description": "The Add videos dialog. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} file ignored (not video or audio, or audio without a video).",
+          "examples": [
+            "{count} file ignored (not video or audio, or audio without a video)."
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "add.ignored.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.ignored.other",
+          "description": "The Add videos dialog. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} files ignored (not video or audio, or audio without a video).",
+          "examples": [
+            "{count} files ignored (not video or audio, or audio without a video)."
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "add.ignored.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.ignored.zero",
+          "description": "The Add videos dialog. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} files ignored (not video or audio, or audio without a video)."
+          ]
+        },
+        "add.ignored.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.ignored.two",
+          "description": "The Add videos dialog. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} files ignored (not video or audio, or audio without a video)."
+          ]
+        },
+        "add.ignored.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.ignored.few",
+          "description": "The Add videos dialog. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} files ignored (not video or audio, or audio without a video)."
+          ]
+        },
+        "add.ignored.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.ignored.many",
+          "description": "The Add videos dialog. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} files ignored (not video or audio, or audio without a video)."
+          ]
+        },
+        "add.playNow": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.playNow",
+          "description": "The Add videos dialog.",
+          "default": "Play now",
+          "examples": [
+            "Play now"
+          ]
+        },
+        "add.playNowHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.playNowHint",
+          "description": "The Add videos dialog.",
+          "default": "Play the first ticked item without adding it",
+          "examples": [
+            "Play the first ticked item without adding it"
+          ]
+        },
+        "add.add": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.add",
+          "description": "The Add videos dialog.",
+          "default": "Add to playlist",
+          "examples": [
+            "Add to playlist"
+          ]
+        },
+        "add.addN": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.addN",
+          "description": "The Add videos dialog. Keep the placeholders {count} in the text.",
+          "default": "Add {count} to playlist",
+          "examples": [
+            "Add {count} to playlist"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "mgr.title": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.title",
+          "description": "The playlist manager.",
+          "default": "Playlists",
+          "examples": [
+            "Playlists"
+          ]
+        },
+        "mgr.newName": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.newName",
+          "description": "The playlist manager.",
+          "default": "New playlist name",
+          "examples": [
+            "New playlist name"
+          ]
+        },
+        "mgr.none": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.none",
+          "description": "The playlist manager.",
+          "default": "No playlists yet.",
+          "examples": [
+            "No playlists yet."
+          ]
+        },
+        "mgr.color": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.color",
+          "description": "The playlist manager.",
+          "default": "Color",
+          "examples": [
+            "Color"
+          ]
+        },
+        "mgr.name": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.name",
+          "description": "The playlist manager.",
+          "default": "Playlist name",
+          "examples": [
+            "Playlist name"
+          ]
+        },
+        "mgr.chooseCover": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.chooseCover",
+          "description": "The playlist manager.",
+          "default": "Choose a cover image",
+          "examples": [
+            "Choose a cover image"
+          ]
+        },
+        "mgr.cover": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.cover",
+          "description": "The playlist manager.",
+          "default": "Cover…",
+          "examples": [
+            "Cover…"
+          ]
+        },
+        "mgr.resetCover": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.resetCover",
+          "description": "The playlist manager.",
+          "default": "Use the first video's preview",
+          "examples": [
+            "Use the first video's preview"
+          ]
+        },
+        "mgr.up": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.up",
+          "description": "The playlist manager.",
+          "default": "Move up",
+          "examples": [
+            "Move up"
+          ]
+        },
+        "mgr.down": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.down",
+          "description": "The playlist manager.",
+          "default": "Move down",
+          "examples": [
+            "Move down"
+          ]
+        },
+        "mgr.confirmDelete.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.confirmDelete.one",
+          "description": "The playlist manager. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "Delete {count} track? Click again",
+          "examples": [
+            "Delete {count} track? Click again"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "mgr.confirmDelete.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.confirmDelete.other",
+          "description": "The playlist manager. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "Delete {count} tracks? Click again",
+          "examples": [
+            "Delete {count} tracks? Click again"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "mgr.confirmDelete.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.confirmDelete.zero",
+          "description": "The playlist manager. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Delete {count} tracks? Click again"
+          ]
+        },
+        "mgr.confirmDelete.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.confirmDelete.two",
+          "description": "The playlist manager. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Delete {count} tracks? Click again"
+          ]
+        },
+        "mgr.confirmDelete.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.confirmDelete.few",
+          "description": "The playlist manager. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Delete {count} tracks? Click again"
+          ]
+        },
+        "mgr.confirmDelete.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.confirmDelete.many",
+          "description": "The playlist manager. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Delete {count} tracks? Click again"
+          ]
+        },
+        "mgr.deleteHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteHint",
+          "description": "The playlist manager.",
+          "default": "Delete this playlist (the video files are not touched)",
+          "examples": [
+            "Delete this playlist (the video files are not touched)"
+          ]
+        },
+        "mgr.import": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.import",
+          "description": "The playlist manager.",
+          "default": "Import…",
+          "examples": [
+            "Import…"
+          ]
+        },
+        "mgr.export": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.export",
+          "description": "The playlist manager.",
+          "default": "Export…",
+          "examples": [
+            "Export…"
+          ]
+        },
+        "mgr.exportHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.exportHint",
+          "description": "The playlist manager.",
+          "default": "Export the selected playlist",
+          "examples": [
+            "Export the selected playlist"
+          ]
+        },
+        "panel.aria": {
+          "type": "string",
+          "minLength": 1,
+          "title": "panel.aria",
+          "description": "The playlist badge column.",
+          "default": "Playlists",
+          "examples": [
+            "Playlists"
+          ]
+        },
+        "panel.new": {
+          "type": "string",
+          "minLength": 1,
+          "title": "panel.new",
+          "description": "The playlist badge column.",
+          "default": "New playlist",
+          "examples": [
+            "New playlist"
+          ]
+        },
+        "panel.manage": {
+          "type": "string",
+          "minLength": 1,
+          "title": "panel.manage",
+          "description": "The playlist badge column.",
+          "default": "Manage playlists",
+          "examples": [
+            "Manage playlists"
+          ]
+        },
+        "side.none": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.none",
+          "description": "The playlist panel.",
+          "default": "No playlist yet.",
+          "examples": [
+            "No playlist yet."
+          ]
+        },
+        "side.addVideos": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.addVideos",
+          "description": "The playlist panel.",
+          "default": "Add videos",
+          "examples": [
+            "Add videos"
+          ]
+        },
+        "side.hint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.hint",
+          "description": "The playlist panel.",
+          "default": "A playlist is created for them. Or use + in the playlist column.",
+          "examples": [
+            "A playlist is created for them. Or use + in the playlist column."
+          ]
+        },
+        "side.videos.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.videos.one",
+          "description": "The playlist panel. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} video",
+          "examples": [
+            "{count} video"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "side.videos.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.videos.other",
+          "description": "The playlist panel. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} videos",
+          "examples": [
+            "{count} videos"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "side.videos.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.videos.zero",
+          "description": "The playlist panel. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "side.videos.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.videos.two",
+          "description": "The playlist panel. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "side.videos.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.videos.few",
+          "description": "The playlist panel. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "side.videos.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.videos.many",
+          "description": "The playlist panel. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "side.loopOn": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.loopOn",
+          "description": "The playlist panel.",
+          "default": "Playlist loop: on (starts again after the last video)",
+          "examples": [
+            "Playlist loop: on (starts again after the last video)"
+          ]
+        },
+        "side.loopOff": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.loopOff",
+          "description": "The playlist panel.",
+          "default": "Playlist loop: off (stops after the last video)",
+          "examples": [
+            "Playlist loop: off (stops after the last video)"
+          ]
+        },
+        "side.add": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.add",
+          "description": "The playlist panel.",
+          "default": "Add",
+          "examples": [
+            "Add"
+          ]
+        },
+        "side.empty": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.empty",
+          "description": "The playlist panel.",
+          "default": "Empty. Use Add, or drop videos on the window.",
+          "examples": [
+            "Empty. Use Add, or drop videos on the window."
+          ]
+        },
+        "side.grip": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.grip",
+          "description": "The playlist panel.",
+          "default": "Drag to reorder",
+          "examples": [
+            "Drag to reorder"
+          ]
+        },
+        "side.more": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.more",
+          "description": "The playlist panel.",
+          "default": "More",
+          "examples": [
+            "More"
+          ]
+        },
+        "side.chooseImage": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.chooseImage",
+          "description": "The playlist panel.",
+          "default": "Choose preview image…",
+          "examples": [
+            "Choose preview image…"
+          ]
+        },
+        "side.resetPreview": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.resetPreview",
+          "description": "The playlist panel.",
+          "default": "Reset preview (first frame)",
+          "examples": [
+            "Reset preview (first frame)"
+          ]
+        },
+        "side.remove": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.remove",
+          "description": "The playlist panel.",
+          "default": "Remove from playlist",
+          "examples": [
+            "Remove from playlist"
+          ]
+        },
+        "side.removeFiles": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.removeFiles",
+          "description": "The playlist panel.",
+          "default": "Remove and delete files…",
+          "examples": [
+            "Remove and delete files…"
+          ]
+        },
+        "side.deleteTitle": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.deleteTitle",
+          "description": "The playlist panel.",
+          "default": "Delete these files?",
+          "examples": [
+            "Delete these files?"
+          ]
+        },
+        "side.trash": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.trash",
+          "description": "The playlist panel.",
+          "default": "Move to Trash",
+          "examples": [
+            "Move to Trash"
+          ]
+        },
+        "side.deleteBody": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.deleteBody",
+          "description": "The playlist panel. Keep the placeholders {title} in the text.",
+          "default": "\"{title}\" is removed from the playlist and these files go to the Trash:",
+          "examples": [
+            "\"{title}\" is removed from the playlist and these files go to the Trash:"
+          ],
+          "x-placeholders": [
+            "title"
+          ]
+        },
+        "settings.title": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.title",
+          "description": "The Settings dialog.",
+          "default": "Settings",
+          "examples": [
+            "Settings"
+          ]
+        },
+        "settings.language": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.language",
+          "description": "The Settings dialog.",
+          "default": "Language",
+          "examples": [
+            "Language"
+          ]
+        },
+        "settings.panel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.panel",
+          "description": "The Settings dialog.",
+          "default": "Playlist panel",
+          "examples": [
+            "Playlist panel"
+          ]
+        },
+        "settings.left": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.left",
+          "description": "The Settings dialog.",
+          "default": "On the left",
+          "examples": [
+            "On the left"
+          ]
+        },
+        "settings.right": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.right",
+          "description": "The Settings dialog.",
+          "default": "On the right",
+          "examples": [
+            "On the right"
+          ]
+        },
+        "settings.defaultLeft": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.defaultLeft",
+          "description": "The Settings dialog.",
+          "default": "The default for this language is the left.",
+          "examples": [
+            "The default for this language is the left."
+          ]
+        },
+        "settings.defaultRight": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.defaultRight",
+          "description": "The Settings dialog.",
+          "default": "The default for this language is the right.",
+          "examples": [
+            "The default for this language is the right."
+          ]
+        },
+        "settings.useDefault": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.useDefault",
+          "description": "The Settings dialog.",
+          "default": "Use the default",
+          "examples": [
+            "Use the default"
+          ]
+        },
+        "settings.explain": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.explain",
+          "description": "The Settings dialog.",
+          "default": "A position you choose stays until you change the language; then it goes back to that language's default.",
+          "examples": [
+            "A position you choose stays until you change the language; then it goes back to that language's default."
+          ]
+        },
+        "playlist.defaultName": {
+          "type": "string",
+          "minLength": 1,
+          "title": "playlist.defaultName",
+          "description": "Playlist defaults. Keep the placeholders {n} in the text.",
+          "default": "Playlist {n}",
+          "examples": [
+            "Playlist {n}"
+          ],
+          "x-placeholders": [
+            "n"
+          ]
+        },
+        "notice.saveFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.saveFailed",
+          "description": "Notices and error messages. Keep the placeholders {error} in the text.",
+          "default": "Could not save your playlists: {error}",
+          "examples": [
+            "Could not save your playlists: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "notice.loadFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.loadFailed",
+          "description": "Notices and error messages. Keep the placeholders {error} in the text.",
+          "default": "Could not load your playlists: {error}",
+          "examples": [
+            "Could not load your playlists: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "notice.notExport": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.notExport",
+          "description": "Notices and error messages.",
+          "default": "This file is not a playlist export.",
+          "examples": [
+            "This file is not a playlist export."
+          ]
+        },
+        "notice.noPlaylists": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.noPlaylists",
+          "description": "Notices and error messages.",
+          "default": "This file has no playlists.",
+          "examples": [
+            "This file has no playlists."
+          ]
+        },
+        "notice.noExport": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.noExport",
+          "description": "Notices and error messages.",
+          "default": "There is no playlist to export.",
+          "examples": [
+            "There is no playlist to export."
+          ]
+        },
+        "notice.exportFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.exportFailed",
+          "description": "Notices and error messages. Keep the placeholders {error} in the text.",
+          "default": "Export failed: {error}",
+          "examples": [
+            "Export failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "notice.importFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.importFailed",
+          "description": "Notices and error messages. Keep the placeholders {error} in the text.",
+          "default": "Import failed: {error}",
+          "examples": [
+            "Import failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "notice.imported.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.imported.one",
+          "description": "Notices and error messages. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "Imported {count} playlist.",
+          "examples": [
+            "Imported {count} playlist."
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "notice.imported.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.imported.other",
+          "description": "Notices and error messages. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "Imported {count} playlists.",
+          "examples": [
+            "Imported {count} playlists."
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "notice.imported.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.imported.zero",
+          "description": "Notices and error messages. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Imported {count} playlists."
+          ]
+        },
+        "notice.imported.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.imported.two",
+          "description": "Notices and error messages. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Imported {count} playlists."
+          ]
+        },
+        "notice.imported.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.imported.few",
+          "description": "Notices and error messages. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Imported {count} playlists."
+          ]
+        },
+        "notice.imported.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "notice.imported.many",
+          "description": "Notices and error messages. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "Imported {count} playlists."
+          ]
+        },
+        "thumb.unreadable": {
+          "type": "string",
+          "minLength": 1,
+          "title": "thumb.unreadable",
+          "description": "Video preview images.",
+          "default": "The video could not be read.",
+          "examples": [
+            "The video could not be read."
+          ]
+        },
+        "thumb.frameFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "thumb.frameFailed",
+          "description": "Video preview images.",
+          "default": "The frame could not be saved.",
+          "examples": [
+            "The frame could not be saved."
+          ]
+        },
+        "player.play": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.play",
+          "description": "The player and its control bar.",
+          "default": "Play",
+          "examples": [
+            "Play"
+          ]
+        },
+        "player.pause": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.pause",
+          "description": "The player and its control bar.",
+          "default": "Pause",
+          "examples": [
+            "Pause"
+          ]
+        },
+        "player.back10": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.back10",
+          "description": "The player and its control bar.",
+          "default": "Back 10s",
+          "examples": [
+            "Back 10s"
+          ]
+        },
+        "player.forward10": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.forward10",
+          "description": "The player and its control bar.",
+          "default": "Forward 10s",
+          "examples": [
+            "Forward 10s"
+          ]
+        },
+        "player.loopVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.loopVideo",
+          "description": "The player and its control bar.",
+          "default": "Loop this video",
+          "examples": [
+            "Loop this video"
+          ]
+        },
+        "player.useFrame": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.useFrame",
+          "description": "The player and its control bar.",
+          "default": "Use this frame as the preview of this video",
+          "examples": [
+            "Use this frame as the preview of this video"
+          ]
+        },
+        "player.fullscreen": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.fullscreen",
+          "description": "The player and its control bar.",
+          "default": "Fullscreen",
+          "examples": [
+            "Fullscreen"
+          ]
+        },
+        "player.mute": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.mute",
+          "description": "The player and its control bar.",
+          "default": "Mute",
+          "examples": [
+            "Mute"
+          ]
+        },
+        "player.unmute": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.unmute",
+          "description": "The player and its control bar.",
+          "default": "Unmute",
+          "examples": [
+            "Unmute"
+          ]
+        },
+        "player.volume": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.volume",
+          "description": "The player and its control bar.",
+          "default": "Volume",
+          "examples": [
+            "Volume"
+          ]
+        },
+        "player.errUnsupported": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.errUnsupported",
+          "description": "The player and its control bar.",
+          "default": "This file's format or codec isn't supported on this system. H.264/AAC MP4 files play everywhere.",
+          "examples": [
+            "This file's format or codec isn't supported on this system. H.264/AAC MP4 files play everywhere."
+          ]
+        },
+        "player.errCannotPlay": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.errCannotPlay",
+          "description": "The player and its control bar. Keep the placeholders {code}, {detail} in the text.",
+          "default": "This file can't be played (error {code}{detail}).",
+          "examples": [
+            "This file can't be played (error {code}{detail})."
+          ],
+          "x-placeholders": [
+            "code",
+            "detail"
+          ]
+        },
+        "player.errPlayback": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.errPlayback",
+          "description": "The player and its control bar. Keep the placeholders {error} in the text.",
+          "default": "Playback failed: {error}",
+          "examples": [
+            "Playback failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "player.errFullscreen": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.errFullscreen",
+          "description": "The player and its control bar. Keep the placeholders {error} in the text.",
+          "default": "Fullscreen failed: {error}",
+          "examples": [
+            "Fullscreen failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "player.errPreview": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.errPreview",
+          "description": "The player and its control bar. Keep the placeholders {error} in the text.",
+          "default": "Could not save the preview: {error}",
+          "examples": [
+            "Could not save the preview: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "update.checking": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.checking",
+          "description": "Updates.",
+          "default": "Checking for updates…",
+          "examples": [
+            "Checking for updates…"
+          ]
+        },
+        "update.available": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.available",
+          "description": "Updates. Keep the placeholders {name}, {version} in the text.",
+          "default": "{name} {version} is available",
+          "examples": [
+            "{name} {version} is available"
+          ],
+          "x-placeholders": [
+            "name",
+            "version"
+          ]
+        },
+        "update.install": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.install",
+          "description": "Updates.",
+          "default": "Install and restart",
+          "examples": [
+            "Install and restart"
+          ]
+        },
+        "update.later": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.later",
+          "description": "Updates.",
+          "default": "Later",
+          "examples": [
+            "Later"
+          ]
+        },
+        "update.downloading": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.downloading",
+          "description": "Updates.",
+          "default": "Downloading update…",
+          "examples": [
+            "Downloading update…"
+          ]
+        },
+        "update.uptodate": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.uptodate",
+          "description": "Updates.",
+          "default": "You're up to date.",
+          "examples": [
+            "You're up to date."
+          ]
+        },
+        "update.checkFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.checkFailed",
+          "description": "Updates.",
+          "default": "Couldn't check for updates. Check your connection and try again.",
+          "examples": [
+            "Couldn't check for updates. Check your connection and try again."
+          ]
+        },
+        "update.failed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "update.failed",
+          "description": "Updates.",
+          "default": "Update failed. Try again later.",
+          "examples": [
+            "Update failed. Try again later."
+          ]
+        },
+        "merge.aria": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.aria",
+          "description": "Merging video and audio.",
+          "default": "Merging video and audio",
+          "examples": [
+            "Merging video and audio"
+          ]
+        },
+        "merge.failed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.failed",
+          "description": "Merging video and audio.",
+          "default": "Merge failed",
+          "examples": [
+            "Merge failed"
+          ]
+        },
+        "merge.title": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.title",
+          "description": "Merging video and audio.",
+          "default": "Merging into one file",
+          "examples": [
+            "Merging into one file"
+          ]
+        },
+        "merge.reading": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.reading",
+          "description": "Merging video and audio.",
+          "default": "Reading files…",
+          "examples": [
+            "Reading files…"
+          ]
+        },
+        "merge.writing": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.writing",
+          "description": "Merging video and audio.",
+          "default": "Writing the merged file…",
+          "examples": [
+            "Writing the merged file…"
+          ]
+        },
+        "merge.finishing": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.finishing",
+          "description": "Merging video and audio.",
+          "default": "Finishing…",
+          "examples": [
+            "Finishing…"
+          ]
+        },
+        "merge.ofTotal": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.ofTotal",
+          "description": "Merging video and audio. Keep the placeholders {done}, {total} in the text.",
+          "default": "{done} of {total}",
+          "examples": [
+            "{done} of {total}"
+          ],
+          "x-placeholders": [
+            "done",
+            "total"
+          ]
+        },
+        "merge.left": {
+          "type": "string",
+          "minLength": 1,
+          "title": "merge.left",
+          "description": "Merging video and audio. Keep the placeholders {time} in the text.",
+          "default": "{time} left",
+          "examples": [
+            "{time} left"
+          ],
+          "x-placeholders": [
+            "time"
+          ]
+        },
+        "filter.theme": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.theme",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "Theme",
+          "examples": [
+            "Theme"
+          ]
+        },
+        "themes.title": {
+          "type": "string",
+          "minLength": 1,
+          "title": "themes.title",
+          "description": "The Themes dialog.",
+          "default": "Themes",
+          "examples": [
+            "Themes"
+          ]
+        },
+        "appearance.theme": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.theme",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Theme",
+          "examples": [
+            "Theme"
+          ]
+        },
+        "appearance.system": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.system",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "System default",
+          "examples": [
+            "System default"
+          ]
+        },
+        "appearance.dark": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.dark",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Dark",
+          "examples": [
+            "Dark"
+          ]
+        },
+        "appearance.light": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.light",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Light",
+          "examples": [
+            "Light"
+          ]
+        },
+        "appearance.systemHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.systemHint",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Follows your system's light or dark setting until you choose a theme.",
+          "examples": [
+            "Follows your system's light or dark setting until you choose a theme."
+          ]
+        },
+        "appearance.new": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.new",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "New theme…",
+          "examples": [
+            "New theme…"
+          ]
+        },
+        "appearance.newName": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.newName",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Theme name",
+          "examples": [
+            "Theme name"
+          ]
+        },
+        "appearance.newBase": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.newBase",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Based on",
+          "examples": [
+            "Based on"
+          ]
+        },
+        "appearance.create": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.create",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Create",
+          "examples": [
+            "Create"
+          ]
+        },
+        "appearance.createFromThis": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.createFromThis",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Create a theme from this one…",
+          "examples": [
+            "Create a theme from this one…"
+          ]
+        },
+        "appearance.nameLabel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.nameLabel",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Theme name",
+          "examples": [
+            "Theme name"
+          ]
+        },
+        "appearance.delete": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.delete",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Delete",
+          "examples": [
+            "Delete"
+          ]
+        },
+        "appearance.confirmDelete": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.confirmDelete",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Delete this theme? Click again",
+          "examples": [
+            "Delete this theme? Click again"
+          ]
+        },
+        "appearance.export": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.export",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Export…",
+          "examples": [
+            "Export…"
+          ]
+        },
+        "appearance.import": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.import",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Import…",
+          "examples": [
+            "Import…"
+          ]
+        },
+        "appearance.readOnly": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.readOnly",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Built-in themes can't be changed: your first change creates your own copy of the theme.",
+          "examples": [
+            "Built-in themes can't be changed: your first change creates your own copy of the theme."
+          ]
+        },
+        "appearance.colors": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.colors",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Colors",
+          "examples": [
+            "Colors"
+          ]
+        },
+        "appearance.icons": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.icons",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Icons",
+          "examples": [
+            "Icons"
+          ]
+        },
+        "appearance.resetColor": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.resetColor",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Back to the base theme's color",
+          "examples": [
+            "Back to the base theme's color"
+          ]
+        },
+        "appearance.opacity": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.opacity",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Opacity",
+          "examples": [
+            "Opacity"
+          ]
+        },
+        "appearance.colorCode": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.colorCode",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Color code",
+          "examples": [
+            "Color code"
+          ]
+        },
+        "appearance.changeIcon": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.changeIcon",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Change…",
+          "examples": [
+            "Change…"
+          ]
+        },
+        "appearance.resetIcon": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.resetIcon",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Reset",
+          "examples": [
+            "Reset"
+          ]
+        },
+        "appearance.pickIcon": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.pickIcon",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Choose an icon",
+          "examples": [
+            "Choose an icon"
+          ]
+        },
+        "appearance.defaultIcon": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.defaultIcon",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Default",
+          "examples": [
+            "Default"
+          ]
+        },
+        "appearance.searchIcons": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.searchIcons",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Search icons",
+          "examples": [
+            "Search icons"
+          ]
+        },
+        "appearance.noIcons": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.noIcons",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "No icons match.",
+          "examples": [
+            "No icons match."
+          ]
+        },
+        "appearance.exportedOk": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.exportedOk",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Theme exported.",
+          "examples": [
+            "Theme exported."
+          ]
+        },
+        "appearance.importedOk": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.importedOk",
+          "description": "The Appearance settings (themes, colors, icons). Keep the placeholders {name} in the text.",
+          "default": "Imported the theme \"{name}\".",
+          "examples": [
+            "Imported the theme \"{name}\"."
+          ],
+          "x-placeholders": [
+            "name"
+          ]
+        },
+        "appearance.exportFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.exportFailed",
+          "description": "The Appearance settings (themes, colors, icons). Keep the placeholders {error} in the text.",
+          "default": "Export failed: {error}",
+          "examples": [
+            "Export failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "appearance.importFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.importFailed",
+          "description": "The Appearance settings (themes, colors, icons). Keep the placeholders {error} in the text.",
+          "default": "Import failed: {error}",
+          "examples": [
+            "Import failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "appearance.notJson": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.notJson",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "This file is not valid JSON.",
+          "examples": [
+            "This file is not valid JSON."
+          ]
+        },
+        "appearance.saveFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.saveFailed",
+          "description": "The Appearance settings (themes, colors, icons). Keep the placeholders {error} in the text.",
+          "default": "Could not save the theme: {error}",
+          "examples": [
+            "Could not save the theme: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "appearance.loadProblems": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.loadProblems",
+          "description": "The Appearance settings (themes, colors, icons). Keep the placeholders {problems} in the text.",
+          "default": "Some themes could not be loaded: {problems}",
+          "examples": [
+            "Some themes could not be loaded: {problems}"
+          ],
+          "x-placeholders": [
+            "problems"
+          ]
+        },
+        "settings.invalidFile": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.invalidFile",
+          "description": "The Settings dialog. Keep the placeholders {problems} in the text.",
+          "default": "The settings file is not valid and was ignored: {problems}",
+          "examples": [
+            "The settings file is not valid and was ignored: {problems}"
+          ],
+          "x-placeholders": [
+            "problems"
+          ]
+        },
+        "settings.pauseInBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.pauseInBackground",
+          "description": "The Settings dialog.",
+          "default": "Pause the video when the window is in the background",
+          "examples": [
+            "Pause the video when the window is in the background"
+          ]
+        },
+        "settings.pauseInBackgroundHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.pauseInBackgroundHint",
+          "description": "The Settings dialog.",
+          "default": "Only the picture pauses; the audio keeps playing. For videos with a separate audio file.",
+          "examples": [
+            "Only the picture pauses; the audio keeps playing. For videos with a separate audio file."
+          ]
+        },
+        "theme.color.background": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.background",
+          "description": "Name of the color \"Window background\" in the theme editor.",
+          "default": "Window background",
+          "examples": [
+            "Window background"
+          ]
+        },
+        "theme.color.text": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.text",
+          "description": "Name of the color \"Text\" in the theme editor.",
+          "default": "Text",
+          "examples": [
+            "Text"
+          ]
+        },
+        "theme.color.textMuted": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.textMuted",
+          "description": "Name of the color \"Secondary text\" in the theme editor.",
+          "default": "Secondary text",
+          "examples": [
+            "Secondary text"
+          ]
+        },
+        "theme.color.border": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.border",
+          "description": "Name of the color \"Borders\" in the theme editor.",
+          "default": "Borders",
+          "examples": [
+            "Borders"
+          ]
+        },
+        "theme.color.accent": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.accent",
+          "description": "Name of the color \"Accent\" in the theme editor.",
+          "default": "Accent",
+          "examples": [
+            "Accent"
+          ]
+        },
+        "theme.color.accentBorder": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.accentBorder",
+          "description": "Name of the color \"Accent outline\" in the theme editor.",
+          "default": "Accent outline",
+          "examples": [
+            "Accent outline"
+          ]
+        },
+        "theme.color.accentText": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.accentText",
+          "description": "Name of the color \"Text on accent\" in the theme editor.",
+          "default": "Text on accent",
+          "examples": [
+            "Text on accent"
+          ]
+        },
+        "theme.color.buttonBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.buttonBackground",
+          "description": "Name of the color \"Button\" in the theme editor.",
+          "default": "Button",
+          "examples": [
+            "Button"
+          ]
+        },
+        "theme.color.buttonHover": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.buttonHover",
+          "description": "Name of the color \"Button under the mouse\" in the theme editor.",
+          "default": "Button under the mouse",
+          "examples": [
+            "Button under the mouse"
+          ]
+        },
+        "theme.color.buttonText": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.buttonText",
+          "description": "Name of the color \"Button text\" in the theme editor.",
+          "default": "Button text",
+          "examples": [
+            "Button text"
+          ]
+        },
+        "theme.color.panel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.panel",
+          "description": "Name of the color \"Panel\" in the theme editor.",
+          "default": "Panel",
+          "examples": [
+            "Panel"
+          ]
+        },
+        "theme.color.panelRaised": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.panelRaised",
+          "description": "Name of the color \"Raised surface\" in the theme editor.",
+          "default": "Raised surface",
+          "examples": [
+            "Raised surface"
+          ]
+        },
+        "theme.color.badgesBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.badgesBackground",
+          "description": "Name of the color \"Playlist badge column\" in the theme editor.",
+          "default": "Playlist badge column",
+          "examples": [
+            "Playlist badge column"
+          ]
+        },
+        "theme.color.badgeText": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.badgeText",
+          "description": "Name of the color \"Badge text\" in the theme editor.",
+          "default": "Badge text",
+          "examples": [
+            "Badge text"
+          ]
+        },
+        "theme.color.badgeActiveBorder": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.badgeActiveBorder",
+          "description": "Name of the color \"Selected badge outline\" in the theme editor.",
+          "default": "Selected badge outline",
+          "examples": [
+            "Selected badge outline"
+          ]
+        },
+        "theme.color.playerBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.playerBackground",
+          "description": "Name of the color \"Video area\" in the theme editor.",
+          "default": "Video area",
+          "examples": [
+            "Video area"
+          ]
+        },
+        "theme.color.controlsBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.controlsBackground",
+          "description": "Name of the color \"Control bar\" in the theme editor.",
+          "default": "Control bar",
+          "examples": [
+            "Control bar"
+          ]
+        },
+        "theme.color.controlsText": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.controlsText",
+          "description": "Name of the color \"Control bar text\" in the theme editor.",
+          "default": "Control bar text",
+          "examples": [
+            "Control bar text"
+          ]
+        },
+        "theme.color.progressTrack": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.progressTrack",
+          "description": "Name of the color \"Progress track\" in the theme editor.",
+          "default": "Progress track",
+          "examples": [
+            "Progress track"
+          ]
+        },
+        "theme.color.progressBar": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.progressBar",
+          "description": "Name of the color \"Progress bar\" in the theme editor.",
+          "default": "Progress bar",
+          "examples": [
+            "Progress bar"
+          ]
+        },
+        "theme.color.overlayBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.overlayBackground",
+          "description": "Name of the color \"Message over the video\" in the theme editor.",
+          "default": "Message over the video",
+          "examples": [
+            "Message over the video"
+          ]
+        },
+        "theme.color.overlayText": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.overlayText",
+          "description": "Name of the color \"Text over the video\" in the theme editor.",
+          "default": "Text over the video",
+          "examples": [
+            "Text over the video"
+          ]
+        },
+        "theme.color.trackCurrent": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.trackCurrent",
+          "description": "Name of the color \"Playing track\" in the theme editor.",
+          "default": "Playing track",
+          "examples": [
+            "Playing track"
+          ]
+        },
+        "theme.color.trackHover": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.trackHover",
+          "description": "Name of the color \"Track under the mouse\" in the theme editor.",
+          "default": "Track under the mouse",
+          "examples": [
+            "Track under the mouse"
+          ]
+        },
+        "theme.color.rowStripe": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.rowStripe",
+          "description": "Name of the color \"Alternate list rows\" in the theme editor.",
+          "default": "Alternate list rows",
+          "examples": [
+            "Alternate list rows"
+          ]
+        },
+        "theme.color.rowSelected": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.rowSelected",
+          "description": "Name of the color \"Selected list row\" in the theme editor.",
+          "default": "Selected list row",
+          "examples": [
+            "Selected list row"
+          ]
+        },
+        "theme.color.thumbBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.thumbBackground",
+          "description": "Name of the color \"Preview background\" in the theme editor.",
+          "default": "Preview background",
+          "examples": [
+            "Preview background"
+          ]
+        },
+        "theme.color.dropIndicator": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.dropIndicator",
+          "description": "Name of the color \"Reorder line\" in the theme editor.",
+          "default": "Reorder line",
+          "examples": [
+            "Reorder line"
+          ]
+        },
+        "theme.color.backdrop": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.backdrop",
+          "description": "Name of the color \"Dialog backdrop\" in the theme editor.",
+          "default": "Dialog backdrop",
+          "examples": [
+            "Dialog backdrop"
+          ]
+        },
+        "theme.color.shadow": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.shadow",
+          "description": "Name of the color \"Shadow\" in the theme editor.",
+          "default": "Shadow",
+          "examples": [
+            "Shadow"
+          ]
+        },
+        "theme.color.dropHintBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.dropHintBackground",
+          "description": "Name of the color \"Drop hint\" in the theme editor.",
+          "default": "Drop hint",
+          "examples": [
+            "Drop hint"
+          ]
+        },
+        "theme.color.errorText": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.errorText",
+          "description": "Name of the color \"Error text\" in the theme editor.",
+          "default": "Error text",
+          "examples": [
+            "Error text"
+          ]
+        },
+        "theme.color.warningText": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.warningText",
+          "description": "Name of the color \"Warning text\" in the theme editor.",
+          "default": "Warning text",
+          "examples": [
+            "Warning text"
+          ]
+        },
+        "theme.color.dangerBackground": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.dangerBackground",
+          "description": "Name of the color \"Danger button\" in the theme editor.",
+          "default": "Danger button",
+          "examples": [
+            "Danger button"
+          ]
+        },
+        "theme.color.dangerBorder": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.dangerBorder",
+          "description": "Name of the color \"Danger button outline\" in the theme editor.",
+          "default": "Danger button outline",
+          "examples": [
+            "Danger button outline"
+          ]
+        },
+        "theme.icon.play": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.play",
+          "description": "Name of the icon slot \"Play\" in the theme editor.",
+          "default": "Play",
+          "examples": [
+            "Play"
+          ]
+        },
+        "theme.icon.pause": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.pause",
+          "description": "Name of the icon slot \"Pause\" in the theme editor.",
+          "default": "Pause",
+          "examples": [
+            "Pause"
+          ]
+        },
+        "theme.icon.rewind": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.rewind",
+          "description": "Name of the icon slot \"Back 10 seconds\" in the theme editor.",
+          "default": "Back 10 seconds",
+          "examples": [
+            "Back 10 seconds"
+          ]
+        },
+        "theme.icon.forward": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.forward",
+          "description": "Name of the icon slot \"Forward 10 seconds\" in the theme editor.",
+          "default": "Forward 10 seconds",
+          "examples": [
+            "Forward 10 seconds"
+          ]
+        },
+        "theme.icon.loopVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.loopVideo",
+          "description": "Name of the icon slot \"Loop video\" in the theme editor.",
+          "default": "Loop video",
+          "examples": [
+            "Loop video"
+          ]
+        },
+        "theme.icon.fullscreen": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.fullscreen",
+          "description": "Name of the icon slot \"Enter fullscreen\" in the theme editor.",
+          "default": "Enter fullscreen",
+          "examples": [
+            "Enter fullscreen"
+          ]
+        },
+        "theme.icon.fullscreenExit": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.fullscreenExit",
+          "description": "Name of the icon slot \"Leave fullscreen\" in the theme editor.",
+          "default": "Leave fullscreen",
+          "examples": [
+            "Leave fullscreen"
+          ]
+        },
+        "theme.icon.volumeUp": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.volumeUp",
+          "description": "Name of the icon slot \"Volume high\" in the theme editor.",
+          "default": "Volume high",
+          "examples": [
+            "Volume high"
+          ]
+        },
+        "theme.icon.volumeDown": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.volumeDown",
+          "description": "Name of the icon slot \"Volume low\" in the theme editor.",
+          "default": "Volume low",
+          "examples": [
+            "Volume low"
+          ]
+        },
+        "theme.icon.volumeOff": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.volumeOff",
+          "description": "Name of the icon slot \"Muted\" in the theme editor.",
+          "default": "Muted",
+          "examples": [
+            "Muted"
+          ]
+        },
+        "theme.icon.capturePreview": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.capturePreview",
+          "description": "Name of the icon slot \"Use frame as preview\" in the theme editor.",
+          "default": "Use frame as preview",
+          "examples": [
+            "Use frame as preview"
+          ]
+        },
+        "theme.icon.playlistLoop": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.playlistLoop",
+          "description": "Name of the icon slot \"Playlist loop\" in the theme editor.",
+          "default": "Playlist loop",
+          "examples": [
+            "Playlist loop"
+          ]
+        },
+        "theme.icon.addPlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.addPlaylist",
+          "description": "Name of the icon slot \"New playlist\" in the theme editor.",
+          "default": "New playlist",
+          "examples": [
+            "New playlist"
+          ]
+        },
+        "theme.icon.settings": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.settings",
+          "description": "Name of the icon slot \"Settings and manager\" in the theme editor.",
+          "default": "Settings and manager",
+          "examples": [
+            "Settings and manager"
+          ]
+        },
+        "theme.icon.more": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.more",
+          "description": "Name of the icon slot \"More actions\" in the theme editor.",
+          "default": "More actions",
+          "examples": [
+            "More actions"
+          ]
+        },
+        "theme.icon.grip": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.grip",
+          "description": "Name of the icon slot \"Reorder handle\" in the theme editor.",
+          "default": "Reorder handle",
+          "examples": [
+            "Reorder handle"
+          ]
+        },
+        "theme.icon.panelHideLeft": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.panelHideLeft",
+          "description": "Name of the icon slot \"Hide panel (panel on the left)\" in the theme editor.",
+          "default": "Hide panel (panel on the left)",
+          "examples": [
+            "Hide panel (panel on the left)"
+          ]
+        },
+        "theme.icon.panelShowLeft": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.panelShowLeft",
+          "description": "Name of the icon slot \"Show panel (panel on the left)\" in the theme editor.",
+          "default": "Show panel (panel on the left)",
+          "examples": [
+            "Show panel (panel on the left)"
+          ]
+        },
+        "theme.icon.panelHideRight": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.panelHideRight",
+          "description": "Name of the icon slot \"Hide panel (panel on the right)\" in the theme editor.",
+          "default": "Hide panel (panel on the right)",
+          "examples": [
+            "Hide panel (panel on the right)"
+          ]
+        },
+        "theme.icon.panelShowRight": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.panelShowRight",
+          "description": "Name of the icon slot \"Show panel (panel on the right)\" in the theme editor.",
+          "default": "Show panel (panel on the right)",
+          "examples": [
+            "Show panel (panel on the right)"
+          ]
+        },
+        "theme.group.window": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.group.window",
+          "description": "Name of the color group \"Window\" in the theme editor.",
+          "default": "Window",
+          "examples": [
+            "Window"
+          ]
+        },
+        "theme.group.buttons": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.group.buttons",
+          "description": "Name of the color group \"Buttons\" in the theme editor.",
+          "default": "Buttons",
+          "examples": [
+            "Buttons"
+          ]
+        },
+        "theme.group.panels": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.group.panels",
+          "description": "Name of the color group \"Panels\" in the theme editor.",
+          "default": "Panels",
+          "examples": [
+            "Panels"
+          ]
+        },
+        "theme.group.player": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.group.player",
+          "description": "Name of the color group \"Player\" in the theme editor.",
+          "default": "Player",
+          "examples": [
+            "Player"
+          ]
+        },
+        "theme.group.playlist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.group.playlist",
+          "description": "Name of the color group \"Playlist\" in the theme editor.",
+          "default": "Playlist",
+          "examples": [
+            "Playlist"
+          ]
+        },
+        "theme.group.dialogs": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.group.dialogs",
+          "description": "Name of the color group \"Dialogs and overlays\" in the theme editor.",
+          "default": "Dialogs and overlays",
+          "examples": [
+            "Dialogs and overlays"
+          ]
+        },
+        "theme.group.feedback": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.group.feedback",
+          "description": "Name of the color group \"Messages and warnings\" in the theme editor.",
+          "default": "Messages and warnings",
+          "examples": [
+            "Messages and warnings"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "name",
+    "dir",
+    "sidebarSide"
+  ],
+  "additionalProperties": false
+}

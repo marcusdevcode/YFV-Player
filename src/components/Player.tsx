@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { locateTrack, usePlaylistLibraryStore } from "../store/playlistLibraryStore";
+import { SHOW_PREVIEW_BUTTON } from "../featureFlags";
+import { tr, useT } from "../translate";
+import Icon from "./Icon";
 import { usePlayerStore } from "../store/playerStore";
-import { formatTime, loadPosition, savePosition } from "../utils";
+import { setTrackFrame } from "../videoThumbnails";
+import { formatTime } from "../textFormatting";
+import { loadPosition, notePosition, savePosition } from "../playbackPosition";
 
 /*
  * No timers here (no setInterval / setTimeout / requestAnimationFrame): everything is driven by
@@ -15,28 +21,11 @@ import { formatTime, loadPosition, savePosition } from "../utils";
 const HIDE_AFTER_MS = 3000;
 const HOLD_MS = 400;
 const SCRUB_SPEED = 15; // seconds of media per second while a seek key is held
-const SAVE_EVERY_MS = 5000;
+const SAVE_EVERY_MS = 2000;
 const FS_GUARD_MS = 1500;
+/** The picture is only paused once the window has been in the background this long, so quick switches between programs change nothing. */
+const BACKGROUND_PAUSE_AFTER_MS = 1500;
 
-const Icon = ({ d }: { d: string }) => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d={d} />
-  </svg>
-);
-const ICONS = {
-  play: "M8 5v14l11-7z",
-  pause: "M6 19h4V5H6v14zm8-14v14h4V5h-4z",
-  rewind: "M11.5 12l8.5 6V6l-8.5 6zm-9 0l8.5 6V6l-8.5 6z",
-  forward: "M13 6v12l8.5-6L13 6zM4.5 6v12l8.5-6-8.5-6z",
-  loop: "M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z",
-  enterFs: "M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z",
-  exitFs: "M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z",
-  volumeUp:
-    "M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z",
-  volumeDown: "M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z",
-  volumeOff:
-    "M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z",
-};
 
 /** Resolves the next time any of `events` fires on `el` (used instead of timeouts). */
 function once(el: HTMLMediaElement, events: string[]): Promise<void> {
@@ -88,6 +77,9 @@ export default function Player() {
   const ownPauseAt = useRef(0); // when pauseBoth last ran: its pause events arrive a little later
   const seekToken = useRef(0);
   const endedHandled = useRef(false);
+  const nativeFocused = useRef(true); // the app window itself has focus (not just the page inside it)
+  const backgroundSince = useRef<number | null>(null); // the window lost focus at this time (and has not got it back)
+  const suspended = useRef(false); // the window is in the background: only the video is paused, the audio plays on
   // The video needs a moment to start after the audio. We start it that far ahead and refine
   // the value from the first `timeupdate` after each start.
   const videoLead = useRef(loadLead());
@@ -102,7 +94,9 @@ export default function Player() {
 
   const [scrubValue, setScrubValue] = useState(0);
   const [hidden, setHidden] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
+  const { t } = useT();
+  const fullscreen = usePlayerStore((s) => s.fullscreen);
+  const setFullscreen = usePlayerStore((s) => s.setFullscreen);
   const [error, setError] = useState<string | null>(null);
   const [videoSrc, setVideoSrc] = useState<string>();
   const [audioSrc, setAudioSrc] = useState<string>();
@@ -116,7 +110,24 @@ export default function Player() {
   const effectiveRef = useRef(effectiveDuration);
   effectiveRef.current = effectiveDuration;
 
-  useEffect(() => setDuration(effectiveDuration), [effectiveDuration, setDuration]);
+  // Braces on purpose: with the stores saved to files, setDuration returns a Promise, and an effect
+  // must not return anything but a cleanup function.
+  useEffect(() => {
+    setDuration(effectiveDuration);
+  }, [effectiveDuration, setDuration]);
+
+  // The playing track's preview becomes the frame on screen now.
+  const currentTrackId = usePlaylistLibraryStore((s) => s.currentTrackId);
+  const captureFrameAsPreview = useCallback(async () => {
+    const found = locateTrack(usePlaylistLibraryStore.getState().currentTrackId);
+    const v = videoRef.current;
+    if (!found || !v) return;
+    try {
+      await setTrackFrame(found.playlist.id, found.track.id, found.track.videoPath, v.currentTime);
+    } catch (e) {
+      usePlaylistLibraryStore.getState().setNotice(tr("player.errPreview", { error: String(e) }));
+    }
+  }, []);
 
   const wakeInterface = useCallback(() => {
     setHidden(false);
@@ -143,6 +154,7 @@ export default function Player() {
   const pauseBoth = useCallback(() => {
     playToken.current++; // cancel any start that is still in progress
     wantPlaying.current = false;
+    suspended.current = false;
     ownPauseAt.current = performance.now();
     videoRef.current?.pause();
     audioRef.current?.pause();
@@ -192,7 +204,7 @@ export default function Player() {
       leadStartTime.current = v.currentTime;
       leadPending.current = true;
     } catch (e) {
-      if (!isAbort(e)) setError(`Playback failed: ${String(e)}`);
+      if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
     }
   }, []);
 
@@ -225,9 +237,44 @@ export default function Player() {
       leadStartTime.current = v.currentTime;
       leadPending.current = true;
     } catch (e) {
-      if (!isAbort(e)) setError(`Playback failed: ${String(e)}`);
+      if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
     }
   }, [playBoth]);
+
+  // Window in the background (the user switched to another program): with a separate audio file, stop
+  // drawing the video and let the audio play on, which saves resources. Coming back, the video
+  // continues from where the audio is (rejoin). Controlled by a setting.
+  // Leaving is decided by the app window's own focus, not the page's: the page loses focus for other
+  // reasons too (for example when leaving fullscreen) while the app is still in front. Coming back is
+  // detected several ways, because a web view does not always send a focus event.
+  useEffect(() => {
+    const win = getCurrentWindow();
+    // Leaving only notes the time. The audio's time updates (see below) pause the picture once the
+    // window has stayed away long enough, so quick back-and-forth switching never touches the video.
+    const goAway = () => {
+      if (performance.now() - lastFsToggle.current < FS_GUARD_MS) return; // a fullscreen switch, not leaving
+      nativeFocused.current = false;
+      if (backgroundSince.current === null) backgroundSince.current = performance.now();
+    };
+    const goBack = () => {
+      nativeFocused.current = true;
+      backgroundSince.current = null;
+      if (!suspended.current) return;
+      suspended.current = false;
+      void rejoin();
+    };
+    void win.isFocused().then((focused) => (nativeFocused.current = focused)).catch(() => {});
+    const native = win.onFocusChanged(({ payload: focused }) => (focused ? goBack() : goAway()));
+    window.addEventListener("focus", goBack);
+    window.addEventListener("pointerdown", goBack, true);
+    window.addEventListener("keydown", goBack, true);
+    return () => {
+      window.removeEventListener("focus", goBack);
+      window.removeEventListener("pointerdown", goBack, true);
+      window.removeEventListener("keydown", goBack, true);
+      void native.then((off) => off()).catch(() => {});
+    };
+  }, [rejoin]);
 
   useEffect(() => {
     const onVisible = () => {
@@ -243,7 +290,7 @@ export default function Player() {
       const v = videoRef.current;
       const a = audioRef.current;
       if (!v) return;
-      const wasPlaying = resume ?? (!v.paused && !v.ended);
+      const wasPlaying = resume ?? (wantPlaying.current && !v.ended);
       const token = ++seekToken.current;
       endedHandled.current = false;
       if (wasPlaying) pauseBoth();
@@ -269,8 +316,10 @@ export default function Player() {
   const togglePlay = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused || v.ended) void playBoth();
-    else pauseBoth();
+    // Decide by what the user wants (set by play/pause), not by the video element's momentary state:
+    // it can be paused for a moment while it catches up with the audio after the window came back.
+    if (wantPlaying.current && !v.ended) pauseBoth();
+    else void playBoth();
   }, [playBoth, pauseBoth]);
 
   /** The real end of the video was reached (also covers files whose header duration is wrong). */
@@ -279,7 +328,8 @@ export default function Player() {
     endedHandled.current = true;
     if (loopRef.current) {
       void seekTo(0, true);
-    } else {
+    } else if (!usePlaylistLibraryStore.getState().playNext()) {
+      // Not in a playlist, or it was the last track and the playlist does not loop: stop here.
       pauseBoth();
       setTime(effectiveRef.current || (videoRef.current?.currentTime ?? 0));
     }
@@ -295,7 +345,7 @@ export default function Player() {
       await win.setFullscreen(next);
       setFullscreen(next);
     } catch (e) {
-      setError(`Fullscreen failed: ${String(e)}`);
+      setError(tr("player.errFullscreen", { error: String(e) }));
     }
   }, []);
 
@@ -311,7 +361,11 @@ export default function Player() {
   // Keep our state in step with the real window (Esc, the green button, the OS, ...).
   useEffect(() => {
     const win = getCurrentWindow();
-    const sync = async () => setFullscreen(await win.isFullscreen());
+    const sync = async () => {
+      const full = await win.isFullscreen();
+      if (full !== usePlayerStore.getState().fullscreen) lastFsToggle.current = performance.now(); // entering/leaving fullscreen shuffles focus
+      setFullscreen(full);
+    };
     void sync();
     const unlisten = win.onResized(() => void sync());
     return () => {
@@ -362,7 +416,12 @@ export default function Player() {
   const tryAutoStart = useCallback(() => {
     if (autoStarted.current || !videoReady.current || !audioReady.current) return;
     autoStarted.current = true;
-    void playBoth();
+    // The video restored at startup waits, paused, at its saved position. A player that replaces one
+    // that was playing and was torn down (rebuilt) continues to play.
+    const state = usePlayerStore.getState();
+    const resume = state.resumeAfterRemount;
+    if (resume) usePlayerStore.setState({ resumeAfterRemount: false });
+    if (state.autoStart || resume) void playBoth();
   }, [playBoth]);
 
   // Keyboard. Space toggles; arrows seek 5 s (tap); holding an arrow scrubs, driven by the key's
@@ -396,7 +455,7 @@ export default function Player() {
         if (!h.scrubbing) {
           // Scrub preview moves only the video; the audio is aligned when the key is released.
           h.scrubbing = true;
-          h.wasPlaying = !v.paused && !v.ended;
+          h.wasPlaying = wantPlaying.current && !v.ended;
           pauseBoth();
         }
         const dt = (e.timeStamp - h.last) / 1000;
@@ -448,10 +507,42 @@ export default function Player() {
     if (navigator.mediaSession) navigator.mediaSession.playbackState = playing ? "playing" : "paused";
   }, [playing]);
 
-  // Remember the position (also saved from `timeupdate` and on pause).
+  // Tear down properly. When this player goes away (another video, or React rebuilding it while the
+  // code changes in development) its audio and video are stopped, because a removed audio element
+  // would otherwise play on by itself. The position is saved, and if it was playing, the next
+  // player (or this one, when React only re-runs its effects) plays again once it is ready.
+  useEffect(() => {
+    const v = videoRef.current;
+    const a = audioRef.current;
+    const myPlayId = usePlayerStore.getState().playId;
+    const path = source?.videoPath;
+    // Effects re-run without a rebuild (development): everything below was stopped, so continue.
+    if (wantPlaying.current && v && v.paused) {
+      usePlayerStore.setState({ resumeAfterRemount: false }); // this player carries on itself, nobody else needs to
+      void playBoth();
+    }
+    return () => {
+      const wasPlaying = wantPlaying.current;
+      const progressed = !!v && v.currentTime > 0; // false right after mounting (React's development double run)
+      if (v && path && progressed) savePosition(path, v.currentTime);
+      ownPauseAt.current = performance.now(); // our own pause: not a headphone / media-key pause
+      v?.pause();
+      a?.pause();
+      // Replaced by the same video (a rebuild), not by another one: carry on from where it was.
+      if (progressed && usePlayerStore.getState().playId === myPlayId) {
+        usePlayerStore.setState({ fromStart: false, resumeAfterRemount: wasPlaying });
+      }
+    };
+  }, [videoSrc, audioSrc]);
+
+  // Remember the position: noted in memory while playing, saved to disk on pause, when the video is replaced, and (by the program) on exit.
   useEffect(() => {
     if (!source) return;
-    const save = () => savePosition(source.videoPath, videoRef.current?.currentTime ?? 0);
+    const save = () => {
+      // When the player is torn down the video element is already gone: keep the saved position then.
+      const t = videoRef.current?.currentTime;
+      if (t !== undefined) savePosition(source.videoPath, t);
+    };
     window.addEventListener("beforeunload", save);
     return () => {
       save();
@@ -483,7 +574,7 @@ export default function Player() {
           onLoadedMetadata={(e) => {
             const v = e.currentTarget;
             setHeaderDuration(v.duration);
-            const pos = loadPosition(source.videoPath);
+            const pos = usePlayerStore.getState().fromStart ? 0 : loadPosition(source.videoPath);
             const limit = effectiveRef.current || v.duration;
             if (pos > 0 && pos < limit - 2) void seekTo(pos, false);
           }}
@@ -501,9 +592,10 @@ export default function Player() {
             if (!v.paused && now - lastActivity.current > HIDE_AFTER_MS) setHidden(true);
 
             // Remember where we are.
+            // (memory only: the file is written on pause and when the program exits)
             if (now - lastSave.current > SAVE_EVERY_MS) {
               lastSave.current = now;
-              savePosition(source.videoPath, t);
+              notePosition(source.videoPath, t);
             }
 
             // Refine how far ahead the video should start (once per start).
@@ -526,6 +618,7 @@ export default function Player() {
             if (isOutsidePlay(e) && audioRef.current) void playBoth();
           }}
           onPause={(e) => {
+            if (suspended.current) return; // paused by us in the background: still "playing" for the user
             setPlaying(false);
             setHidden(false);
             savePosition(source.videoPath, e.currentTarget.currentTime);
@@ -537,8 +630,8 @@ export default function Player() {
             // MEDIA_ERR_SRC_NOT_SUPPORTED (4): the system's web view has no decoder for this file.
             setError(
               err?.code === 4
-                ? "This file's format or codec isn't supported on this system. H.264/AAC MP4 files play everywhere."
-                : `This file can't be played (error ${err?.code ?? "?"}${err?.message ? `: ${err.message}` : ""}).`,
+                ? t("player.errUnsupported")
+                : t("player.errCannotPlay", { code: err?.code ?? "?", detail: err?.message ? `: ${err.message}` : "" }),
             );
           }}
         />
@@ -562,6 +655,47 @@ export default function Player() {
           onPlay={(e) => {
             if (isOutsidePlay(e) && videoRef.current?.paused) void playBoth();
           }}
+          onTimeUpdate={(e) => {
+            // Safety net: the picture is held back for the background, but the window has focus again
+            // and no focus event told us (the audio keeps reporting time, the video does not).
+            if (suspended.current && nativeFocused.current) {
+              backgroundSince.current = null;
+              suspended.current = false;
+              void rejoin();
+            }
+            // Away for long enough: stop drawing the video, the audio plays on.
+            const away = backgroundSince.current;
+            const video = videoRef.current;
+            if (
+              away !== null &&
+              !suspended.current &&
+              performance.now() - away > BACKGROUND_PAUSE_AFTER_MS &&
+              !nativeFocused.current &&
+              performance.now() - lastFsToggle.current > FS_GUARD_MS &&
+              usePlayerStore.getState().pauseVideoInBackground &&
+              video &&
+              wantPlaying.current &&
+              !video.paused &&
+              !e.currentTarget.paused
+            ) {
+              suspended.current = true;
+              ownPauseAt.current = performance.now(); // our own pause: not a headphone / media-key pause
+              video.pause();
+            }
+            // With the picture paused in the background the video no longer reports time: keep the saved position moving.
+            const now = performance.now();
+            if (suspended.current && now - lastSave.current > SAVE_EVERY_MS) {
+              lastSave.current = now;
+              notePosition(source.videoPath, e.currentTarget.currentTime);
+            }
+          }}
+          onEnded={() => {
+            // The audio ran out while the picture was paused in the background: that is the end.
+            if (suspended.current) {
+              suspended.current = false;
+              handleEnded();
+            }
+          }}
         />
       )}
 
@@ -569,14 +703,14 @@ export default function Player() {
 
       <div className="controls">
         <div className="button-group">
-          <button onClick={togglePlay} title={playing ? "Pause" : "Play"}>
-            <Icon d={playing ? ICONS.pause : ICONS.play} />
+          <button onClick={togglePlay} title={playing ? t("player.pause") : t("player.play")}>
+            <Icon slot={playing ? "pause" : "play"} />
           </button>
-          <button onClick={() => void seekBy(-10)} title="Back 10s">
-            <Icon d={ICONS.rewind} />
+          <button onClick={() => void seekBy(-10)} title={t("player.back10")}>
+            <Icon slot="rewind" />
           </button>
-          <button onClick={() => void seekBy(10)} title="Forward 10s">
-            <Icon d={ICONS.forward} />
+          <button onClick={() => void seekBy(10)} title={t("player.forward10")}>
+            <Icon slot="forward" />
           </button>
         </div>
 
@@ -606,8 +740,8 @@ export default function Player() {
 
         <div className="button-group">
           <div className="volume">
-            <button onClick={toggleMute} title={muted || volume === 0 ? "Unmute" : "Mute"}>
-              <Icon d={muted || volume === 0 ? ICONS.volumeOff : volume < 0.5 ? ICONS.volumeDown : ICONS.volumeUp} />
+            <button onClick={toggleMute} title={muted || volume === 0 ? t("player.unmute") : t("player.mute")}>
+              <Icon slot={muted || volume === 0 ? "volumeOff" : volume < 0.5 ? "volumeDown" : "volumeUp"} />
             </button>
             <input
               type="range"
@@ -615,17 +749,22 @@ export default function Player() {
               max={1}
               step={0.01}
               value={muted ? 0 : volume}
-              aria-label="Volume"
+              aria-label={t("player.volume")}
               onChange={(e) => setVolume(Number(e.target.value))}
               onPointerUp={(e) => e.currentTarget.blur()}
               onKeyDown={(e) => e.stopPropagation()}
             />
           </div>
-          <button className={videoLoop ? "active" : ""} onClick={toggleVideoLoop} title="Loop this video">
-            <Icon d={ICONS.loop} />
+          <button className={videoLoop ? "active" : ""} onClick={toggleVideoLoop} title={t("player.loopVideo")}>
+            <Icon slot="loopVideo" />
           </button>
-          <button onClick={() => void toggleFullscreen()} title="Fullscreen">
-            <Icon d={fullscreen ? ICONS.exitFs : ICONS.enterFs} />
+          {SHOW_PREVIEW_BUTTON && currentTrackId && (
+            <button onClick={() => void captureFrameAsPreview()} title={t("player.useFrame")}>
+              <Icon slot="capturePreview" />
+            </button>
+          )}
+          <button onClick={() => void toggleFullscreen()} title={t("player.fullscreen")}>
+            <Icon slot={fullscreen ? "fullscreenExit" : "fullscreen"} />
           </button>
         </div>
       </div>

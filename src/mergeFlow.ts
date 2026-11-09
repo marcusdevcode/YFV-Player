@@ -1,7 +1,8 @@
 import { save } from "@tauri-apps/plugin-dialog";
 import { useMergeStore } from "./store/mergeStore";
 import { usePlayerStore } from "./store/playerStore";
-import { dirName, fileName, stem } from "./utils";
+import { tr } from "./translate";
+import { dirName, fileName, stem } from "./filePaths";
 
 /**
  * Merge a video and an audio file into one new MP4: ask where to save it, run the merge with a
@@ -14,7 +15,7 @@ export async function mergeFlow(videoPath: string, audioPath: string): Promise<v
   const suggested = `${stem(videoPath)} (merged).mp4`;
   const outputPath = await save({
     defaultPath: dir ? `${dir}${sep}${suggested}` : suggested,
-    filters: [{ name: "MP4 video", extensions: ["mp4"] }],
+    filters: [{ name: tr("filter.mp4"), extensions: ["mp4"] }],
   });
   if (!outputPath) return;
 
