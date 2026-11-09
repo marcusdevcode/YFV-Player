@@ -85,6 +85,7 @@ export default function Player() {
   const lastFsToggle = useRef(0);
   const playToken = useRef(0); // bumped by pause/seek so a pending aligned start gives up
   const wantPlaying = useRef(false); // the user wants playback (set by play, cleared by pause)
+  const ownPauseAt = useRef(0); // when pauseBoth last ran: its pause events arrive a little later
   const seekToken = useRef(0);
   const endedHandled = useRef(false);
   // The video needs a moment to start after the audio. We start it that far ahead and refine
@@ -128,9 +129,21 @@ export default function Player() {
     return Math.max(0, Math.min(max, t));
   }, []);
 
+  /** A pause event that did not come from our own pauseBoth (headphones, media keys, ...). */
+  const isOutsidePause = (e: { currentTarget: HTMLMediaElement; timeStamp: number }) =>
+    wantPlaying.current &&
+    !e.currentTarget.ended &&
+    !document.hidden &&
+    e.timeStamp - ownPauseAt.current > 400;
+
+  /** A play event that did not come from our own playBoth (and is not a leftover from before a pause). */
+  const isOutsidePlay = (e: { timeStamp: number }) =>
+    !wantPlaying.current && e.timeStamp - ownPauseAt.current > 400;
+
   const pauseBoth = useCallback(() => {
     playToken.current++; // cancel any start that is still in progress
     wantPlaying.current = false;
+    ownPauseAt.current = performance.now();
     videoRef.current?.pause();
     audioRef.current?.pause();
   }, []);
@@ -156,9 +169,13 @@ export default function Player() {
         await seeked;
         if (token !== playToken.current) return;
       }
-      const running = once(a, ["playing", "error"]);
-      await a.play();
-      await running;
+      // The audio may already be running (an outside "play", e.g. headphones, started it): then
+      // there is no new "playing" event to wait for.
+      if (a.paused) {
+        const running = once(a, ["playing", "error"]);
+        await a.play();
+        await running;
+      }
       // "playing" fires before the audio really advances: wait for its first time update.
       await once(a, ["timeupdate", "error"]);
       if (token !== playToken.current || a.paused) return;
@@ -405,6 +422,32 @@ export default function Player() {
     };
   }, [seekBy, seekTo, togglePlay, toggleFullscreen, wakeInterface, pauseBoth, clampTime, setTime, fullscreen]);
 
+  // Headphone buttons and media keys: route them to our own play/pause instead of letting the
+  // system pick one of the two media elements (which leaves video and audio out of step).
+  useEffect(() => {
+    const ms = navigator.mediaSession;
+    if (!ms) return;
+    const set = (action: MediaSessionAction, fn: (() => void) | null) => {
+      try {
+        ms.setActionHandler(action, fn);
+      } catch {
+        /* action not supported here */
+      }
+    };
+    set("play", () => void playBoth());
+    set("pause", () => pauseBoth());
+    set("stop", () => pauseBoth());
+    return () => {
+      set("play", null);
+      set("pause", null);
+      set("stop", null);
+    };
+  }, [playBoth, pauseBoth]);
+
+  useEffect(() => {
+    if (navigator.mediaSession) navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+  }, [playing]);
+
   // Remember the position (also saved from `timeupdate` and on pause).
   useEffect(() => {
     if (!source) return;
@@ -476,14 +519,18 @@ export default function Player() {
             }
           }}
           onEnded={handleEnded}
-          onPlay={() => {
+          onPlay={(e) => {
             setPlaying(true);
             wakeInterface();
+            // An outside play that reached the video only: start the audio with it.
+            if (isOutsidePlay(e) && audioRef.current) void playBoth();
           }}
           onPause={(e) => {
             setPlaying(false);
             setHidden(false);
             savePosition(source.videoPath, e.currentTarget.currentTime);
+            // An outside pause (headphones, media keys) can reach the video instead of the audio.
+            if (isOutsidePause(e)) pauseBoth();
           }}
           onError={(e) => {
             const err = e.currentTarget.error;
@@ -500,6 +547,15 @@ export default function Player() {
           onCanPlay={() => {
             audioReady.current = true;
             tryAutoStart();
+          }}
+          // Headphone / media-key pause and play act on the audio element only. Our own pauses
+          // clear wantPlaying first, so a pause while we still want playback came from outside:
+          // pause the video too (and start both again on an outside play).
+          onPause={(e) => {
+            if (isOutsidePause(e)) pauseBoth();
+          }}
+          onPlay={(e) => {
+            if (isOutsidePlay(e) && videoRef.current?.paused) void playBoth();
           }}
         />
       )}

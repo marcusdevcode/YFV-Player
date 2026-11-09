@@ -2,7 +2,7 @@
 // The only way Tauri is run (`npm run tauri`, `npm start`, `npm run build:*`, CI).
 //
 // It injects everything that comes from package.json (product name, bundle identifier, version,
-// window title, updater endpoint) through the TAURI_CONFIG environment variable, so none of it
+// window title, updater endpoint) through the CLI's --config option, so none of it
 // is written in src-tauri/tauri.conf.json. It also keeps src-tauri/Cargo.toml's version in sync.
 //
 // The updater public key comes from keys/public.pub (committed). For `build`, the private key
@@ -38,6 +38,11 @@ const config = {
   app: {
     windows: (baseConfig.app?.windows ?? []).map((w) => ({ ...w, title: appInfo.name })),
   },
+  bundle: {
+    copyright: appInfo.copyright,
+    shortDescription: appInfo.description,
+    longDescription: appInfo.description,
+  },
   plugins: {
     updater: {
       pubkey: readFileSync(pubFile, "utf8").trim(),
@@ -45,7 +50,9 @@ const config = {
     },
   },
 };
-env.TAURI_CONFIG = JSON.stringify(config);
+// The CLI only honours --config (not the TAURI_CONFIG variable) for the base config file.
+const extra = [];
+if (["dev", "build", "bundle"].includes(args[0])) extra.push("--config", JSON.stringify(config));
 
 // --- keep Cargo.toml's version equal to package.json ----------------------------------------
 const cargoFile = resolve(root, "src-tauri/Cargo.toml");
@@ -54,7 +61,6 @@ const synced = cargo.replace(/^version = ".*"$/m, `version = "${appInfo.version}
 if (synced !== cargo) writeFileSync(cargoFile, synced);
 
 // --- signing key (build only) -----------------------------------------------------------------
-const extra = [];
 if (args[0] === "build") {
   const keyFile = resolve(root, env.APP_SIGNING_KEY ?? "keys/private.key");
   if (env.TAURI_SIGNING_PRIVATE_KEY) {

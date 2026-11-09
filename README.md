@@ -30,7 +30,7 @@ Full guide, including how to get your own update-signing keys if you copy this r
 - `npm start` (or `npm run dev:app`): run the desktop app in development.
 - `npm run dev`: web page only, without the desktop features.
 - `npm run typecheck` and `cargo test` (in `src-tauri/`): checks.
-- `npm run build:app` builds for this machine. Per platform: `build:mac-arm64`, `build:mac-x64`, `build:win-x64`, `build:win-arm64`, `build:linux-x64`, `build:linux-arm64`; groups `build:mac`, `build:win`, `build:linux`, and `build:all`. A build only works on its own OS (all six come from the GitHub workflow).
+- `npm run build:app` builds for this machine. Manual releases (macOS natively, Linux and Windows in Docker) are described in DEVELOPMENT.md.
 - Builds read the update-signing key from `keys/private.key` automatically (the public half is `keys/public.pub`). The private file is git-ignored; `keys/private.key.example` shows where it goes. Without a key a build still works but has no update files.
 
 ---
@@ -96,8 +96,8 @@ Full guide, including how to get your own update-signing keys if you copy this r
 
 ### Release
 - [ ] **16. Polish**: error handling, shortcut help, check "Open with" on each OS.
-- [~] **17. Builds for all platforms** *(scripts and workflow written; the workflow has never run)*: `npm run build:*` scripts per platform and `.github/workflows/release.yml` (macOS arm64 + x64, Windows x64 + arm64, Linux x64 + arm64; `.deb`, `.rpm`, `.AppImage`; no 32-bit). A macOS Apple Silicon `.app` and signed update archive were built locally; the local `.dmg` step failed repeatedly with a macOS "resource busy" error.
-- [~] **18. Auto-update from GitHub Releases** *(code, signing key and CI workflow written; untested until the first release is published)*: signed updates, check on startup and from the menu, progress and "install and restart".
+- [~] **17. Builds for all platforms** *(manual local releases: macOS builds natively and was built and signed; the Docker builds for Linux x64/arm64 and Windows x64/arm64 are written but never run, because Docker isn't installed here yet)*: `npm run build:mac*`, `npm run docker:*`, `npm run release:collect` (macOS arm64 + x64, Windows x64 + arm64, Linux x64 + arm64; `.deb`, `.rpm`, `.AppImage`; no 32-bit). No CI.
+- [~] **18. Auto-update from GitHub Releases** *(code and signing written; untested until the first release is published)*: signed updates, check on startup and from the menu, progress and "install and restart".
 
 ---
 

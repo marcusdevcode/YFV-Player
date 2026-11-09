@@ -26,27 +26,60 @@ Rule for the UI code: **no timers** (`setInterval`, `setTimeout`, `requestAnimat
 
 Handy for testing: a file path given on launch plays right away, and a second path is used as the separate audio track, e.g. `APP_OPEN=/path/video.mp4 APP_OPEN_AUDIO=/path/audio.m4a npm start`.
 
-## Building
+## Building and releasing (manual, on this computer)
+
+Releases are built here, not on GitHub. macOS builds natively; Linux and Windows build inside Docker.
+
+One-time setup:
+- Signing keys in `keys/` (see the next section).
+- `rustup target add x86_64-apple-darwin` (for the Intel Mac build).
+- **Docker** (for Linux and Windows). Either Docker Desktop, or, without it, on a Mac:
+  ```sh
+  brew install colima docker docker-buildx
+  mkdir -p ~/.docker/cli-plugins && ln -sfn /opt/homebrew/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
+  colima start --vm-type vz --vz-rosetta --cpu 6 --memory 10 --disk 80
+  ```
+  The scripts need `docker buildx`. If Docker complains about `docker-credential-desktop`, remove the line `"credsStore": "desktop"` from `~/.docker/config.json` (nothing else needs it without Docker Desktop).
 
 ```sh
-npm run build:app          # for this computer
-npm run build:mac-arm64    # Apple Silicon        (needs a Mac)
-npm run build:mac-x64      # Intel Mac            (needs a Mac, `rustup target add x86_64-apple-darwin`)
-npm run build:win-x64      # Windows x64          (needs Windows)
-npm run build:win-arm64    # Windows ARM64        (needs Windows)
-npm run build:linux-x64    # Linux x64            (needs Linux)
-npm run build:linux-arm64  # Linux ARM64          (needs Linux)
+npm run build:app          # test build for this computer
+npm run build:mac-arm64    # Apple Silicon
+npm run build:mac-x64      # Intel Mac
+npm run build:mac          # both Macs
+npm run docker:linux-x64   # Linux x64   (AppImage, deb, rpm)
+npm run docker:linux-arm64 # Linux ARM64
+npm run docker:win-x64     # Windows x64   (NSIS installer)
+npm run docker:win-arm64   # Windows ARM64
+npm run docker:linux       # both Linux builds
+npm run docker:win         # both Windows builds
+npm run docker:all         # all four Docker builds
+npm run release:collect    # gather everything into release/v<version>/ + latest.json
+npm run release:build    # build:mac + docker:all + release:collect
+npm run release:publish  # publish release/v<version>/ to GitHub (scripts/release-version.js)
+npm run release          # release:build, then release:publish: build everything and publish
 ```
 
-`build:mac`, `build:win`, `build:linux` and `build:all` run the groups. A build only works on its own operating system; the GitHub workflow (`.github/workflows/release.yml`) builds all six targets when you push a tag such as `v0.1.0`.
+What the Docker images do:
+- `docker/linux.Dockerfile` (Ubuntu 22.04): builds the AppImage, deb and rpm. On x64 under Rosetta the AppImage plugin cannot start (static binary, "Exec format error"), so the image unpacks it and runs it from the unpacked files.
+- `docker/windows.Dockerfile` (Ubuntu 24.04): cross-compiles with `cargo-xwin` and builds the NSIS installer for x64 and arm64. Ubuntu 22.04's NSIS is too old for Tauri's installer. A small `clang` wrapper translates the `/imsvc` flags that `cargo-xwin` passes.
+- The Windows build runs in `/qbuild`, not `/work`: `clang-cl` and NSIS read a path starting with `/work` or `/x` as one of their own options and fail.
+- The signing key reaches the container through the environment and is never copied into the image (`docker/build.sh` skips `*.key`).
+
+The first Docker run is slow (it downloads the toolchains and builds the Rust dependencies); later runs reuse Docker volumes as a cache. Linux x64 on an Apple Silicon Mac runs emulated and is slower. The Docker builds are cross-compiled and have not been run on a real Windows or Linux machine, so test the installers.
 
 Extra arguments go to `tauri build`: `npm run build:app -- --bundles app` builds just the app without an installer (useful on macOS, where the `.dmg` step sometimes fails with "resource busy").
 
-All `build:*` scripts, `npm start` and `npm run tauri` go through `scripts/tauri.mjs`. It takes the product name, bundle identifier, version, window title and updater endpoint from `package.json` (the only place they are defined) and finds the signing key for you (next section). Do not run `tauri` or `cargo tauri` directly, or that information is missing.
+`npm start`, `npm run tauri` and every `build:*` script go through `scripts/tauri.mjs`. It takes the product name, bundle identifier, version, window title and updater endpoint from `package.json` (the only place they are defined) and finds the signing key for you. Do not run `tauri` or `cargo tauri` directly, or that information is missing.
 
-## Releasing
+### Release steps
 
-`package.json` is the central place. To release: change `version` there (nothing else; `scripts/tauri.mjs` syncs `src-tauri/Cargo.toml`), then do the git steps yourself: commit, tag `v<version>` and push the tag (the workflow refuses a tag that differs from the version in `package.json`).
+1. Change `version` in `package.json` (the only place; `scripts/tauri.mjs` syncs `src-tauri/Cargo.toml`).
+2. `npm run release` builds everything, then publishes it. To only build, use `npm run release:build`; to publish what is already built, `npm run release:publish`.
+3. Check `release/v<version>/`: installers named `<name>_<version>_<os>-<cpu>.<ext>` and `latest.json` (the updater file, with signatures).
+4. `release:publish` (`scripts/release-version.js`) reads name, version and repository from `package.json`, checks that all six platforms are in `release/v<version>/`, that `gh` is installed and logged in, and that the release does not exist yet, asks you to confirm, then runs `gh release create`. Options: `--yes` (no question), `--draft`, `--dry-run` (print the command only), `--allow-partial`. It runs as the GitHub account logged in with `gh auth login` on this machine.
+5. Commit and push your code yourself first (`git add . && git commit && git push`): `gh release create` makes the tag from the pushed code. The repository must be public for the updater to read the release.
+
+A release with a platform missing makes `latest.json` list only the built platforms, and users of the others get no update, so build everything before publishing.
 
 ## Update-signing keys (read this if you copy the repo)
 
@@ -67,8 +100,7 @@ The app updates itself from GitHub Releases. To be sure an update really comes f
    The tool writes `keys/private.key` (private) and `keys/private.key.pub`. Rename the second file to `keys/public.pub`.
 2. **The public key needs no pasting.** `keys/public.pub` is picked up automatically for every run and build.
 3. **Point updates at your repository.** Set `repository.url` (and `author.name`, which forms the bundle identifier) in `package.json`. The update address is derived from it.
-4. **Give GitHub the private key** so the workflow can sign releases. In your repository open *Settings → Secrets and variables → Actions → New repository secret* (a repository secret, not an environment) and create `TAURI_SIGNING_PRIVATE_KEY` with the **contents** of `keys/private.key`. With the GitHub CLI: `gh secret set TAURI_SIGNING_PRIVATE_KEY < keys/private.key`. If you protected the key with a password, also create `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
-5. **Release:** push a tag matching `version` in `package.json` (for example `git tag v0.1.0 && git push origin v0.1.0`). The repository must be public for the free GitHub Actions minutes and for the updater to read the release.
+4. **Keep the private key on this computer only.** Builds read `keys/private.key` and pass it to Docker through the environment. It is never uploaded anywhere and no GitHub secret is needed. If you gave it a password, set `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` when building.
 
 **Local builds** pick the key up automatically from `keys/private.key` (another location: `APP_SIGNING_KEY=/path/to/key`; a key with a password: set `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`). If there is **no key at all**, the build still works but produces no update files, and prints a message saying so. That is fine for trying things out.
 

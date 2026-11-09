@@ -1,12 +1,18 @@
 {
   "name": "yfv-player",
   "productName": "YFV Player",
+  "description": "A cross-platform video player that plays video with a separate audio track and can merge them into one file.",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "license": "GPL-3.0-or-later",
-  "author": { "name": "marcusdevcode" },
-  "repository": { "type": "git", "url": "https://github.com/marcusdevcode/YFV-Player.git" },
+  "author": {
+    "name": "marcusdevcode"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marcusdevcode/YFV-Player.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -19,13 +25,17 @@
     "build:mac-arm64": "node scripts/tauri.mjs build --target aarch64-apple-darwin",
     "build:mac-x64": "node scripts/tauri.mjs build --target x86_64-apple-darwin",
     "build:mac": "npm run build:mac-arm64 && npm run build:mac-x64",
-    "build:win-x64": "node scripts/tauri.mjs build --target x86_64-pc-windows-msvc",
-    "build:win-arm64": "node scripts/tauri.mjs build --target aarch64-pc-windows-msvc",
-    "build:win": "npm run build:win-x64 && npm run build:win-arm64",
-    "build:linux-x64": "node scripts/tauri.mjs build --target x86_64-unknown-linux-gnu",
-    "build:linux-arm64": "node scripts/tauri.mjs build --target aarch64-unknown-linux-gnu",
-    "build:linux": "npm run build:linux-x64 && npm run build:linux-arm64",
-    "build:all": "npm run build:mac && npm run build:win && npm run build:linux"
+    "docker:linux-x64": "node scripts/docker-build.mjs linux x64",
+    "docker:linux-arm64": "node scripts/docker-build.mjs linux arm64",
+    "docker:win-x64": "node scripts/docker-build.mjs windows x64",
+    "docker:win-arm64": "node scripts/docker-build.mjs windows arm64",
+    "docker:linux": "npm run docker:linux-x64 && npm run docker:linux-arm64",
+    "docker:win": "npm run docker:win-x64 && npm run docker:win-arm64",
+    "docker:all": "npm run docker:linux && npm run docker:win",
+    "release:collect": "node scripts/release.mjs",
+    "release": "npm run release:build && npm run release:publish",
+    "release:build": "npm run build:mac && npm run docker:all && npm run release:collect",
+    "release:publish": "node scripts/release-version.js"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.4",

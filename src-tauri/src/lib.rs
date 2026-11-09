@@ -7,7 +7,8 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use serde::Serialize;
-use tauri::menu::{MenuBuilder, MenuItemBuilder, SubmenuBuilder};
+use tauri::image::Image;
+use tauri::menu::{AboutMetadataBuilder, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
 use tauri::{AppHandle, Emitter, State};
 
 use mp4::mux::Phase;
@@ -149,13 +150,39 @@ pub fn run() {
                 .build()?;
             let view = SubmenuBuilder::new(app, "View").fullscreen().build()?;
             let window = SubmenuBuilder::new(app, "Window").minimize().maximize().build()?;
-            let help = SubmenuBuilder::new(app, "Help").item(&check_updates).build()?;
+
+            // "About": icon, name, version, description and copyright, all from package.json
+            // (injected into the Tauri config by scripts/tauri.mjs).
+            let about_meta = {
+                let pkg = app.package_info();
+                let bundle = &app.config().bundle;
+                AboutMetadataBuilder::new()
+                    .name(Some(pkg.name.clone()))
+                    .version(Some(pkg.version.to_string()))
+                    .short_version(Some(pkg.version.to_string()))
+                    .copyright(bundle.copyright.clone())
+                    .comments(bundle.short_description.clone()) // Linux
+                    .credits(bundle.short_description.clone()) // macOS shows this under the version
+                    .icon(Image::from_bytes(include_bytes!("../icons/128x128@2x.png")).ok())
+                    .build()
+            };
+
+            // The menu entry reads "About <name>".
+            let about_text = format!("About {}", app.package_info().name);
+
+            #[allow(unused_mut)]
+            let mut help = SubmenuBuilder::new(app, "Help").item(&check_updates);
+            #[cfg(not(target_os = "macos"))]
+            {
+                help = help.separator().about_with_text(&about_text, Some(about_meta.clone()));
+            }
+            let help = help.build()?;
 
             let mut menu = MenuBuilder::new(app);
             #[cfg(target_os = "macos")]
             {
                 let app_menu = SubmenuBuilder::new(app, app.package_info().name.clone())
-                    .about(None)
+                    .about_with_text(&about_text, Some(about_meta.clone()))
                     .separator()
                     .services()
                     .separator()

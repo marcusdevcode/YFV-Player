@@ -12,6 +12,7 @@ const pkg = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8"));
 const repoUrl = String(typeof pkg.repository === "string" ? pkg.repository : pkg.repository?.url ?? "")
   .replace(/^git\+/, "")
   .replace(/\.git$/, "");
+const authorDisplay = String(typeof pkg.author === "string" ? pkg.author : pkg.author?.name ?? "");
 const authorName = String(typeof pkg.author === "string" ? pkg.author : pkg.author?.name ?? "").toLowerCase();
 
 export const appInfo = {
@@ -20,6 +21,8 @@ export const appInfo = {
   /** Display name: package.json "productName" (falls back to the capitalised name). */
   name: pkg.productName ?? pkg.name.charAt(0).toUpperCase() + pkg.name.slice(1),
   version: pkg.version,
+  description: pkg.description ?? "",
+  copyright: `Copyright © ${new Date().getFullYear()} ${authorDisplay}. All rights reserved.`,
   /** Reverse-DNS bundle identifier, built from the author and the package name. */
   identifier: `com.${authorName.replace(/[^a-z0-9]/g, "")}.${pkg.name.replace(/[^a-z0-9]/g, "")}`,
   repoUrl,
