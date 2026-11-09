@@ -3,7 +3,7 @@
   "productName": "YFV Player",
   "description": "A cross-platform video player that plays video with a separate audio track and can merge them into one file.",
   "private": true,
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "author": {
@@ -14,13 +14,12 @@
     "url": "https://github.com/marcusdevcode/YFV-Player.git"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "node scripts/run-tauri.mjs dev",
+    "dev:frontend": "vite",
+    "build": "node scripts/remove-old-builds.mjs && npm run build:mac && npm run docker:all",
+    "build:web": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "tauri": "node scripts/run-tauri.mjs",
-    "start": "node scripts/run-tauri.mjs dev",
-    "dev:app": "node scripts/run-tauri.mjs dev",
     "build:app": "node scripts/run-tauri.mjs build",
     "build:mac-arm64": "node scripts/run-tauri.mjs build --target aarch64-apple-darwin",
     "build:mac-x64": "node scripts/run-tauri.mjs build --target x86_64-apple-darwin",
@@ -32,9 +31,7 @@
     "docker:linux": "npm run docker:linux-x64 && npm run docker:linux-arm64",
     "docker:win": "npm run docker:win-x64 && npm run docker:win-arm64",
     "docker:all": "npm run docker:linux && npm run docker:win",
-    "release:collect": "node scripts/collect-release.mjs",
-    "release": "npm run release:build && npm run release:publish",
-    "release:build": "npm run build:mac && npm run docker:all && npm run release:collect",
+    "release": "npm run build && npm run release:publish",
     "release:publish": "node scripts/release-version.js",
     "schemas": "node scripts/generate-schemas.mjs",
     "validate:json": "node scripts/validate-json.mjs"

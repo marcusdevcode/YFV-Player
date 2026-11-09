@@ -63,6 +63,8 @@ interface PlaylistLibraryState {
   completeDownloadedTrack: (playlistId: string, trackId: string, videoPath: string, audioPath?: string) => void;
   removeTrack: (playlistId: string, trackId: string) => void;
   moveTrack: (playlistId: string, from: number, to: number) => void;
+  /** Turn the whole order around: the last video becomes the first. */
+  reverseTracks: (playlistId: string) => void;
   setTrackThumbnail: (playlistId: string, trackId: string, path: string | null) => void;
 
   playTrack: (playlistId: string, trackId: string) => void;
@@ -196,6 +198,7 @@ export const usePlaylistLibraryStore = create<PlaylistLibraryState>()((set, get)
         tracks.splice(Math.max(0, Math.min(tracks.length, to)), 0, tracks.splice(from, 1)[0]);
         return { ...p, tracks };
       }),
+    reverseTracks: (playlistId) => patch(playlistId, (p) => ({ ...p, tracks: [...p.tracks].reverse() })),
     setTrackThumbnail: (playlistId, trackId, path) => {
       const old = get().playlists.find((p) => p.id === playlistId)?.tracks.find((t) => t.id === trackId)?.thumbnail;
       if (old && old !== path) dropFile(old);

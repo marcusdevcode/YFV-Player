@@ -40,7 +40,7 @@ button:disabled, input:disabled { cursor: default; }
 .player.hide-interface .controls { opacity: 0; transform: translateY(10px); pointer-events: none; }
 .button-group { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 .timeline { display: flex; align-items: center; flex: 1; gap: 10px; min-width: 150px; }
-.timeline input[type="range"] { flex: 1; margin: 0; cursor: pointer; accent-color: var(--accent); }
+.timeline input[type="range"] { flex: 1; margin: 0; cursor: pointer; }
 .time { font: 13px ui-monospace, monospace; color: var(--muted); min-width: 35px; text-align: center; }
 
 .update-banner {
@@ -59,7 +59,17 @@ button:disabled, input:disabled { cursor: default; }
 .progress-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13px; color: var(--muted); }
 
 .volume { display: flex; align-items: center; gap: 6px; }
-.volume input[type="range"] { width: 80px; margin: 0; cursor: pointer; accent-color: var(--accent); }
+.volume input[type="range"] { width: 80px; margin: 0; cursor: pointer; }
+
+/* The player's position and volume sliders use the theme's "Progress track" (empty part) and "Progress bar"
+   (filled part) colors. --fill is the filled share, set by the component from the value. */
+input[type="range"].progress-slider { -webkit-appearance: none; appearance: none; height: 16px; background: transparent; }
+.progress-slider::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--progress-bar) var(--fill), var(--progress-track) var(--fill)); }
+html[dir="rtl"] .progress-slider::-webkit-slider-runnable-track { background: linear-gradient(to left, var(--progress-bar) var(--fill), var(--progress-track) var(--fill)); }
+.progress-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -4px; border-radius: 50%; border: 0; background: var(--progress-bar); }
+.progress-slider::-moz-range-track { height: 6px; border-radius: 3px; background: var(--progress-track); }
+.progress-slider::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--progress-bar); }
+.progress-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; border: 0; background: var(--progress-bar); }
 
 .drop-hint {
   position: absolute; inset: 12px; z-index: 50; display: flex; align-items: center; justify-content: center;
@@ -210,6 +220,20 @@ html[dir="rtl"] .context-menu { direction: rtl; }
 
 /* YouTube results and downloads. */
 .youtube-results { max-height: 40vh; }
+.youtube-box { border: 1px solid var(--border); border-radius: 8px; margin: 4px 6px; }
+.youtube-badge { flex: none; font-size: 11px; padding: 2px 7px; border-radius: 999px; background: var(--accent); color: var(--accent-text); }
+.youtube-avatar { display: inline-block; border-radius: 50%; width: 36px; overflow: hidden; }
+.youtube-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.youtube-pager { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.youtube-channel-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.youtube-channel-search { display: flex; gap: 6px; flex-basis: 100%; }
+.youtube-channel-search input { flex: 1; min-width: 0; }
+.youtube-channel-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.youtube-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; padding: 8px; }
+.youtube-grid .staged-row { flex-direction: column; align-items: stretch; position: relative; gap: 6px; padding: 6px; border-radius: 8px; background: var(--panel-2); }
+.youtube-grid .staged-row input[type="checkbox"] { position: absolute; top: 10px; inset-inline-start: 10px; z-index: 1; }
+.youtube-grid .youtube-thumb { width: 100%; height: auto; aspect-ratio: 16 / 9; }
+.youtube-grid .youtube-badge { position: absolute; top: 10px; inset-inline-end: 10px; z-index: 1; }
 .youtube-thumb { width: 64px; height: 36px; object-fit: cover; border-radius: 4px; background: var(--panel-2); flex: none; }
 .track-main.pending { opacity: .6; cursor: default; }
 

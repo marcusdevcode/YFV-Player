@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { locateTrack, usePlaylistLibraryStore } from "../store/playlistLibraryStore";
@@ -744,6 +744,8 @@ export default function Player() {
           <span className="time">{formatTime(shown)}</span>
           <input
             type="range"
+            className="progress-slider"
+            style={{ "--fill": `${duration ? Math.min(100, (shown / duration) * 100) : 0}%` } as CSSProperties}
             min={0}
             max={duration || 0}
             step="any"
@@ -771,6 +773,8 @@ export default function Player() {
             </button>
             <input
               type="range"
+              className="progress-slider"
+              style={{ "--fill": `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
               min={0}
               max={1}
               step={0.01}

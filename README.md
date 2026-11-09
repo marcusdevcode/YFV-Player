@@ -27,11 +27,10 @@ A cross-platform desktop video player with playlists, drag-and-drop, theming, an
 
 Full guide, including how to get your own update-signing keys if you copy this repo: **[DEVELOPMENT.md](DEVELOPMENT.md)**.
 
-- `npm start` (or `npm run dev:app`): run the desktop app in development.
-- `npm run dev`: web page only, without the desktop features.
+- `npm run dev`: run the desktop app in development.
 - `npm run typecheck` and `cargo test` (in `src-tauri/`): checks.
 - `npm run build:app` builds for this machine.
-- `npm run release` builds all six platforms (macOS natively, Linux and Windows in Docker), collects them into `release/v<version>/` with the updater file, and publishes the GitHub release. `npm run release:build` only builds and collects; `npm run release:publish` only publishes. Collecting a new version deletes the older local `release/v*` folders. Details in DEVELOPMENT.md.
+- `npm run release` builds all six platforms (macOS natively, Linux and Windows in Docker), puts them in `builds/v<version>/` with the updater file, and publishes the GitHub release. `npm run build` only builds (after removing all earlier builds); `npm run release:publish` only publishes. Details in DEVELOPMENT.md.
 - Builds read the update-signing key from `keys/private.key` automatically (the public half is `keys/public.pub`). The private file is git-ignored; `keys/private.key.example` shows where it goes. Without a key a build still works but has no update files.
 
 ---
@@ -100,7 +99,7 @@ Full guide, including how to get your own update-signing keys if you copy this r
 
 ### Release
 - [ ] **16. Polish**: error handling, shortcut help, check "Open with" on each OS.
-- [~] **17. Builds for all platforms** *(all six builds were produced and signed locally at v0.1.1 and published; the Windows and Linux installers have not been tried on real machines; the macOS app is ad-hoc signed only, with no Apple notarization)*: `npm run build:mac*`, `npm run docker:*`, `npm run release:collect`, `npm run release` (macOS arm64 + x64, Windows x64 + arm64, Linux x64 + arm64; `.dmg`, `.exe` installer, `.deb`, `.rpm`, `.AppImage`; no 32-bit). Manual and local, no CI.
+- [~] **17. Builds for all platforms** *(all six builds were produced and signed locally at v0.1.1 and published; the Windows and Linux installers have not been tried on real machines; the macOS app is ad-hoc signed only, with no Apple notarization)*: `npm run build:mac*`, `npm run docker:*`, `npm run release` (macOS arm64 + x64, Windows x64 + arm64, Linux x64 + arm64; `.dmg`, `.exe` installer, `.deb`, `.rpm`, `.AppImage`; no 32-bit). Manual and local, no CI.
 - [~] **18. Auto-update from GitHub Releases** *(code, signing and published releases exist; the update check said "up to date" while a newer release was live, so it is not confirmed to work yet)*: signed updates, check on startup and from the menu, progress and "install and restart".
 
 ---

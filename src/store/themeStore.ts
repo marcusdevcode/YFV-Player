@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { invoke } from "@tauri-apps/api/core";
 import { tr } from "../translate";
+import { usePlaylistLibraryStore } from "./playlistLibraryStore";
 import { BUILTIN_THEMES, themeProblems, isBuiltin, makeThemeId, type ColorToken, type IconSlot, type Theme, type ThemeBase } from "../theme/themeEngine";
 
 interface ThemeState {
@@ -51,7 +52,7 @@ async function persist(id: string) {
       await invoke("theme_save", { id, json: JSON.stringify(theme, null, 2) });
     } while (dirty.has(id));
   } catch (e) {
-    void import("./playlistLibraryStore").then((m) => m.usePlaylistLibraryStore.getState().setNotice(tr("appearance.saveFailed", { error: String(e) })));
+    usePlaylistLibraryStore.getState().setNotice(tr("appearance.saveFailed", { error: String(e) }));
   } finally {
     writing.delete(id);
   }
@@ -86,7 +87,6 @@ export const useThemeStore = create<ThemeState>()((set, get) => {
       }
       set({ custom });
       if (problems.length) {
-        const { usePlaylistLibraryStore } = await import("./playlistLibraryStore");
         usePlaylistLibraryStore.getState().setNotice(tr("appearance.loadProblems", { problems: problems.join("; ") }));
       }
     },

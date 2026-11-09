@@ -15,12 +15,11 @@ For people who want to run, change, build or fork the app. For what the app does
 
 ```sh
 npm ci               # install dependencies
-npm start            # run the desktop app in development (same as `npm run dev:app`)
+npm run dev          # run the desktop app in development
 npm run typecheck    # TypeScript check
 cd src-tauri && cargo test    # Rust tests
 ```
 
-`npm run dev` starts only the web page in a browser, without the desktop features (file dialogs, the media server, updates).
 
 Rule for the UI code: **no timers** (`setInterval`, `setTimeout`, `requestAnimationFrame`). Drive things from media events such as `timeupdate` and from input events instead.
 
@@ -53,11 +52,14 @@ npm run docker:win-arm64   # Windows ARM64
 npm run docker:linux       # both Linux builds
 npm run docker:win         # both Windows builds
 npm run docker:all         # all four Docker builds
-npm run release:collect    # gather everything into release/v<version>/ + latest.json
-npm run release:build    # build:mac + docker:all + release:collect
-npm run release:publish  # publish release/v<version>/ to GitHub (scripts/release-version.js)
-npm run release          # release:build, then release:publish: build everything and publish
+npm run build            # removes all old builds, then build:mac + docker:all
+npm run release:publish  # publish builds/v<version>/ to GitHub (scripts/release-version.js)
+npm run release          # build, then release:publish: build everything and publish
 ```
+
+`npm run build` first removes `builds/` and every bundle folder in `src-tauri/target` (`scripts/remove-old-builds.mjs`), then builds all six platforms into `builds/v<version>/` without publishing; the web part alone is `npm run build:web`.
+
+Every build (`build:mac*`, `docker:*`) moves its installers (plus the `.sig` update signatures, and the macOS `.app` for testing) into `builds/v<version>/`, rewrites `latest.json` there, and deletes its bundle folder, so `src-tauri` never keeps installers (`scripts/copy-build-to-versions-folder.mjs`).
 
 What the Docker images do:
 - `docker/linux.Dockerfile` (Ubuntu 22.04): builds the AppImage, deb and rpm. On x64 under Rosetta the AppImage plugin cannot start (static binary, "Exec format error"), so the image unpacks it and runs it from the unpacked files.
@@ -69,21 +71,21 @@ The first Docker run is slow (it downloads the toolchains and builds the Rust de
 
 Extra arguments go to `tauri build`: `npm run build:app -- --bundles app` builds just the app without an installer (useful on macOS, where the `.dmg` step sometimes fails with "resource busy").
 
-`npm start`, `npm run tauri` and every `build:*` script go through `scripts/run-tauri.mjs`. It takes the product name, bundle identifier, version, window title and updater endpoint from `package.json` (the only place they are defined) and finds the signing key for you. Do not run `tauri` or `cargo tauri` directly, or that information is missing.
+`npm run dev`, `npm run tauri` and every `build:*` script go through `scripts/run-tauri.mjs`. It takes the product name, bundle identifier, version, window title and updater endpoint from `package.json` (the only place they are defined) and finds the signing key for you. Do not run `tauri` or `cargo tauri` directly, or that information is missing.
 
 ### Release steps
 
 1. Change `version` in `package.json` (the only place; `scripts/run-tauri.mjs` syncs `src-tauri/Cargo.toml`).
-2. `npm run release` builds everything, then publishes it. To only build, use `npm run release:build`; to publish what is already built, `npm run release:publish`.
-3. Check `release/v<version>/`: installers named `<name>_<version>_<os>-<cpu>.<ext>` and `latest.json` (the updater file, with signatures). Collecting a new version also **deletes the older `release/v*` folders** on this computer, so only the newest one is kept. (Releases already on GitHub are never touched by the scripts.)
-4. `release:publish` (`scripts/release-version.js`) reads name, version and repository from `package.json`, checks that all six platforms are in `release/v<version>/`, that `gh` is installed and logged in, and that the release does not exist yet, asks you to confirm, then runs `gh release create`. Options: `--yes` (no question), `--draft`, `--dry-run` (print the command only), `--allow-partial`. It runs as the GitHub account logged in with `gh auth login` on this machine.
+2. `npm run release` builds everything, then publishes it. To only build, use `npm run build`; to publish what is already built, `npm run release:publish`.
+3. Check `builds/v<version>/`: installers named `<name>_<version>_<os>-<cpu>.<ext>` and `latest.json` (the updater file, with signatures). Every `npm run build` **deletes all older builds** on this computer first. (Releases already on GitHub are never touched by the scripts.)
+4. `release:publish` (`scripts/release-version.js`) reads name, version and repository from `package.json`, checks that all six platforms are in `builds/v<version>/` (and match `latest.json`), that `gh` is installed and logged in, and that the release does not exist yet, asks you to confirm, then runs `gh release create`. Options: `--yes` (no question), `--draft`, `--dry-run` (print the command only), `--allow-partial`. It runs as the GitHub account logged in with `gh auth login` on this machine.
 5. Commit and push your code yourself first (`git add . && git commit && git push`): `gh release create` makes the tag from the pushed code. The repository must be public for the updater to read the release.
 
 A release with a platform missing makes `latest.json` list only the built platforms, and users of the others get no update, so build everything before publishing.
 
 ## YouTube search and downloads (yt-dlp)
 
-- **The downloader** is [yt-dlp](https://github.com/yt-dlp/yt-dlp), bundled as a Tauri sidecar (`bundle.externalBin`, injected by `scripts/run-tauri.mjs`). `scripts/fetch-ytdlp.mjs` downloads the pinned release (`YTDLP_VERSION` in that file), checks its SHA-256 and saves `src-tauri/binaries/yt-dlp-<target-triple>` (git-ignored). `run-tauri.mjs` calls it before every `dev`/`build`, for the target being built, so `npm start` and `npm run release:build` need internet the first time. Downloads are retried five times (GitHub sometimes answers 502). For the Docker builds, `scripts/docker-build.mjs` downloads the Linux/Windows file on your computer and `docker/build.sh` copies it into the container with the sources, so the container itself needs no access to GitHub for it. To use a newer yt-dlp in a release, change `YTDLP_VERSION`. No API keys or accounts are involved.
+- **The downloader** is [yt-dlp](https://github.com/yt-dlp/yt-dlp), bundled as a Tauri sidecar (`bundle.externalBin`, injected by `scripts/run-tauri.mjs`). `scripts/fetch-ytdlp.mjs` downloads the pinned release (`YTDLP_VERSION` in that file), checks its SHA-256 and saves `src-tauri/binaries/yt-dlp-<target-triple>` (git-ignored). `run-tauri.mjs` calls it before every `dev`/`build`, for the target being built, so `npm run dev` and `npm run release:build` need internet the first time. Downloads are retried five times (GitHub sometimes answers 502). For the Docker builds, `scripts/docker-build.mjs` downloads the Linux/Windows file on your computer and `docker/build.sh` copies it into the container with the sources, so the container itself needs no access to GitHub for it. To use a newer yt-dlp in a release, change `YTDLP_VERSION`. No API keys or accounts are involved.
 - **Updating at run time:** Settings → YouTube downloads → "Update the downloader" copies the bundled file to `<app data>/tools/` and lets that copy update itself (`ytdlp_binary.rs`). The copy is used while it is newer than the bundled file. A download that fails because yt-dlp no longer understands YouTube triggers one automatic update and retry.
 - **Where the code is** (`src-tauri/src/youtube/`): `ytdlp_lookup.rs` (search, link kinds, formats), `download_format_rules.rs` (quality rule -> yt-dlp `-f`/`-S`; no ffmpeg, so every file is one stream and "separate" = a video file + an audio file), `download_worker.rs` (runs yt-dlp for one file, reads progress), `download_progress_parser.rs`, `download_errors.rs` (classifies failures), `download_queue.rs` (the queue and its worker thread), `youtube_commands.rs` (what the page can call).
 - **Rules of the engine:** one video at a time; a pause between videos (setting, default 3 s); the queue order is the priority (`move`, `download now`); the queue and history are saved to `downloads/queue.json` and `downloads/history.json` in the app data folder; unfinished videos continue after a restart (setting). Everything runs in Rust, so playback, window focus and closing the popup never touch a download. The page only receives events: `download-queue`, `download-progress`, `download-delay`, `download-alert`, `download-finished`.
@@ -159,10 +161,10 @@ macOS and Windows code signing (so the OS doesn't warn on first launch) needs se
 
 ## Troubleshooting
 
-- **The Dock says "app" while running `npm start` on macOS:** a bare dev program is named after its file, and Cargo calls it `app`. `scripts/run-tauri.mjs` therefore starts it through `scripts/dev-runner.sh` under a link named like `productName` in package.json, so the Dock shows that name. Built apps get the name from the app bundle (`CFBundleName`), which is also `productName`.
+- **The Dock says "app" while running `npm run dev` on macOS:** a bare dev program is named after its file, and Cargo calls it `app`. `scripts/run-tauri.mjs` therefore starts it through `scripts/dev-runner.sh` under a link named like `productName` in package.json, so the Dock shows that name. Built apps get the name from the app bundle (`CFBundleName`), which is also `productName`.
 
 - **`.dmg` fails on macOS ("resource busy", or Finder "Can't set statusbar visible"):** the DMG tool styles its window through Finder. `scripts/run-tauri.mjs` sets `CI=true` for macOS builds so Tauri skips that step (the DMG then has the default window layout). If it still fails, build only the app: `npm run build:app -- --bundles app`.
-- **"Open with" doesn't show the app:** it only works in an installed build, not in `npm start`. After installing a new build, macOS can take a moment (or `killall Finder`) to refresh the list. Drag and drop does work in `npm start`.
+- **"Open with" doesn't show the app:** it only works in an installed build, not in `npm run dev`. After installing a new build, macOS can take a moment (or `killall Finder`) to refresh the list. Drag and drop does work in `npm run dev`.
 - **When playback positions are saved:** not while a video plays (no disk writes). The page only reports the position to the program in memory (`position_note`); it is written to the positions file when you pause, when the video is replaced, and by the program itself when it exits (`flush_position` in `src-tauri/src/app_data.rs`). A force-quit or crash therefore loses the position since the last pause.
 - **Where playlists are stored:** `library.json`, a `thumbnails/` folder and a `settings/` folder (panel open/closed and side, last video, volume, positions) in the app data folder (macOS: `~/Library/Application Support/<identifier>/`). Delete them to start fresh.
 - **A video won't play (error 4):** the file's codec isn't supported by the system's web view (typically VP9/AV1 or MKV/AVI). H.264/AAC MP4 works everywhere.

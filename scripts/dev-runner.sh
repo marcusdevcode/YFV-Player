@@ -1,5 +1,5 @@
 #!/bin/sh
-# Cargo "runner" for `npm start` on macOS (set up by scripts/run-tauri.mjs).
+# Cargo "runner" for `npm run dev` on macOS (set up by scripts/run-tauri.mjs).
 # macOS labels a running program in the Dock with the file name it was started from, and Cargo
 # cannot name a program "YFV Player" (no spaces). So the program is started through a link whose
 # name is the product name from package.json (APP_DEV_NAME). Built apps do not need this: their

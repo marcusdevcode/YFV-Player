@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The only way Tauri is run (`npm run tauri`, `npm start`, `npm run build:*`, CI).
+// The only way Tauri is run (`npm run tauri`, `npm run dev`, `npm run build:*`, CI).
 //
 // It injects everything that comes from package.json (product name, bundle identifier, version,
 // window title, updater endpoint) through the CLI's --config option, so none of it
@@ -20,6 +20,7 @@ import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { appInfo, root } from "./package-info.mjs";
 import { ensureYtdlp, hostTarget } from "./fetch-ytdlp.mjs";
+import { moveBuildToVersionsFolder } from "./copy-build-to-versions-folder.mjs";
 
 const args = process.argv.slice(2);
 const env = { ...process.env };
@@ -42,6 +43,8 @@ const config = {
   bundle: {
     // The yt-dlp program for YouTube search and downloads (fetched below, one file per target).
     externalBin: ["binaries/yt-dlp"],
+    // Lets the signed yt-dlp load the Python it unpacks at run time (see the file for why).
+    macOS: { entitlements: "macos-entitlements.plist" },
     copyright: appInfo.copyright,
     shortDescription: appInfo.description,
     longDescription: appInfo.description,
@@ -75,7 +78,7 @@ const synced = cargo.replace(/^version = ".*"$/m, `version = "${appInfo.version}
 if (synced !== cargo) writeFileSync(cargoFile, synced);
 
 // --- macOS: name the Dock icon of the dev app after the product name ---------------------------
-// A built app takes its Dock name from the bundle, but `npm start` runs the bare program, which
+// A built app takes its Dock name from the bundle, but `npm run dev` runs the bare program, which
 // Cargo must call "app". scripts/dev-runner.sh starts it under a link named like the product.
 if (process.platform === "darwin" && args[0] === "dev") {
   const host = spawnSync("rustc", ["-vV"], { encoding: "utf8" }).stdout?.match(/^host: (.+)$/m)?.[1];
@@ -94,7 +97,7 @@ if (process.platform === "darwin" && args[0] === "build") env.CI ??= "true";
 // an ad-hoc one ("-"): the compiler only signs the binary, and macOS then says the downloaded app is
 // "damaged". Set APPLE_SIGNING_IDENTITY (and the notarization variables) to sign for real instead.
 if (process.platform === "darwin" && args[0] === "build" && !env.APPLE_SIGNING_IDENTITY) {
-  config.bundle.macOS = { signingIdentity: "-" };
+  config.bundle.macOS = { ...config.bundle.macOS, signingIdentity: "-" };
   extra.length = 0;
   extra.push("--config", JSON.stringify(config));
 }
@@ -131,4 +134,18 @@ const bin = typeof cliPkg.bin === "string" ? cliPkg.bin : cliPkg.bin.tauri;
 const cli = join(dirname(pkgPath), bin);
 
 const result = spawnSync(process.execPath, [cli, ...args, ...extra], { stdio: "inherit", env, cwd: root });
+// A finished build moves into builds/v<version>/ (one folder for all builds of this version); the bundle
+// folder in src-tauri/target is removed, so no installers stay there.
+if (result.status === 0 && args[0] === "build") {
+  const at = args.findIndex((a) => a === "--target" || a === "-t");
+  const triple = (at >= 0 ? args[at + 1] : hostTarget()) ?? "";
+  const bundleDir = resolve(root, "src-tauri/target", ...(at >= 0 ? [triple] : []), "release/bundle");
+  const os = triple.includes("apple") ? "darwin" : triple.includes("windows") ? "windows" : "linux";
+  try {
+    moveBuildToVersionsFolder(bundleDir, os, triple.startsWith("aarch64") ? "aarch64" : "x86_64");
+  } catch (e) {
+    console.error(String(e.message ?? e));
+    process.exit(1);
+  }
+}
 process.exit(result.status ?? 1);

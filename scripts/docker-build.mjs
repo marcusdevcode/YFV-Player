@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 // Builds the Linux or Windows release inside Docker, on this machine.
 //   node scripts/docker-build.mjs <linux|windows> <x64|arm64>
-// Result: release/docker/<os>-<arch>/ (collected into one release by scripts/collect-release.mjs).
+// Result: the installers in builds/v<version>/ (see scripts/copy-build-to-versions-folder.mjs).
 // The signing key is passed to the container through the environment, never copied into it.
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { appInfo, root } from "./package-info.mjs";
 import { ensureYtdlp } from "./fetch-ytdlp.mjs";
+import { moveBuildToVersionsFolder } from "./copy-build-to-versions-folder.mjs";
 
 const [os, arch] = process.argv.slice(2);
 
@@ -86,7 +87,9 @@ env.TAURI_SIGNING_PRIVATE_KEY_PASSWORD ??= "";
 
 // One image per OS (and per CPU for Linux); named volumes keep the Rust build cache between runs.
 const tag = os === "linux" ? `${appInfo.id}-build-linux-${arch}` : `${appInfo.id}-build-windows`;
-const outDir = resolve(root, "release/docker", `${os}-${arch}`);
+// The container leaves its installers here; they are moved into builds/v<version>/ afterwards.
+const outDir = resolve(root, "builds", `.docker-${os}-${arch}`);
+rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 
 // yt-dlp is downloaded here, on the host, and copied into the build with the sources: the
@@ -126,4 +129,9 @@ run([
   tag,
   "build.sh", target.bundleDir, ...target.args,
 ]);
-console.log(`\nDone: ${outDir}`);
+try {
+  moveBuildToVersionsFolder(outDir, os, arch === "arm64" ? "aarch64" : "x86_64");
+} catch (e) {
+  console.error(String(e.message ?? e));
+  process.exit(1);
+}

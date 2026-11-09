@@ -15,3 +15,4 @@ src-tauri/gen
 # sidecar binaries are built in CI / locally
 src-tauri/binaries
 /release
+/builds

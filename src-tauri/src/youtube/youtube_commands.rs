@@ -13,9 +13,10 @@ pub async fn youtube_lookup(
     engine: State<'_, DownloadEngine>,
     input: String,
     count: Option<u32>,
+    offset: Option<u32>,
 ) -> Result<LookupResult, String> {
     let cookies = engine.read(|s| s.config.cookies_browser.clone());
-    tauri::async_runtime::spawn_blocking(move || ytdlp_lookup::lookup(&app, &input, count.unwrap_or(30), Some(&cookies)))
+    tauri::async_runtime::spawn_blocking(move || ytdlp_lookup::lookup(&app, &input, count.unwrap_or(30), offset.unwrap_or(0), Some(&cookies)))
         .await
         .map_err(|e| e.to_string())?
 }

@@ -4,6 +4,8 @@ import type { DownloadMode } from "./store/downloadSettingsStore";
 
 /** One video found on YouTube (search result, playlist item or a single link). */
 export interface YouTubeEntry {
+  /** A video, a whole playlist (its videos are fetched when needed) or a channel (opened to browse). */
+  kind: "video" | "playlist" | "channel";
   id: string;
   title: string;
   url: string;
@@ -28,7 +30,8 @@ export interface YouTubeFormat {
 
 export type YouTubeLookup =
   | { type: "video"; entry: YouTubeEntry; formats: YouTubeFormat[] }
-  | { type: "list"; title: string; entries: YouTubeEntry[] }
+  /** `channelUrl` is set for a channel page (its Videos or Playlists tab). */
+  | { type: "list"; title: string; entries: YouTubeEntry[]; channelUrl: string | null }
   | { type: "search"; entries: YouTubeEntry[] };
 
 /** Exact formats chosen for one video; without them the quality rule decides. */
@@ -55,8 +58,12 @@ export interface NewDownload {
   trackId: string | null;
 }
 
-/** A link (video, playlist, channel) or a search text. */
-export const youtubeLookup = (input: string, count = 30) => invoke<YouTubeLookup>("youtube_lookup", { input, count });
+/**
+ * A link (video, playlist, channel) or a search text. `count` items are returned, after the first
+ * `offset` ones (pages of a playlist or channel); a count of 0 returns everything.
+ */
+export const youtubeLookup = (input: string, count = 30, offset = 0) =>
+  invoke<YouTubeLookup>("youtube_lookup", { input, count, offset });
 
 export const enqueueDownloads = (downloads: NewDownload[]) => invoke<string[]>("downloads_enqueue", { downloads });
 export const moveDownload = (id: string, to: number) => invoke("downloads_move", { id, to });

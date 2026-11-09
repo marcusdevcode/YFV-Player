@@ -2,9 +2,9 @@
   "$schema": "https://schema.tauri.app/config/2",
   "identifier": "com.example.app",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "npm run dev:frontend",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npm run build:web",
     "frontendDist": "../dist"
   },
   "app": {
@@ -19,7 +19,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; img-src 'self' data: http://127.0.0.1:* https://i.ytimg.com; media-src 'self' http://127.0.0.1:*; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost"
+      "csp": "default-src 'self'; img-src 'self' data: http://127.0.0.1:* https://i.ytimg.com https://yt3.ggpht.com https://yt3.googleusercontent.com; media-src 'self' http://127.0.0.1:*; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost"
     }
   },
   "bundle": {

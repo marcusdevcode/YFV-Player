@@ -548,6 +548,122 @@
             "title"
           ]
         },
+        "youtube.back": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.back",
+          "description": "Interface text.",
+          "default": "← Back",
+          "examples": [
+            "← Back"
+          ]
+        },
+        "youtube.tabVideos": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.tabVideos",
+          "description": "Interface text.",
+          "default": "Videos",
+          "examples": [
+            "Videos"
+          ]
+        },
+        "youtube.tabPlaylists": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.tabPlaylists",
+          "description": "Interface text.",
+          "default": "Playlists",
+          "examples": [
+            "Playlists"
+          ]
+        },
+        "youtube.badgePlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.badgePlaylist",
+          "description": "Interface text.",
+          "default": "Playlist",
+          "examples": [
+            "Playlist"
+          ]
+        },
+        "youtube.badgeChannel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.badgeChannel",
+          "description": "Interface text.",
+          "default": "Channel",
+          "examples": [
+            "Channel"
+          ]
+        },
+        "youtube.openChannel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.openChannel",
+          "description": "Interface text.",
+          "default": "open to see its videos",
+          "examples": [
+            "open to see its videos"
+          ]
+        },
+        "youtube.previousPage": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.previousPage",
+          "description": "Interface text.",
+          "default": "← Previous",
+          "examples": [
+            "← Previous"
+          ]
+        },
+        "youtube.nextPage": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.nextPage",
+          "description": "Interface text.",
+          "default": "Next →",
+          "examples": [
+            "Next →"
+          ]
+        },
+        "youtube.pageNumber": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.pageNumber",
+          "description": "Interface text. Keep the placeholders {page} in the text.",
+          "default": "Page {page}",
+          "examples": [
+            "Page {page}"
+          ],
+          "x-placeholders": [
+            "page"
+          ]
+        },
+        "youtube.downloadCount": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.downloadCount",
+          "description": "Interface text. Keep the placeholders {count} in the text.",
+          "default": "Download {count} selected…",
+          "examples": [
+            "Download {count} selected…"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "youtube.searchChannel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.searchChannel",
+          "description": "Interface text.",
+          "default": "Search this channel’s videos and playlists",
+          "examples": [
+            "Search this channel’s videos and playlists"
+          ]
+        },
         "youtube.defaultPlaylist": {
           "type": "string",
           "minLength": 1,
@@ -2244,6 +2360,16 @@
           "default": "Use the first video's preview",
           "examples": [
             "Use the first video's preview"
+          ]
+        },
+        "side.reverseOrder": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.reverseOrder",
+          "description": "The playlist panel.",
+          "default": "Reverse the order of the videos",
+          "examples": [
+            "Reverse the order of the videos"
           ]
         },
         "mgr.up": {

@@ -108,6 +108,9 @@ export default function PlaylistTrackList() {
         >
           <Icon slot="playlistLoop" />
         </button>
+        <button disabled={playlist.tracks.length < 2} onClick={() => lib.reverseTracks(playlist.id)} title={tl("side.reverseOrder")}>
+          ⇅
+        </button>
         <button className="primary" onClick={() => openAdd()}>
           {tl("side.add")}
         </button>

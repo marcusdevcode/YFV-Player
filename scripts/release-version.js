@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Publishes the current version as a GitHub release, using the files that `npm run release:collect`
-// put in release/v<version>/. The version, name and repository come from package.json.
+// Publishes the current version as a GitHub release, using the files that `npm run build`
+// put in builds/v<version>/. The version, name and repository come from package.json.
 //
 //   node scripts/release-version.js            asks for confirmation, then publishes
 //   node scripts/release-version.js --yes      no confirmation question
@@ -19,7 +19,7 @@ import { appInfo, root } from "./package-info.mjs";
 const flags = new Set(process.argv.slice(2));
 const { name, version, repoUrl } = appInfo;
 const tag = `v${version}`;
-const dir = resolve(root, "release", tag);
+const dir = resolve(root, "builds", tag);
 const repo = repoUrl.replace(/^https:\/\/github\.com\//, "");
 
 const fail = (msg) => {
@@ -27,9 +27,9 @@ const fail = (msg) => {
   process.exit(1);
 };
 
-// 1. The collected files for exactly this version must exist.
+// 1. The built files for exactly this version must exist.
 if (!existsSync(join(dir, "latest.json"))) {
-  fail(`Nothing to publish for ${tag}: ${dir}/latest.json is missing.\nBuild first: npm run release:build`);
+  fail(`Nothing to publish for ${tag}: ${dir}/latest.json is missing.\nBuild first: npm run build`);
 }
 const latest = JSON.parse(readFileSync(join(dir, "latest.json"), "utf8"));
 if (latest.version !== version) fail(`latest.json is for version ${latest.version}, package.json says ${version}.`);
@@ -40,7 +40,15 @@ if (missing.length && !flags.has("--allow-partial")) {
   fail(`Missing platforms in ${tag}: ${missing.join(", ")}.\nBuild them, or run with --allow-partial (those users get no update).`);
 }
 
-const files = readdirSync(dir).sort();
+// Every platform's installer must really be in the folder (and be of this version).
+const absent = Object.values(latest.platforms).map((p) => decodeURIComponent(p.url.split("/").pop())).filter((f) => !existsSync(join(dir, f)));
+if (absent.length) fail(`latest.json lists files that are not in ${dir}: ${absent.join(", ")}`);
+
+// Published: the installers and latest.json (not the .sig files, nor the macOS .app test copies).
+const files = readdirSync(dir, { withFileTypes: true })
+  .filter((e) => e.isFile() && !e.name.endsWith(".sig"))
+  .map((e) => e.name)
+  .sort();
 const gh = (args, opts = {}) => spawnSync("gh", args, { encoding: "utf8", ...opts });
 const createArgs = [
   "release", "create", tag, ...files.map((f) => join(dir, f)),
