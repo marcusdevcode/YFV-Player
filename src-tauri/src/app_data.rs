@@ -14,7 +14,7 @@ const LIBRARY_FILE: &str = "library.json";
 const THUMBNAIL_DIR: &str = "thumbnails";
 const IMAGE_EXTENSIONS: [&str; 5] = ["jpg", "jpeg", "png", "webp", "gif"];
 
-fn data_dir(app: &AppHandle) -> Result<PathBuf, String> {
+pub fn data_dir(app: &AppHandle) -> Result<PathBuf, String> {
     let dir = app.path().app_data_dir().map_err(|e| e.to_string())?;
     fs::create_dir_all(&dir).map_err(|e| format!("Cannot create the data folder: {e}"))?;
     Ok(dir)

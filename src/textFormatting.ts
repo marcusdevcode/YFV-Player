@@ -31,3 +31,7 @@ export function initials(title: string): string {
     .join("")
     .toUpperCase();
 }
+
+export function formatSpeed(bytesPerSecond: number): string {
+  return `${formatBytes(bytesPerSecond)}/s`;
+}

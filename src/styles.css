@@ -196,3 +196,48 @@ html[dir="rtl"] :is(.sidebar, .badges, .modal, .notice, .update-banner, .empty, 
 .swatch { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border); overflow: hidden; display: block;
   background: conic-gradient(#999 25%, #ddd 0 50%, #999 0 75%, #ddd 0) 0 0 / 10px 10px; }
 .swatch i { display: block; width: 100%; height: 100%; }
+
+/* The app's own right-click menu (the system one is switched off). */
+.context-menu { position: fixed; z-index: 300; min-width: 190px; display: flex; flex-direction: column; gap: 2px; padding: 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow); }
+.context-menu button { justify-content: flex-start; background: transparent; border-color: transparent; font-size: 13px; text-align: start; }
+.context-menu button:hover:not(:disabled) { background: var(--panel); }
+.context-separator { height: 1px; margin: 3px 4px; background: var(--border); }
+html[dir="rtl"] .context-menu { direction: rtl; }
+
+/* Tabs (Add dialog, download manager). */
+.tabs { display: flex; gap: 6px; align-items: center; }
+.tabs button.active { background: var(--accent); border-color: var(--accent-border); color: var(--accent-text); }
+
+/* YouTube results and downloads. */
+.youtube-results { max-height: 40vh; }
+.youtube-thumb { width: 64px; height: 36px; object-fit: cover; border-radius: 4px; background: var(--panel-2); flex: none; }
+.track-main.pending { opacity: .6; cursor: default; }
+
+.download-popup { position: absolute; bottom: 84px; inset-inline-end: 12px; z-index: 110; width: min(360px, calc(100vw - 24px)); display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px var(--shadow); font-size: 13px; }
+.download-popup { box-sizing: border-box; overflow: hidden; }
+.download-popup > * { min-width: 0; }
+.download-popup button { white-space: nowrap; padding: 5px 10px; font-size: 12px; }
+.download-popup-head { display: flex; align-items: center; gap: 8px; }
+.download-count { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.download-popup-tools { display: flex; gap: 8px; }
+.download-popup-tools .spacer-button { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.download-title, .download-current { min-width: 0; }
+.download-title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.download-collapsed { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.download-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+.download-alert { display: flex; gap: 8px; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--warning-text); color: var(--warning-text); }
+.part-bars { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.part-line { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; }
+.part-bar .progress { height: 6px; }
+.progress-bar.indeterminate { opacity: .45; }
+
+.downloads-manager { height: min(640px, 88vh); }
+.download-list { flex: 1; min-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.download-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; border: 1px solid var(--border); border-top-width: 2px; border-bottom-width: 2px; }
+.download-row.dragging { opacity: .5; }
+.download-row.drop-before { border-top-color: var(--accent); }
+.download-row.drop-after { border-bottom-color: var(--accent); }
+.download-info { flex: 1; min-width: 0; }
+.download-buttons { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.download-row .grip { cursor: grab; user-select: none; color: var(--muted); touch-action: none; }
+html[dir="rtl"] :is(.download-popup, .download-row) { direction: rtl; }

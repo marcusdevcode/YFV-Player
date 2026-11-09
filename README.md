@@ -40,7 +40,7 @@ Full guide, including how to get your own update-signing keys if you copy this r
 
 | Topic | Decision |
 |---|---|
-| YouTube backend | A bundled helper program (Tauri "sidecar") running `youtubei.js`, the same library [FreeTube](https://github.com/FreeTubeApp/FreeTube) uses. Nothing for the user to install. |
+| YouTube backend | The [yt-dlp](https://github.com/yt-dlp/yt-dlp) program, bundled with the app as a Tauri "sidecar" (no API keys, nothing for the user to install). It can update itself when YouTube changes. All downloading runs in the Rust part of the app, one video at a time, independent of the player. |
 | Separate video and audio | Kept as two files (e.g. `.mp4` + `.m4a`). The player plays them together, or File → Merge combines them into one MP4 with pure Rust (no re-encoding, no ffmpeg). |
 | Icons | The whole UI is switchable. Every icon slot can be remapped to any icon from your icomoon pack; built-in fallbacks for slots the pack doesn't cover. |
 | macOS | Two separate builds (Apple Silicon and Intel), not a universal binary. |
@@ -72,7 +72,7 @@ Full guide, including how to get your own update-signing keys if you copy this r
   - *Video loop*: repeats the current video forever, in or out of a playlist.
   - *Playlist loop*: after the last video, starts again from the first. Off = stops at the end.
 - [~] **5c. Playlists menu (second side panel)** *(written and type/compile-checked, not yet tried by hand)*: compact circular badges with initials ("Best movies collection" → **BMC**), custom color per playlist, default color from settings, tooltip with full name.
-- [~] **5d. Playlist manager** *(written and type/compile-checked, not yet tried by hand)* (settings button in that panel): add, rename, recolor, delete, reorder playlists.
+- [~] **5d. Playlist manager** *(written and type/compile-checked, not yet tried by hand)* (settings button in that panel): add, rename, recolor, reorder playlists, and delete a playlist (its previews go with it; ticking a box in the confirmation also moves its video and audio files to the Trash; running downloads of it are cancelled).
 - [~] **5e. Remove tracks** *(written and type/compile-checked, not yet tried by hand)*: remove from the playlist only, or remove and delete the video and audio files (moved to the system Trash, with a confirmation listing the files).
 
 ### Adding videos
@@ -87,14 +87,16 @@ Full guide, including how to get your own update-signing keys if you copy this r
 - [~] **9. Themes** *(written and type/compile-checked, not yet tried by hand)*: two built-in themes, **Dark** and **Light**. By default the theme follows the system setting (and switches live when the system changes) until you choose one; the choice is saved in the general settings. View → Themes… opens the theme popup: create a new theme based on dark or light, change the color of every element (35 color tokens in 7 groups, each with an opacity slider: every color can be transparent), pick any icon for each of 20 interface slots from the built-in set or the IcoMoon pack (131 icons), rename, delete, and export/import a theme as a `.json` file (checked against its JSON Schema on import). Built-in themes are read-only; "Create a theme from this one" copies them.
 - [~] **10. Native menu** *(partly built)*: done: the menu bar is File, View, Window, Help (no Edit menu; on macOS the copy/paste items sit in the app menu so the shortcuts keep working). File: (Open Video, Open Video + Separate Audio, Merge Video + Audio, Close Window), Edit, View (fullscreen), Window, Help → Check for Updates, and the macOS app menu. Also done: Add Videos, Import/Export Playlist, View → Show/Hide Playlist Panel (Cmd/Ctrl+B) and Playlist Panel on the Left/Right. Still to do: theme, language, settings.
 - [~] **11. Languages** *(JSON standard: schemas/locale.schema.json; written and type/compile-checked, not yet tried by hand)*: every language is a file in `src/locales/` (`en.json` is the base, `he.json` is a Hebrew example with right-to-left text). Adding a language means adding a file; missing texts fall back to English. English is the default and the choice is remembered. Chosen in Settings (app menu on macOS, File elsewhere) or View → Language. Each file also holds the default side of the playlist panel (Hebrew: right); changing the language resets the panel to that default, and a side you pick by hand stays until the language changes. The native menu labels are not translated yet.
-- [~] **12. Settings** *(partly done)*: done: Settings dialog (language, playlist panel side), the Themes popup (colors, icon mapping from the IcoMoon pack), general settings file with a JSON Schema. Still to do: default playlist color, default YouTube video/audio quality, download limits, reset to defaults.
+- [~] **12. Settings** *(partly done)*: done: Settings dialog (language, playlist panel side), the Themes popup (colors, icon mapping from the IcoMoon pack), general settings file with a JSON Schema. Also done: Settings → YouTube downloads (default mode, video and audio quality, folder, pause between videos, speed limit, continue after restart, browser sign-in, update/restore the downloader, reset). Still to do: default playlist color.
 
 ### YouTube (optional feature)
-- [ ] **13. YouTube helper**: search, video info, and the list of available formats (video + audio together, video only, audio only; quality, codec, size).
-- [ ] **13a. Playlists and channels**: fetch every video of a playlist or channel, including all pages.
-- [ ] **14. YouTube in the Add dialog**: link or search, choose formats (or use the defaults from settings), add to a playlist.
-- [ ] **14a. One-click playlist/channel download**: creates a new playlist with the YouTube playlist's title, queues all videos in order, and fills the playlist as downloads finish. One failed video doesn't stop the rest.
-- [ ] **15. Download manager page**: its own page with **Queue** and **History**; per-video progress (video and audio separately), speed, ETA; **cancel** any download; **change priority** (drag to reorder, "move to top", "download now"); pause/resume; survives restarts.
+*All of it is written, compiles and its logic is unit-tested (progress parsing, failure classification, queue order, saving, a fake yt-dlp that loses its connection). It has not been tried with the real yt-dlp or by hand yet.*
+- [~] **13. YouTube helper**: search, video info, and the list of available formats (video + audio together, video only, audio only; quality, codec, size). One box takes a link or a search text.
+- [~] **13a. Playlists and channels**: every video of a playlist or of a channel's Videos tab (all pages).
+- [~] **14. YouTube in the Add dialog**: the "YouTube" tab: search or paste a link, tick videos, **Download…**. A quality dialog always opens first (download as video + audio / separate files / audio only, video and audio quality, playlist, folder); it starts with your saved defaults (Settings → YouTube downloads) selected.
+- [~] **14a. One-click playlist/channel download**: "Download all as a new playlist…" creates a playlist titled like the YouTube one; its videos appear greyed at once and become playable as each download finishes. A failed video does not stop the rest.
+- [~] **15. Download manager and progress popup**: the **Download Manager** menu → Open Download Manager… (Cmd/Ctrl+J; the menu also has Add from YouTube, Pause All and Resume All). **Queue**: drag to change priority, move to top, **download now**, pause/resume, cancel (optionally deleting partial files). **History**: retry, play, remove. A small popup in the corner shows progress (video and audio separately, speed, time left, "next download in N s"). Videos download **one at a time**, with a pause between them (default 3 s, Settings).
+- [~] **15a. Failures and reconnecting**: a lost connection or a rate limit is waited out and the same partial file continues when YouTube is reachable again (also after closing and reopening the app); "sign in to confirm you're not a bot" and age-restricted videos ask for a browser sign-in (Settings) instead of failing; an out-of-date downloader updates itself once and retries; private/removed videos fail on their own; a full disk holds the queue.
 
 ### Release
 - [ ] **16. Polish**: error handling, shortcut help, check "Open with" on each OS.
@@ -114,5 +116,5 @@ Full guide, including how to get your own update-signing keys if you copy this r
 ## Credits and license
 
 - Licensed under GPL-3.0 (see [LICENSE](LICENSE)).
-- YouTube features are modelled on [FreeTube](https://github.com/FreeTubeApp/FreeTube) (AGPL-3.0) and use the [youtubei.js](https://github.com/LuanRT/YouTube.js) library. Any code adapted from FreeTube will be attributed here.
+- YouTube search and downloads use [yt-dlp](https://github.com/yt-dlp/yt-dlp) (Unlicense). Downloading is for personal use; YouTube's terms restrict downloading, and that responsibility is the user's.
 - Player icons from your IcoMoon selection; app icon in `assets/`.

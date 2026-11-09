@@ -1,5 +1,6 @@
 import { DEFAULT_PLAYLIST_COLOR, usePlaylistLibraryStore } from "../store/playlistLibraryStore";
 import { useT } from "../translate";
+import { openContextMenu } from "../store/contextMenuStore";
 import Icon from "./Icon";
 import { initials } from "../textFormatting";
 
@@ -21,6 +22,13 @@ export default function PlaylistBadgeColumn() {
           style={{ background: p.color ?? DEFAULT_PLAYLIST_COLOR }}
           title={p.title}
           onClick={() => setActive(p.id)}
+          onContextMenu={(e) => {
+            setActive(p.id);
+            openContextMenu(e, [
+              { label: t("panel.manage"), onSelect: () => setManagerOpen(true) },
+              { label: t("panel.new"), onSelect: () => (createPlaylist(), setManagerOpen(true)) },
+            ]);
+          }}
         >
           {initials(p.title)}
         </button>

@@ -34,4 +34,5 @@ These are standing rules from the owner. Follow them every time without being re
 - Releases are built on the owner's machine: macOS natively, Linux and Windows in Docker (`docker/`, `scripts/docker-build.mjs`), then gathered by `scripts/collect-release.mjs` into `release/v<version>/` with `latest.json`. See DEVELOPMENT.md.
 - To release: bump `version` in package.json (the only place) and build with `npm run release:build`. Publishing (`npm run release:publish`, `scripts/release-version.js`, which calls `gh`) and all git steps are the owner's: give the commands, never run them (a `--dry-run` that calls nothing is fine).
 - The version comes from package.json everywhere. `src-tauri/Cargo.toml` is kept in sync by `scripts/run-tauri.mjs`; do not edit it by hand.
+- `npm run dev`/`build` fetch the yt-dlp sidecar for the target (`scripts/fetch-ytdlp.mjs`, pinned version, checksum-verified); the Docker builds (`scripts/docker-build.mjs`) fetch it on the host first and copy it into the container with the sources.
 - The private key stays on the owner's machine (`keys/private.key`); never upload it or copy it into an image.

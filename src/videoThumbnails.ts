@@ -69,7 +69,7 @@ export function queueThumbnails(trackIds: string[]) {
   for (const id of trackIds) {
     chain = chain.then(async () => {
       const found = locateTrack(id);
-      if (!found || found.track.thumbnail !== undefined) return;
+      if (!found || found.track.thumbnail !== undefined || found.track.download) return;
       const { playlist, track } = found;
       const store = usePlaylistLibraryStore.getState();
       if (isAudioPath(track.videoPath)) {
@@ -89,6 +89,6 @@ export function queueThumbnails(trackIds: string[]) {
 export function queueMissingThumbnails() {
   const ids = usePlaylistLibraryStore
     .getState()
-    .playlists.flatMap((p) => p.tracks.filter((t) => t.thumbnail === undefined).map((t) => t.id));
+    .playlists.flatMap((p) => p.tracks.filter((t) => t.thumbnail === undefined && !t.download).map((t) => t.id));
   queueThumbnails(ids);
 }

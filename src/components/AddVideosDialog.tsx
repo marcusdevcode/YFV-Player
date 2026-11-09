@@ -6,11 +6,12 @@ import { usePlaylistLibraryStore, type Track } from "../store/playlistLibrarySto
 import { queueThumbnails } from "../videoThumbnails";
 import { useT } from "../translate";
 import { fileName } from "../filePaths";
+import YouTubeSearchPanel from "./YouTubeSearchPanel";
 import { newId } from "../uniqueIds";
 
 /** "Add videos": a drop area, a list you tick, and a button that adds the ticked ones. */
 export default function AddVideosDialog() {
-  const { open: isOpen, mode, paths, unchecked, targetId } = useAddDialogStore();
+  const { open: isOpen, tab, mode, paths, unchecked, targetId } = useAddDialogStore();
   const { t, tn } = useT();
   const add = useAddDialogStore.getState();
   const playlists = usePlaylistLibraryStore((s) => s.playlists);
@@ -50,7 +51,24 @@ export default function AddVideosDialog() {
     <div className="modal-backdrop" onClick={add.close}>
       <div className="modal wide" role="dialog" aria-label={t("add.title")} onClick={(e) => e.stopPropagation()}>
         <h2>{t("add.title")}</h2>
+        <div className="tabs" role="tablist">
+          <button role="tab" aria-selected={tab === "files"} className={tab === "files" ? "active" : ""} onClick={() => add.setTab("files")}>
+            {t("add.tabFiles")}
+          </button>
+          <button role="tab" aria-selected={tab === "youtube"} className={tab === "youtube" ? "active" : ""} onClick={() => add.setTab("youtube")}>
+            {t("add.tabYouTube")}
+          </button>
+        </div>
 
+        {tab === "youtube" ? (
+          <>
+            <YouTubeSearchPanel />
+            <div className="modal-actions">
+              <button onClick={add.close}>{t("common.close")}</button>
+            </div>
+          </>
+        ) : (
+          <>
         <div className="row">
           <label>
             {t("add.addAs")}{" "}
@@ -106,6 +124,8 @@ export default function AddVideosDialog() {
             {ticked.length ? t("add.addN", { count: ticked.length }) : t("add.add")}
           </button>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

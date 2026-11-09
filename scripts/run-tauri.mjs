@@ -19,6 +19,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { appInfo, root } from "./package-info.mjs";
+import { ensureYtdlp, hostTarget } from "./fetch-ytdlp.mjs";
 
 const args = process.argv.slice(2);
 const env = { ...process.env };
@@ -39,6 +40,8 @@ const config = {
     windows: (baseConfig.app?.windows ?? []).map((w) => ({ ...w, title: appInfo.name })),
   },
   bundle: {
+    // The yt-dlp program for YouTube search and downloads (fetched below, one file per target).
+    externalBin: ["binaries/yt-dlp"],
     copyright: appInfo.copyright,
     shortDescription: appInfo.description,
     longDescription: appInfo.description,
@@ -50,6 +53,17 @@ const config = {
     },
   },
 };
+// The yt-dlp sidecar must exist for the target being built (Tauri checks for it, also in dev).
+if (["dev", "build", "bundle"].includes(args[0])) {
+  const at = args.findIndex((a) => a === "--target" || a === "-t");
+  const target = at >= 0 ? args[at + 1] : hostTarget();
+  try {
+    await ensureYtdlp([target]);
+  } catch (e) {
+    console.error(`Could not get yt-dlp: ${e.message ?? e}`);
+    process.exit(1);
+  }
+}
 // The CLI only honours --config (not the TAURI_CONFIG variable) for the base config file.
 const extra = [];
 if (["dev", "build", "bundle"].includes(args[0])) extra.push("--config", JSON.stringify(config));

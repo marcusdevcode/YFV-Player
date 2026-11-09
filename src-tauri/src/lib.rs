@@ -1,11 +1,10 @@
 mod app_data;
+mod youtube;
 mod media_server;
 mod mp4;
 
-/// `LANGUAGES`: (code, name) for every file in src/locales, made by build.rs.
-mod languages {
-    include!(concat!(env!("OUT_DIR"), "/languages.rs"));
-}
+mod native_menu_texts;
+use native_menu_texts::{menu_text, MenuTexts, LANGUAGES};
 
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -14,7 +13,7 @@ use std::time::{Duration, Instant};
 
 use serde::Serialize;
 use tauri::image::Image;
-use tauri::menu::{AboutMetadataBuilder, CheckMenuItem, CheckMenuItemBuilder, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
+use tauri::menu::{AboutMetadataBuilder, CheckMenuItem, CheckMenuItemBuilder, MenuBuilder, MenuItemBuilder, PredefinedMenuItem, SubmenuBuilder};
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use mp4::mux::Phase;
@@ -122,10 +121,12 @@ fn menu_set_sidebar_side(side: String, menu: State<'_, SidebarMenu>) {
 
 /// Tick the menu entry of the language that is selected in the app.
 #[tauri::command]
-fn menu_set_language(code: String, menu: State<'_, LanguageMenu>) {
+fn menu_set_language(app: AppHandle, code: String, menu: State<'_, LanguageMenu>, texts: State<'_, MenuTexts>) {
     for (item_code, item) in &menu.0 {
         let _ = item.set_checked(*item_code == code);
     }
+    // The menu bar itself is translated too.
+    texts.apply(&code, &app.package_info().name);
 }
 
 #[derive(Default)]
@@ -188,28 +189,54 @@ pub fn run() {
         .manage(OpenState::default())
         .manage(app_data::PositionNote::default())
         .setup(|app| {
-            let open_video = MenuItemBuilder::with_id("open-video", "Open Video…")
-                .accelerator("CmdOrCtrl+O")
-                .build(app)?;
-            let open_video_audio = MenuItemBuilder::with_id("open-video-audio", "Open Video + Separate Audio…")
+            let name = app.package_info().name.clone();
+            let texts = MenuTexts::default();
+            // A text in English now; the page switches the bar to the saved language at startup
+            // (menu_set_language). `tx` makes the text and remembers how to change it later.
+            macro_rules! tx {
+                ($key:expr, $item:expr) => {{
+                    let item = $item.clone();
+                    texts.add($key, Box::new(move |s: &str| { let _ = item.set_text(s); }));
+                }};
+            }
+            let en = |key: &str| menu_text("en", key, &name);
+            let predefined = |item: tauri::Result<PredefinedMenuItem<tauri::Wry>>, key: &str| -> tauri::Result<PredefinedMenuItem<tauri::Wry>> {
+                let item = item?;
+                texts.add(key, { let i = item.clone(); Box::new(move |s: &str| { let _ = i.set_text(s); }) });
+                Ok(item)
+            };
+
+            let open_video = MenuItemBuilder::with_id("open-video", en("openVideo")).accelerator("CmdOrCtrl+O").build(app)?;
+            let open_video_audio = MenuItemBuilder::with_id("open-video-audio", en("openVideoAudio"))
                 .accelerator("CmdOrCtrl+Shift+O")
                 .build(app)?;
-            let add_videos = MenuItemBuilder::with_id("add-videos", "Add Videos to Playlist…")
+            let add_videos = MenuItemBuilder::with_id("add-videos", en("addVideos"))
                 .accelerator("CmdOrCtrl+Shift+A")
                 .build(app)?;
-            let import_playlist = MenuItemBuilder::with_id("import-playlist", "Import Playlist…").build(app)?;
-            let export_playlist = MenuItemBuilder::with_id("export-playlist", "Export Playlist…").build(app)?;
-            let merge_av_item = MenuItemBuilder::with_id("merge-av", "Merge Video + Audio…").build(app)?;
-            let check_updates = MenuItemBuilder::with_id("check-updates", "Check for Updates…").build(app)?;
+            let add_youtube = MenuItemBuilder::with_id("add-youtube", en("addFromYoutube")).build(app)?;
+            let add_youtube_again = MenuItemBuilder::with_id("add-youtube", en("addFromYoutube")).build(app)?;
+            let import_playlist = MenuItemBuilder::with_id("import-playlist", en("importPlaylist")).build(app)?;
+            let export_playlist = MenuItemBuilder::with_id("export-playlist", en("exportPlaylist")).build(app)?;
+            let merge_av_item = MenuItemBuilder::with_id("merge-av", en("mergeAv")).build(app)?;
+            let check_updates = MenuItemBuilder::with_id("check-updates", en("checkUpdates")).build(app)?;
+            let settings_item = MenuItemBuilder::with_id("settings", en("settings")).accelerator("CmdOrCtrl+,").build(app)?;
+            tx!("openVideo", open_video);
+            tx!("openVideoAudio", open_video_audio);
+            tx!("addVideos", add_videos);
+            tx!("addFromYoutube", add_youtube);
+            tx!("addFromYoutube", add_youtube_again);
+            tx!("importPlaylist", import_playlist);
+            tx!("exportPlaylist", export_playlist);
+            tx!("mergeAv", merge_av_item);
+            tx!("checkUpdates", check_updates);
+            tx!("settings", settings_item);
 
-            let settings_item = MenuItemBuilder::with_id("settings", "Settings…")
-                .accelerator("CmdOrCtrl+,")
-                .build(app)?;
             #[allow(unused_mut)]
-            let mut file = SubmenuBuilder::new(app, "File")
+            let mut file = SubmenuBuilder::new(app, en("file"))
                 .item(&open_video)
                 .item(&open_video_audio)
                 .item(&add_videos)
+                .item(&add_youtube)
                 .separator()
                 .item(&import_playlist)
                 .item(&export_playlist)
@@ -221,42 +248,70 @@ pub fn run() {
             {
                 file = file.item(&settings_item).separator();
             }
-            let file = file.close_window().build()?;
-            let toggle_sidebar = MenuItemBuilder::with_id("toggle-sidebar", "Show/Hide Playlist Panel")
+            let file = file.item(&predefined(PredefinedMenuItem::close_window(app, Some(&en("closeWindow"))), "closeWindow")?).build()?;
+            tx!("file", file);
+
+            let toggle_sidebar = MenuItemBuilder::with_id("toggle-sidebar", en("togglePanel"))
                 .accelerator("CmdOrCtrl+B")
                 .build(app)?;
-            let themes_item = MenuItemBuilder::with_id("themes", "Themes…").accelerator("CmdOrCtrl+Shift+T").build(app)?;
+            let themes_item = MenuItemBuilder::with_id("themes", en("themes")).accelerator("CmdOrCtrl+Shift+T").build(app)?;
+            tx!("togglePanel", toggle_sidebar);
+            tx!("themes", themes_item);
             // View -> Playlist Position -> Left / Right (the page ticks the current one at startup).
-            let sidebar_left = CheckMenuItemBuilder::with_id("sidebar-left", "Left").checked(true).build(app)?;
-            let sidebar_right = CheckMenuItemBuilder::with_id("sidebar-right", "Right").build(app)?;
-            let position_menu = SubmenuBuilder::new(app, "Playlist Position")
+            let sidebar_left = CheckMenuItemBuilder::with_id("sidebar-left", en("left")).checked(true).build(app)?;
+            let sidebar_right = CheckMenuItemBuilder::with_id("sidebar-right", en("right")).build(app)?;
+            tx!("left", sidebar_left);
+            tx!("right", sidebar_right);
+            let position_menu = SubmenuBuilder::new(app, en("playlistPosition"))
                 .item(&sidebar_left)
                 .item(&sidebar_right)
                 .build()?;
+            tx!("playlistPosition", position_menu);
             app.manage(SidebarMenu(sidebar_left, sidebar_right));
             // View -> Language: one tick item per file in src/locales (English is ticked until the
-            // page reports the saved language).
+            // page reports the saved language). Language names stay in their own language.
             let mut language_items = Vec::new();
-            let mut language_menu = SubmenuBuilder::new(app, "Language");
-            for (code, name) in languages::LANGUAGES {
-                let item = CheckMenuItemBuilder::with_id(format!("language:{code}"), *name)
+            let mut language_menu = SubmenuBuilder::new(app, en("language"));
+            for (code, language_name) in LANGUAGES {
+                let item = CheckMenuItemBuilder::with_id(format!("language:{code}"), *language_name)
                     .checked(*code == "en")
                     .build(app)?;
                 language_menu = language_menu.item(&item);
                 language_items.push((code.to_string(), item));
             }
             let language_menu = language_menu.build()?;
+            tx!("language", language_menu);
             app.manage(LanguageMenu(language_items));
 
-            let view = SubmenuBuilder::new(app, "View")
+            let view = SubmenuBuilder::new(app, en("view"))
                 .item(&toggle_sidebar)
                 .item(&position_menu)
                 .item(&language_menu)
                 .item(&themes_item)
                 .separator()
-                .fullscreen()
+                .item(&predefined(PredefinedMenuItem::fullscreen(app, Some(&en("fullscreen"))), "fullscreen")?)
                 .build()?;
-            let window = SubmenuBuilder::new(app, "Window").minimize().maximize().build()?;
+            tx!("view", view);
+            // The top-level "Download Manager" menu.
+            let downloads_item = MenuItemBuilder::with_id("downloads", en("openDownloadManager")).accelerator("CmdOrCtrl+J").build(app)?;
+            let pause_downloads = MenuItemBuilder::with_id("pause-all-downloads", en("pauseAllDownloads")).build(app)?;
+            let resume_downloads = MenuItemBuilder::with_id("resume-all-downloads", en("resumeAllDownloads")).build(app)?;
+            tx!("openDownloadManager", downloads_item);
+            tx!("pauseAllDownloads", pause_downloads);
+            tx!("resumeAllDownloads", resume_downloads);
+            let download_menu = SubmenuBuilder::new(app, en("downloadManager"))
+                .item(&downloads_item)
+                .item(&add_youtube_again)
+                .separator()
+                .item(&pause_downloads)
+                .item(&resume_downloads)
+                .build()?;
+            tx!("downloadManager", download_menu);
+            let window = SubmenuBuilder::new(app, en("window"))
+                .item(&predefined(PredefinedMenuItem::minimize(app, Some(&en("minimize"))), "minimize")?)
+                .item(&predefined(PredefinedMenuItem::maximize(app, Some(&en("maximize"))), "maximize")?)
+                .build()?;
+            tx!("window", window);
 
             // "About": icon, name, version, description and copyright, all from package.json
             // (injected into the Tauri config by scripts/run-tauri.mjs).
@@ -275,46 +330,50 @@ pub fn run() {
             };
 
             // The menu entry reads "About <name>".
-            let about_text = format!("About {}", app.package_info().name);
+            #[allow(unused_variables)]
+            let about_item = predefined(PredefinedMenuItem::about(app, Some(&en("about")), Some(about_meta.clone())), "about")?;
 
             #[allow(unused_mut)]
-            let mut help = SubmenuBuilder::new(app, "Help").item(&check_updates);
+            let mut help = SubmenuBuilder::new(app, en("help")).item(&check_updates);
             #[cfg(not(target_os = "macos"))]
             {
-                help = help.separator().about_with_text(&about_text, Some(about_meta.clone()));
+                help = help.separator().item(&about_item);
             }
             let help = help.build()?;
+            tx!("help", help);
 
             let mut menu = MenuBuilder::new(app);
             #[cfg(target_os = "macos")]
             {
-                let app_menu = SubmenuBuilder::new(app, app.package_info().name.clone())
-                    .about_with_text(&about_text, Some(about_meta.clone()))
+                let app_menu = SubmenuBuilder::new(app, name.clone())
+                    .item(&about_item)
                     .separator()
                     .item(&settings_item)
                     .separator()
                     // There is no Edit menu, but on macOS Cmd+C / Cmd+V / Cmd+Z in text fields only
                     // work through menu items, so the standard ones live here.
-                    .undo()
-                    .redo()
+                    .item(&predefined(PredefinedMenuItem::undo(app, Some(&en("undo"))), "undo")?)
+                    .item(&predefined(PredefinedMenuItem::redo(app, Some(&en("redo"))), "redo")?)
                     .separator()
-                    .cut()
-                    .copy()
-                    .paste()
-                    .select_all()
+                    .item(&predefined(PredefinedMenuItem::cut(app, Some(&en("cut"))), "cut")?)
+                    .item(&predefined(PredefinedMenuItem::copy(app, Some(&en("copy"))), "copy")?)
+                    .item(&predefined(PredefinedMenuItem::paste(app, Some(&en("paste"))), "paste")?)
+                    .item(&predefined(PredefinedMenuItem::select_all(app, Some(&en("selectAll"))), "selectAll")?)
                     .separator()
-                    .services()
+                    .item(&predefined(PredefinedMenuItem::services(app, Some(&en("services"))), "services")?)
                     .separator()
-                    .hide()
-                    .hide_others()
-                    .show_all()
+                    .item(&predefined(PredefinedMenuItem::hide(app, Some(&en("hide"))), "hide")?)
+                    .item(&predefined(PredefinedMenuItem::hide_others(app, Some(&en("hideOthers"))), "hideOthers")?)
+                    .item(&predefined(PredefinedMenuItem::show_all(app, Some(&en("showAll"))), "showAll")?)
                     .separator()
-                    .quit()
+                    .item(&predefined(PredefinedMenuItem::quit(app, Some(&en("quit"))), "quit")?)
                     .build()?;
                 menu = menu.item(&app_menu);
             }
-            let menu = menu.item(&file).item(&view).item(&window).item(&help).build()?;
+            let menu = menu.item(&file).item(&view).item(&download_menu).item(&window).item(&help).build()?;
             app.set_menu(menu)?;
+            app.manage(texts);
+            app.manage(youtube::download_queue::DownloadEngine::start(app.handle().clone()));
             Ok(())
         })
         .on_menu_event(|app, event| {
@@ -327,6 +386,10 @@ pub fn run() {
                     | "merge-av"
                     | "check-updates"
                     | "add-videos"
+                    | "add-youtube"
+                    | "downloads"
+                    | "pause-all-downloads"
+                    | "resume-all-downloads"
                     | "import-playlist"
                     | "export-playlist"
                     | "toggle-sidebar"
@@ -345,13 +408,24 @@ pub fn run() {
             app_data::library_load, app_data::library_save, app_data::thumbnail_save, app_data::thumbnail_import,
             app_data::thumbnail_delete, app_data::trash_files, app_data::text_file_read, app_data::text_file_write,
             app_data::settings_get, app_data::settings_set, app_data::settings_remove, app_data::theme_list, app_data::theme_save, app_data::theme_delete,
-            app_data::position_note, menu_set_language, menu_set_sidebar_side])
+            app_data::position_note, menu_set_language, menu_set_sidebar_side,
+            youtube::youtube_commands::youtube_lookup, youtube::youtube_commands::downloads_configure,
+            youtube::youtube_commands::downloads_snapshot, youtube::youtube_commands::downloads_enqueue,
+            youtube::youtube_commands::downloads_move, youtube::youtube_commands::downloads_download_now,
+            youtube::youtube_commands::downloads_pause, youtube::youtube_commands::downloads_resume,
+            youtube::youtube_commands::downloads_pause_all, youtube::youtube_commands::downloads_resume_all,
+            youtube::youtube_commands::downloads_cancel, youtube::youtube_commands::downloads_retry,
+            youtube::youtube_commands::downloads_forget, youtube::youtube_commands::ytdlp_version,
+            youtube::youtube_commands::ytdlp_update, youtube::youtube_commands::ytdlp_restore])
         .build(tauri::generate_context!())
         .expect("error while building the application")
         .run(|app, event| {
             // The program is closing: write the last reported playback position to disk (once).
             if matches!(event, tauri::RunEvent::Exit) {
                 app_data::flush_position(app);
+                if let Some(engine) = app.try_state::<youtube::download_queue::DownloadEngine>() {
+                    engine.shutdown();
+                }
             }
             // macOS delivers "Open with" and double-clicked files as an event, not as arguments.
             #[cfg(any(target_os = "macos", target_os = "ios"))]

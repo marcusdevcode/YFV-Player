@@ -89,6 +89,93 @@
         }
       },
       "additionalProperties": false
+    },
+    "downloads": {
+      "type": "object",
+      "title": "YouTube downloads",
+      "description": "Defaults for downloading from YouTube. The quality dialog opens with these selected.",
+      "properties": {
+        "mode": {
+          "enum": [
+            "together",
+            "separate",
+            "audioOnly"
+          ],
+          "title": "Download as",
+          "description": "'together' = one file with picture and sound (YouTube offers this only up to about 720p); 'separate' = a video file and an audio file (best quality; the player plays them together); 'audioOnly' = only the audio.",
+          "default": "separate"
+        },
+        "videoQuality": {
+          "enum": [
+            "best",
+            "2160",
+            "1440",
+            "1080",
+            "720",
+            "480",
+            "360",
+            "240",
+            "144"
+          ],
+          "title": "Video quality",
+          "description": "Highest picture height in pixels. A video that lacks it uses the closest quality.",
+          "default": "1080"
+        },
+        "audioQuality": {
+          "enum": [
+            "best",
+            "medium",
+            "low"
+          ],
+          "title": "Audio quality",
+          "description": "'medium' is about 128 kbit/s and 'low' about 64 kbit/s.",
+          "default": "best"
+        },
+        "folder": {
+          "type": "string",
+          "title": "Download folder",
+          "description": "Where downloaded files are saved. Empty = the system's Videos folder.",
+          "default": ""
+        },
+        "delayBetweenVideos": {
+          "type": "integer",
+          "title": "Pause between videos",
+          "description": "Seconds to wait after a video is finished before the next one starts (0 = no pause).",
+          "minimum": 0,
+          "maximum": 60,
+          "default": 3
+        },
+        "speedLimitKbps": {
+          "type": "integer",
+          "title": "Speed limit",
+          "description": "Maximum download speed in KiB per second (0 = unlimited).",
+          "minimum": 0,
+          "default": 0
+        },
+        "autoResume": {
+          "type": "boolean",
+          "title": "Continue after restart",
+          "description": "Downloads that were unfinished when the app was closed continue when it starts again.",
+          "default": true
+        },
+        "cookiesBrowser": {
+          "enum": [
+            "",
+            "chrome",
+            "chromium",
+            "brave",
+            "edge",
+            "firefox",
+            "opera",
+            "safari",
+            "vivaldi"
+          ],
+          "title": "Use YouTube sign-in from browser",
+          "description": "Needed for age-restricted videos and when YouTube asks to confirm that you are not a robot. Empty = do not use a browser.",
+          "default": ""
+        }
+      },
+      "additionalProperties": false
     }
   },
   "required": [

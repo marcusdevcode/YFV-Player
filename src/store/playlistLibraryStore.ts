@@ -13,6 +13,8 @@ export interface Track {
   title: string;
   /** Path of the preview image. undefined = not made yet, null = could not be made. */
   thumbnail?: string | null;
+  /** Set while the video is still being downloaded from YouTube: the track cannot be played yet. */
+  download?: { jobId: string; videoId: string };
 }
 
 export interface Playlist {
@@ -57,6 +59,8 @@ interface PlaylistLibraryState {
   setLoopPlaylist: (v: boolean) => void;
 
   addTracks: (playlistId: string, tracks: Track[]) => void;
+  /** A YouTube download finished: the track gets its files and becomes playable. */
+  completeDownloadedTrack: (playlistId: string, trackId: string, videoPath: string, audioPath?: string) => void;
   removeTrack: (playlistId: string, trackId: string) => void;
   moveTrack: (playlistId: string, from: number, to: number) => void;
   setTrackThumbnail: (playlistId: string, trackId: string, path: string | null) => void;
@@ -170,6 +174,15 @@ export const usePlaylistLibraryStore = create<PlaylistLibraryState>()((set, get)
     },
 
     addTracks: (playlistId, tracks) => patch(playlistId, (p) => ({ ...p, tracks: [...p.tracks, ...tracks] })),
+    completeDownloadedTrack: (playlistId, trackId, videoPath, audioPath) =>
+      patch(playlistId, (p) => ({
+        ...p,
+        tracks: p.tracks.map((t) => {
+          if (t.id !== trackId) return t;
+          const { download: _download, ...rest } = t;
+          return { ...rest, videoPath, audioPath, thumbnail: undefined };
+        }),
+      })),
     removeTrack: (playlistId, trackId) => {
       const track = get().playlists.find((p) => p.id === playlistId)?.tracks.find((t) => t.id === trackId);
       dropFile(track?.thumbnail);
@@ -191,7 +204,7 @@ export const usePlaylistLibraryStore = create<PlaylistLibraryState>()((set, get)
 
     playTrack: (playlistId, trackId) => {
       const track = get().playlists.find((p) => p.id === playlistId)?.tracks.find((t) => t.id === trackId);
-      if (!track) return;
+      if (!track || track.download) return; // a video that is still downloading cannot be played
       set({ currentTrackId: trackId, activeId: playlistId });
       // Picked in a playlist (by click or as the next track): always from the beginning.
       usePlayerStore.getState().setSource(sourceOf(track), true);
@@ -205,7 +218,9 @@ export const usePlaylistLibraryStore = create<PlaylistLibraryState>()((set, get)
       const list = playlists.find((p) => p.tracks.some((t) => t.id === currentTrackId));
       if (!list) return false;
       const at = list.tracks.findIndex((t) => t.id === currentTrackId);
-      const next = list.tracks[at + 1] ?? (loopPlaylist ? list.tracks[0] : undefined);
+      // Videos that are still downloading are skipped.
+      const playable = (t: Track) => !t.download;
+      const next = list.tracks.slice(at + 1).find(playable) ?? (loopPlaylist ? list.tracks.find(playable) : undefined);
       if (!next) return false;
       get().playTrack(list.id, next.id);
       return true;
@@ -228,7 +243,8 @@ export const usePlaylistLibraryStore = create<PlaylistLibraryState>()((set, get)
     exportText: (playlistId) => {
       const playlist = get().playlists.find((p) => p.id === playlistId);
       if (!playlist) return null;
-      const data: Saved = { version: 1, playlists: [playlist], activeId: playlist.id, loopPlaylist: false };
+      const exported = { ...playlist, tracks: playlist.tracks.filter((t) => !t.download) }; // not yet downloaded videos have no file
+      const data: Saved = { version: 1, playlists: [exported], activeId: playlist.id, loopPlaylist: false };
       return JSON.stringify(data, null, 2);
     },
     importText: (text) => {

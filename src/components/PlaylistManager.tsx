@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
-import { DEFAULT_PLAYLIST_COLOR, usePlaylistLibraryStore } from "../store/playlistLibraryStore";
+import { DEFAULT_PLAYLIST_COLOR, usePlaylistLibraryStore, type Playlist } from "../store/playlistLibraryStore";
 import { IMAGE_EXT } from "../mediaFiles";
 import { exportActivePlaylist, importPlaylists } from "../playlistImportExport";
 import { useT } from "../translate";
 import { newId } from "../uniqueIds";
+import { cancelDownload } from "../youtubeApi";
+import ConfirmDialog from "./ConfirmDialog";
 import ThumbnailImage from "./ThumbnailImage";
 
 /** Add, rename, recolor, reorder and delete playlists; import and export. */
@@ -16,13 +18,31 @@ export default function PlaylistManager() {
   const lib = usePlaylistLibraryStore.getState();
   const { t, tn } = useT();
   const [newName, setNewName] = useState("");
-  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<Playlist | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [alsoDeleteFiles, setAlsoDeleteFiles] = useState(false);
 
   if (!isOpen) return null;
   const close = () => {
-    setConfirmId(null);
+    setPendingDelete(null);
     lib.setManagerOpen(false);
   };
+
+  /** Delete a playlist and its previews and cover; optionally its video and audio files too (to the Trash). Unfinished downloads of it are cancelled. */
+  async function deletePlaylistAndMore(playlist: Playlist, withFiles: boolean) {
+    const files = !withFiles ? [] : playlist.tracks.flatMap((track) => (track.download ? [] : [track.videoPath, ...(track.audioPath ? [track.audioPath] : [])])).filter(Boolean);
+    try {
+      if (files.length) await invoke("trash_files", { paths: files });
+    } catch (e) {
+      setDeleteError(String(e)); // nothing was removed from the playlist
+      return;
+    }
+    // A video that is still downloading is cancelled (its partial files go too when the files are deleted).
+    playlist.tracks.forEach((track) => track.download && void cancelDownload(track.download.jobId, withFiles).catch(() => {}));
+    usePlaylistLibraryStore.getState().deletePlaylist(playlist.id); // also removes the previews and the cover
+    setPendingDelete(null);
+    setDeleteError(null);
+  }
 
   async function chooseCover(id: string) {
     const picked = await open({ multiple: false, filters: [{ name: t("filter.image"), extensions: IMAGE_EXT }] });
@@ -89,24 +109,37 @@ export default function PlaylistManager() {
               <button disabled={i === playlists.length - 1} title={t("mgr.down")} onClick={() => lib.movePlaylist(p.id, 1)}>
                 ↓
               </button>
-              {confirmId === p.id ? (
-                <button
-                  className="danger"
-                  onClick={() => {
-                    lib.deletePlaylist(p.id);
-                    setConfirmId(null);
-                  }}
-                >
-                  {tn("mgr.confirmDelete", p.tracks.length)}
-                </button>
-              ) : (
-                <button title={t("mgr.deleteHint")} onClick={() => setConfirmId(p.id)}>
-                  {t("common.delete")}
-                </button>
-              )}
+              <button
+                title={t("mgr.deleteHint")}
+                onClick={() => {
+                  setDeleteError(null);
+                  setAlsoDeleteFiles(false);
+                  setPendingDelete(p);
+                }}
+              >
+                {t("common.delete")}
+              </button>
             </div>
           ))}
         </div>
+
+        {pendingDelete && (
+          <ConfirmDialog
+            title={t("mgr.deleteTitle")}
+            confirmLabel={alsoDeleteFiles ? t("mgr.deleteWithFiles") : t("common.delete")}
+            danger
+            onCancel={() => setPendingDelete(null)}
+            onConfirm={() => void deletePlaylistAndMore(pendingDelete, alsoDeleteFiles)}
+          >
+            <p>{t("mgr.deleteBody", { title: pendingDelete.title })}</p>
+            <p className="muted">{tn("mgr.deleteCount", pendingDelete.tracks.length)}</p>
+            <label className="field check">
+              <span>{t("mgr.alsoDeleteFiles")}</span>
+              <input type="checkbox" checked={alsoDeleteFiles} onChange={(e) => setAlsoDeleteFiles(e.target.checked)} />
+            </label>
+            {deleteError && <p className="modal-error">{deleteError}</p>}
+          </ConfirmDialog>
+        )}
 
         <div className="modal-actions">
           <button onClick={() => void importPlaylists()}>{t("mgr.import")}</button>

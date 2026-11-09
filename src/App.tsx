@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/plugin-dialog";
+import ContextMenu from "./components/ContextMenu";
+import DownloadManagerDialog from "./components/DownloadManagerDialog";
+import DownloadProgressPopup from "./components/DownloadProgressPopup";
+import YouTubeQualityDialog from "./components/YouTubeQualityDialog";
 import AddVideosDialog from "./components/AddVideosDialog";
 import Icon from "./components/Icon";
 import MergeDialog from "./components/MergeDialog";
@@ -27,6 +31,10 @@ import { applyThemeToDocument } from "./theme/themeEngine";
 import { useInterfaceStore } from "./store/interfaceStore";
 import { queueMissingThumbnails } from "./videoThumbnails";
 import { fileName } from "./filePaths";
+import { reconcileFinishedDownloads, startDownloadListeners } from "./store/downloadQueueStore";
+import { pauseAllDownloads, resumeAllDownloads } from "./youtubeApi";
+import { openContextMenu } from "./store/contextMenuStore";
+import { textFieldAt, textFieldItems } from "./textFieldEditing";
 
 async function pick(kind: "video" | "audio"): Promise<string | null> {
   const res = await open({
@@ -141,6 +149,11 @@ export default function App() {
     };
   }, [setSource]);
 
+  // Listen to the download engine (Rust): the queue, progress and finished downloads.
+  useEffect(() => {
+    if (ready) void startDownloadListeners();
+  }, [ready]);
+
   // Load the saved playlists once, then make any missing previews.
   useEffect(() => {
     if (!ready) return; // the restored video must be known before it is matched to a track
@@ -149,6 +162,7 @@ export default function App() {
       .load()
       .then(() => {
         usePlaylistLibraryStore.getState().restoreCurrent();
+        reconcileFinishedDownloads();
         queueMissingThumbnails();
       });
   }, [ready]);
@@ -176,6 +190,10 @@ export default function App() {
       if (e.payload === "merge-av") void mergeFromMenu();
       if (e.payload === "settings") useInterfaceStore.getState().setSettingsOpen(true);
       if (e.payload === "themes") useInterfaceStore.getState().setThemesOpen(true);
+      if (e.payload === "downloads") useInterfaceStore.getState().setDownloadsOpen(true);
+      if (e.payload === "pause-all-downloads") void pauseAllDownloads();
+      if (e.payload === "resume-all-downloads") void resumeAllDownloads();
+      if (e.payload === "add-youtube") useAddDialogStore.getState().openYouTube();
       if (e.payload.startsWith("language:")) {
         useInterfaceStore.getState().setLanguage(e.payload.slice("language:".length));
         // A click on the ticked entry un-ticks it natively: put the tick back on the real language.
@@ -196,16 +214,41 @@ export default function App() {
     };
   }, [openVideo, mergeFromMenu]);
 
-  if (!ready) return <div className="app" />;
+  // Right-click anywhere that has no menu of its own: Cut / Copy / Paste in a text box, otherwise
+  // the common actions. Areas with their own menu (player, tracks, badges) stop the event first.
+  const showGeneralMenu = (e: React.MouseEvent) => {
+    const field = textFieldAt(e.target);
+    if (field) {
+      openContextMenu(e, textFieldItems(field, {
+        cut: t("context.cut"), copy: t("context.copy"), paste: t("context.paste"), selectAll: t("context.selectAll"),
+      }));
+      return;
+    }
+    const selected = window.getSelection()?.toString() ?? "";
+    openContextMenu(e, [
+      ...(selected ? [{ label: t("context.copy"), onSelect: () => void document.execCommand("copy") }, "separator" as const] : []),
+      { label: t("app.openVideo"), onSelect: () => void openVideo(false) },
+      { label: t("app.openVideoAudio"), onSelect: () => void openVideo(true) },
+      { label: t("app.addToPlaylist"), onSelect: () => useAddDialogStore.getState().openWith() },
+      "separator",
+      { label: sidebarOpen ? t("app.hidePanel") : t("app.showPanel"), onSelect: () => useInterfaceStore.getState().toggleSidebar() },
+    ]);
+  };
+
+  if (!ready) return <div className="app" onContextMenu={(e) => e.preventDefault()} />;
 
   return (
-    <div className="app">
+    <div className="app" onContextMenu={showGeneralMenu}>
+      <ContextMenu />
       <UpdateBanner />
       <MergeDialog />
       <AddVideosDialog />
       <PlaylistManager />
       <SettingsDialog />
       <ThemesDialog />
+      <DownloadManagerDialog />
+      <YouTubeQualityDialog />
+      <DownloadProgressPopup />
       {dragging && <div className="drop-hint">{t("app.dropToAdd")}</div>}
       {notice && (
         <div className="notice" role="status">
@@ -247,6 +290,7 @@ export default function App() {
                 </button>
                 <button onClick={() => void openVideo(true)}>{t("app.openVideoAudio")}</button>
                 <button onClick={() => useAddDialogStore.getState().openWith()}>{t("app.addToPlaylist")}</button>
+                <button onClick={() => useAddDialogStore.getState().openYouTube()}>{t("app.addFromYouTube")}</button>
               </div>
             </div>
           )}

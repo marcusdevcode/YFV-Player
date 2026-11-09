@@ -11,5 +11,15 @@
     "volume": 1,
     "muted": false,
     "pauseVideoInBackground": true
+  },
+  "downloads": {
+    "mode": "separate",
+    "videoQuality": "1080",
+    "audioQuality": "best",
+    "folder": "",
+    "delayBetweenVideos": 3,
+    "speedLimitKbps": 0,
+    "autoResume": true,
+    "cookiesBrowser": ""
   }
 }

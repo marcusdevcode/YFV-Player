@@ -9,6 +9,8 @@ import { usePlayerStore } from "../store/playerStore";
 import { setTrackFrame } from "../videoThumbnails";
 import { formatTime } from "../textFormatting";
 import { loadPosition, notePosition, savePosition } from "../playbackPosition";
+import { openContextMenu } from "../store/contextMenuStore";
+import { useInterfaceStore } from "../store/interfaceStore";
 
 /*
  * No timers here (no setInterval / setTimeout / requestAnimationFrame): everything is driven by
@@ -76,6 +78,7 @@ export default function Player() {
   const wantPlaying = useRef(false); // the user wants playback (set by play, cleared by pause)
   const ownPauseAt = useRef(0); // when pauseBoth last ran: its pause events arrive a little later
   const seekToken = useRef(0);
+  const seekBusy = useRef(0); // a seek of ours is running: pause/play events now are ours, not headphones
   const endedHandled = useRef(false);
   const nativeFocused = useRef(true); // the app window itself has focus (not just the page inside it)
   const backgroundSince = useRef<number | null>(null); // the window lost focus at this time (and has not got it back)
@@ -142,6 +145,7 @@ export default function Player() {
 
   /** A pause event that did not come from our own pauseBoth (headphones, media keys, ...). */
   const isOutsidePause = (e: { currentTarget: HTMLMediaElement; timeStamp: number }) =>
+    seekBusy.current === 0 &&
     wantPlaying.current &&
     !e.currentTarget.ended &&
     !document.hidden &&
@@ -149,7 +153,7 @@ export default function Player() {
 
   /** A play event that did not come from our own playBoth (and is not a leftover from before a pause). */
   const isOutsidePlay = (e: { timeStamp: number }) =>
-    !wantPlaying.current && e.timeStamp - ownPauseAt.current > 400;
+    seekBusy.current === 0 && !wantPlaying.current && e.timeStamp - ownPauseAt.current > 400;
 
   const pauseBoth = useCallback(() => {
     playToken.current++; // cancel any start that is still in progress
@@ -295,18 +299,28 @@ export default function Player() {
       endedHandled.current = false;
       if (wasPlaying) pauseBoth();
       const target = clampTime(t);
-      const waits: Promise<void>[] = [];
-      if (Math.abs(v.currentTime - target) > 0.01) waits.push(once(v, ["seeked", "error"]));
-      v.currentTime = target;
-      if (a) {
-        if (Math.abs(a.currentTime - target) > 0.01) waits.push(once(a, ["seeked", "error"]));
-        a.currentTime = target;
+      // Seeking a big file can take longer than the 400 ms that separates our own pause/play events
+      // from outside ones, so while this seek runs every such event is treated as ours.
+      seekBusy.current++;
+      try {
+        const waits: Promise<void>[] = [];
+        if (Math.abs(v.currentTime - target) > 0.01) waits.push(once(v, ["seeked", "error"]));
+        v.currentTime = target;
+        if (a) {
+          if (Math.abs(a.currentTime - target) > 0.01) waits.push(once(a, ["seeked", "error"]));
+          a.currentTime = target;
+        }
+        setTime(target);
+        if (!wasPlaying) return;
+        await Promise.all(waits);
+        if (token !== seekToken.current) return; // a newer seek took over
+        await playBoth();
+        // Playback must be running again: if the start was cut short, start once more.
+        if (token === seekToken.current && wantPlaying.current && videoRef.current?.paused) await playBoth();
+      } finally {
+        seekBusy.current--;
+        ownPauseAt.current = performance.now(); // events that trail the seek are still ours
       }
-      setTime(target);
-      if (!wasPlaying) return;
-      await Promise.all(waits);
-      if (token !== seekToken.current) return; // a newer seek took over
-      await playBoth();
     },
     [clampTime, pauseBoth, playBoth, setTime],
   );
@@ -558,7 +572,19 @@ export default function Player() {
   const shown = seeking.current ? scrubValue : currentTime;
 
   return (
-    <div className={`player${hidden ? " hide-interface" : ""}${fullscreen ? " is-fullscreen" : ""}`} onMouseMove={wakeInterface}>
+    <div className={`player${hidden ? " hide-interface" : ""}${fullscreen ? " is-fullscreen" : ""}`} onMouseMove={wakeInterface}
+      onContextMenu={(e) =>
+        openContextMenu(e, [
+          { label: playing ? t("player.pause") : t("player.play"), onSelect: togglePlay },
+          { label: fullscreen ? t("context.exitFullscreen") : t("player.fullscreen"), onSelect: () => void toggleFullscreen() },
+          "separator",
+          {
+            label: useInterfaceStore.getState().sidebarOpen ? t("app.hidePanel") : t("app.showPanel"),
+            onSelect: () => useInterfaceStore.getState().toggleSidebar(),
+          },
+        ])
+      }
+    >
       <div className="video-wrapper" onClick={togglePlay}>
         <video
           key={videoSrc}

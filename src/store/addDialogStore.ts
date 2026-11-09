@@ -2,9 +2,12 @@ import { create } from "zustand";
 import { isAudioPath, isMediaPath, isVideoPath } from "../mediaFiles";
 
 export type AddMode = "video" | "pair";
+export type AddTab = "files" | "youtube";
 
 interface AddState {
   open: boolean;
+  /** Local files, or search/links on YouTube. */
+  tab: AddTab;
   mode: AddMode;
   /** Every file dropped or chosen so far (the dialog turns them into items). */
   paths: string[];
@@ -12,6 +15,8 @@ interface AddState {
   unchecked: string[];
   targetId: string | null;
   openWith: (paths?: string[]) => void;
+  openYouTube: () => void;
+  setTab: (tab: AddTab) => void;
   addPaths: (paths: string[]) => void;
   setMode: (m: AddMode) => void;
   toggle: (id: string) => void;
@@ -21,6 +26,7 @@ interface AddState {
 
 export const useAddDialogStore = create<AddState>()((set) => ({
   open: false,
+  tab: "files",
   mode: "video",
   paths: [],
   unchecked: [],
@@ -29,10 +35,13 @@ export const useAddDialogStore = create<AddState>()((set) => ({
   openWith: (paths = []) =>
     set((s) => ({
       open: true,
+      tab: "files",
       paths: s.open ? [...new Set([...s.paths, ...paths])] : [...new Set(paths)],
       unchecked: s.open ? s.unchecked : [],
       mode: !s.open && paths.some(isVideoPath) && paths.some(isAudioPath) ? "pair" : s.mode,
     })),
+  openYouTube: () => set({ open: true, tab: "youtube" }),
+  setTab: (tab) => set({ tab }),
   addPaths: (paths) => set((s) => ({ paths: [...new Set([...s.paths, ...paths.filter(isMediaPath)])] })),
   setMode: (mode) => set({ mode }),
   toggle: (id) => set((s) => ({ unchecked: s.unchecked.includes(id) ? s.unchecked.filter((u) => u !== id) : [...s.unchecked, id] })),

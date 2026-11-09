@@ -13,6 +13,8 @@ interface InterfaceState {
   settingsOpen: boolean;
   /** The Themes dialog (View -> Themes…). */
   themesOpen: boolean;
+  /** The download manager (View -> Downloads…). */
+  downloadsOpen: boolean;
   toggleSidebar: () => void;
   /** The user places the panel by hand: it stays there (until the language is changed). */
   setSidebarSide: (side: SidebarSide) => void;
@@ -20,6 +22,7 @@ interface InterfaceState {
   setLanguage: (language: string) => void;
   setSettingsOpen: (open: boolean) => void;
   setThemesOpen: (open: boolean) => void;
+  setDownloadsOpen: (open: boolean) => void;
 }
 
 // Not persisted here: src/generalSettings.ts saves language and panel state in the general settings file.
@@ -29,6 +32,7 @@ export const useInterfaceStore = create<InterfaceState>()((set) => ({
   language: DEFAULT_LANGUAGE, // English until the user picks another (then it is remembered)
   settingsOpen: false,
   themesOpen: false,
+  downloadsOpen: false,
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   // Moving it to the other side also opens it, so the change is visible.
   setSidebarSide: (sidebarSide) => set({ sidebarSide, sidebarOpen: true }),
@@ -37,4 +41,5 @@ export const useInterfaceStore = create<InterfaceState>()((set) => ({
   },
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   setThemesOpen: (themesOpen) => set({ themesOpen }),
+  setDownloadsOpen: (downloadsOpen) => set({ downloadsOpen }),
 }));

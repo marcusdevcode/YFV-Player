@@ -7,6 +7,7 @@ import { usePlaylistLibraryStore } from "./store/playlistLibraryStore";
 import { usePlayerStore } from "./store/playerStore";
 import { useThemeStore } from "./store/themeStore";
 import { useInterfaceStore } from "./store/interfaceStore";
+import { currentDownloadSettings, useDownloadSettingsStore, type DownloadSettings } from "./store/downloadSettingsStore";
 
 /** The general settings file: settings/settings.json in the app data folder (schemas/settings.schema.json). */
 const FILE = "settings";
@@ -17,6 +18,7 @@ interface Settings {
   theme: string;
   sidebar: { open: boolean; side: "left" | "right" };
   player: { volume: number; muted: boolean; pauseVideoInBackground: boolean };
+  downloads: DownloadSettings;
 }
 
 function current(): Settings {
@@ -28,6 +30,7 @@ function current(): Settings {
     theme: useThemeStore.getState().selected,
     sidebar: { open: ui.sidebarOpen, side: ui.sidebarSide },
     player: { volume: player.volume, muted: player.muted, pauseVideoInBackground: player.pauseVideoInBackground },
+    downloads: currentDownloadSettings(),
   };
 }
 
@@ -41,6 +44,15 @@ function apply(s: Partial<Settings>) {
   if (s.player?.muted !== undefined) usePlayerStore.setState({ muted: s.player.muted });
   if (s.player?.pauseVideoInBackground !== undefined) usePlayerStore.setState({ pauseVideoInBackground: s.player.pauseVideoInBackground });
   if (s.theme) useThemeStore.setState({ selected: s.theme });
+  if (s.downloads) useDownloadSettingsStore.setState(s.downloads);
+}
+
+/** The download engine (Rust) needs a few of the settings; it starts the queue once it has them. */
+export function sendDownloadEngineConfig() {
+  const d = currentDownloadSettings();
+  void invoke("downloads_configure", {
+    config: { delaySeconds: d.delayBetweenVideos, speedLimitKbps: d.speedLimitKbps, cookiesBrowser: d.cookiesBrowser, autoResume: d.autoResume },
+  }).catch(() => {});
 }
 
 /** Settings saved by earlier versions (one file per store), so nothing is lost on update. */
@@ -118,5 +130,10 @@ export function startSavingSettings() {
   useThemeStore.subscribe((s, p) => {
     if (s.selected !== p.selected) void save();
   });
+  useDownloadSettingsStore.subscribe(() => {
+    void save();
+    sendDownloadEngineConfig();
+  });
+  sendDownloadEngineConfig();
   void save(); // writes the file for the first time (and migrates old settings)
 }

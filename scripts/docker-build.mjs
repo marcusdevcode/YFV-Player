@@ -9,6 +9,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 
 import { homedir, tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { appInfo, root } from "./package-info.mjs";
+import { ensureYtdlp } from "./fetch-ytdlp.mjs";
 
 const [os, arch] = process.argv.slice(2);
 
@@ -87,6 +88,19 @@ env.TAURI_SIGNING_PRIVATE_KEY_PASSWORD ??= "";
 const tag = os === "linux" ? `${appInfo.id}-build-linux-${arch}` : `${appInfo.id}-build-windows`;
 const outDir = resolve(root, "release/docker", `${os}-${arch}`);
 mkdirSync(outDir, { recursive: true });
+
+// yt-dlp is downloaded here, on the host, and copied into the build with the sources: the
+// container then needs no internet access for it (and a failed download stops the release early).
+const ytdlpTarget = {
+  linux: { x64: "x86_64-unknown-linux-gnu", arm64: "aarch64-unknown-linux-gnu" },
+  windows: { x64: "x86_64-pc-windows-msvc", arm64: "aarch64-pc-windows-msvc" },
+}[os][arch];
+try {
+  await ensureYtdlp([ytdlpTarget]);
+} catch (e) {
+  console.error(`Could not get yt-dlp: ${e.message ?? e}`);
+  process.exit(1);
+}
 
 const run = (args) => {
   const r = spawnSync("docker", args, { stdio: "inherit", env, cwd: root });

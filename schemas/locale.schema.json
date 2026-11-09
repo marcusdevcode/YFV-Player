@@ -43,6 +43,1681 @@
       "title": "Texts",
       "description": "The interface texts by key. A missing key falls back to English. Plural texts use <key>.one/.two/.few/.many/.other; '.other' is required for each plural text.",
       "properties": {
+        "menu.file": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.file",
+          "description": "Interface text.",
+          "default": "File",
+          "examples": [
+            "File"
+          ]
+        },
+        "menu.view": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.view",
+          "description": "Interface text.",
+          "default": "View",
+          "examples": [
+            "View"
+          ]
+        },
+        "menu.window": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.window",
+          "description": "Interface text.",
+          "default": "Window",
+          "examples": [
+            "Window"
+          ]
+        },
+        "menu.help": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.help",
+          "description": "Interface text.",
+          "default": "Help",
+          "examples": [
+            "Help"
+          ]
+        },
+        "menu.openVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.openVideo",
+          "description": "Interface text.",
+          "default": "Open Video…",
+          "examples": [
+            "Open Video…"
+          ]
+        },
+        "menu.openVideoAudio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.openVideoAudio",
+          "description": "Interface text.",
+          "default": "Open Video + Separate Audio…",
+          "examples": [
+            "Open Video + Separate Audio…"
+          ]
+        },
+        "menu.addVideos": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.addVideos",
+          "description": "Interface text.",
+          "default": "Add Videos to Playlist…",
+          "examples": [
+            "Add Videos to Playlist…"
+          ]
+        },
+        "menu.importPlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.importPlaylist",
+          "description": "Interface text.",
+          "default": "Import Playlist…",
+          "examples": [
+            "Import Playlist…"
+          ]
+        },
+        "menu.exportPlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.exportPlaylist",
+          "description": "Interface text.",
+          "default": "Export Playlist…",
+          "examples": [
+            "Export Playlist…"
+          ]
+        },
+        "menu.mergeAv": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.mergeAv",
+          "description": "Interface text.",
+          "default": "Merge Video + Audio…",
+          "examples": [
+            "Merge Video + Audio…"
+          ]
+        },
+        "menu.checkUpdates": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.checkUpdates",
+          "description": "Interface text.",
+          "default": "Check for Updates…",
+          "examples": [
+            "Check for Updates…"
+          ]
+        },
+        "menu.settings": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.settings",
+          "description": "Interface text.",
+          "default": "Settings…",
+          "examples": [
+            "Settings…"
+          ]
+        },
+        "menu.closeWindow": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.closeWindow",
+          "description": "Interface text.",
+          "default": "Close Window",
+          "examples": [
+            "Close Window"
+          ]
+        },
+        "menu.togglePanel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.togglePanel",
+          "description": "Interface text.",
+          "default": "Show/Hide Playlist Panel",
+          "examples": [
+            "Show/Hide Playlist Panel"
+          ]
+        },
+        "menu.playlistPosition": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.playlistPosition",
+          "description": "Interface text.",
+          "default": "Playlist Position",
+          "examples": [
+            "Playlist Position"
+          ]
+        },
+        "menu.left": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.left",
+          "description": "Interface text.",
+          "default": "Left",
+          "examples": [
+            "Left"
+          ]
+        },
+        "menu.right": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.right",
+          "description": "Interface text.",
+          "default": "Right",
+          "examples": [
+            "Right"
+          ]
+        },
+        "menu.language": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.language",
+          "description": "Interface text.",
+          "default": "Language",
+          "examples": [
+            "Language"
+          ]
+        },
+        "menu.themes": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.themes",
+          "description": "Interface text.",
+          "default": "Themes…",
+          "examples": [
+            "Themes…"
+          ]
+        },
+        "menu.fullscreen": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.fullscreen",
+          "description": "Interface text.",
+          "default": "Enter Full Screen",
+          "examples": [
+            "Enter Full Screen"
+          ]
+        },
+        "menu.minimize": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.minimize",
+          "description": "Interface text.",
+          "default": "Minimize",
+          "examples": [
+            "Minimize"
+          ]
+        },
+        "menu.maximize": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.maximize",
+          "description": "Interface text.",
+          "default": "Maximize",
+          "examples": [
+            "Maximize"
+          ]
+        },
+        "menu.about": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.about",
+          "description": "Interface text. Keep the placeholders {name} in the text.",
+          "default": "About {name}",
+          "examples": [
+            "About {name}"
+          ],
+          "x-placeholders": [
+            "name"
+          ]
+        },
+        "menu.undo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.undo",
+          "description": "Interface text.",
+          "default": "Undo",
+          "examples": [
+            "Undo"
+          ]
+        },
+        "menu.redo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.redo",
+          "description": "Interface text.",
+          "default": "Redo",
+          "examples": [
+            "Redo"
+          ]
+        },
+        "menu.cut": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.cut",
+          "description": "Interface text.",
+          "default": "Cut",
+          "examples": [
+            "Cut"
+          ]
+        },
+        "menu.copy": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.copy",
+          "description": "Interface text.",
+          "default": "Copy",
+          "examples": [
+            "Copy"
+          ]
+        },
+        "menu.paste": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.paste",
+          "description": "Interface text.",
+          "default": "Paste",
+          "examples": [
+            "Paste"
+          ]
+        },
+        "menu.selectAll": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.selectAll",
+          "description": "Interface text.",
+          "default": "Select All",
+          "examples": [
+            "Select All"
+          ]
+        },
+        "menu.services": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.services",
+          "description": "Interface text.",
+          "default": "Services",
+          "examples": [
+            "Services"
+          ]
+        },
+        "menu.hide": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.hide",
+          "description": "Interface text. Keep the placeholders {name} in the text.",
+          "default": "Hide {name}",
+          "examples": [
+            "Hide {name}"
+          ],
+          "x-placeholders": [
+            "name"
+          ]
+        },
+        "menu.hideOthers": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.hideOthers",
+          "description": "Interface text.",
+          "default": "Hide Others",
+          "examples": [
+            "Hide Others"
+          ]
+        },
+        "menu.showAll": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.showAll",
+          "description": "Interface text.",
+          "default": "Show All",
+          "examples": [
+            "Show All"
+          ]
+        },
+        "menu.quit": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.quit",
+          "description": "Interface text. Keep the placeholders {name} in the text.",
+          "default": "Quit {name}",
+          "examples": [
+            "Quit {name}"
+          ],
+          "x-placeholders": [
+            "name"
+          ]
+        },
+        "app.addFromYouTube": {
+          "type": "string",
+          "minLength": 1,
+          "title": "app.addFromYouTube",
+          "description": "Main window.",
+          "default": "Add from YouTube",
+          "examples": [
+            "Add from YouTube"
+          ]
+        },
+        "menu.addFromYoutube": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.addFromYoutube",
+          "description": "Interface text.",
+          "default": "Add from YouTube…",
+          "examples": [
+            "Add from YouTube…"
+          ]
+        },
+        "add.tabFiles": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.tabFiles",
+          "description": "The Add videos dialog.",
+          "default": "Files",
+          "examples": [
+            "Files"
+          ]
+        },
+        "add.tabYouTube": {
+          "type": "string",
+          "minLength": 1,
+          "title": "add.tabYouTube",
+          "description": "The Add videos dialog.",
+          "default": "YouTube",
+          "examples": [
+            "YouTube"
+          ]
+        },
+        "side.downloading": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.downloading",
+          "description": "The playlist panel.",
+          "default": "Downloading…",
+          "examples": [
+            "Downloading…"
+          ]
+        },
+        "side.downloadFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "side.downloadFailed",
+          "description": "The playlist panel.",
+          "default": "Download failed",
+          "examples": [
+            "Download failed"
+          ]
+        },
+        "youtube.placeholder": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.placeholder",
+          "description": "Interface text.",
+          "default": "Search YouTube, or paste a video, playlist or channel link",
+          "examples": [
+            "Search YouTube, or paste a video, playlist or channel link"
+          ]
+        },
+        "youtube.search": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.search",
+          "description": "Interface text.",
+          "default": "Search",
+          "examples": [
+            "Search"
+          ]
+        },
+        "youtube.searching": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.searching",
+          "description": "Interface text.",
+          "default": "Searching…",
+          "examples": [
+            "Searching…"
+          ]
+        },
+        "youtube.loadMore": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.loadMore",
+          "description": "Interface text.",
+          "default": "Load more",
+          "examples": [
+            "Load more"
+          ]
+        },
+        "youtube.noResults": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.noResults",
+          "description": "Interface text.",
+          "default": "Nothing found.",
+          "examples": [
+            "Nothing found."
+          ]
+        },
+        "youtube.download": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.download",
+          "description": "Interface text.",
+          "default": "Download…",
+          "examples": [
+            "Download…"
+          ]
+        },
+        "youtube.downloadAll": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.downloadAll",
+          "description": "Interface text.",
+          "default": "Download all as a new playlist…",
+          "examples": [
+            "Download all as a new playlist…"
+          ]
+        },
+        "youtube.error": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.error",
+          "description": "Interface text. Keep the placeholders {error} in the text.",
+          "default": "YouTube search failed: {error}",
+          "examples": [
+            "YouTube search failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "youtube.playlistFound": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.playlistFound",
+          "description": "Interface text. Keep the placeholders {title} in the text.",
+          "default": "Playlist: {title}",
+          "examples": [
+            "Playlist: {title}"
+          ],
+          "x-placeholders": [
+            "title"
+          ]
+        },
+        "youtube.defaultPlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "youtube.defaultPlaylist",
+          "description": "Interface text.",
+          "default": "YouTube",
+          "examples": [
+            "YouTube"
+          ]
+        },
+        "quality.title": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.title",
+          "description": "Interface text.",
+          "default": "Download quality",
+          "examples": [
+            "Download quality"
+          ]
+        },
+        "quality.count.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.count.one",
+          "description": "Interface text. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} video",
+          "examples": [
+            "{count} video"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "quality.count.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.count.other",
+          "description": "Interface text. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} videos",
+          "examples": [
+            "{count} videos"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "quality.count.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.count.zero",
+          "description": "Interface text. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "quality.count.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.count.two",
+          "description": "Interface text. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "quality.count.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.count.few",
+          "description": "Interface text. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "quality.count.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.count.many",
+          "description": "Interface text. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos"
+          ]
+        },
+        "quality.how": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.how",
+          "description": "Interface text.",
+          "default": "Download as",
+          "examples": [
+            "Download as"
+          ]
+        },
+        "quality.modeSeparate": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.modeSeparate",
+          "description": "Interface text.",
+          "default": "Video and audio as separate files (best quality)",
+          "examples": [
+            "Video and audio as separate files (best quality)"
+          ]
+        },
+        "quality.modeTogether": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.modeTogether",
+          "description": "Interface text.",
+          "default": "Video + audio in one file (up to about 720p)",
+          "examples": [
+            "Video + audio in one file (up to about 720p)"
+          ]
+        },
+        "quality.modeAudio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.modeAudio",
+          "description": "Interface text.",
+          "default": "Audio only",
+          "examples": [
+            "Audio only"
+          ]
+        },
+        "quality.video": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.video",
+          "description": "Interface text.",
+          "default": "Video quality",
+          "examples": [
+            "Video quality"
+          ]
+        },
+        "quality.audio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.audio",
+          "description": "Interface text.",
+          "default": "Audio quality",
+          "examples": [
+            "Audio quality"
+          ]
+        },
+        "quality.best": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.best",
+          "description": "Interface text.",
+          "default": "Best available",
+          "examples": [
+            "Best available"
+          ]
+        },
+        "quality.audioBest": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.audioBest",
+          "description": "Interface text.",
+          "default": "Best",
+          "examples": [
+            "Best"
+          ]
+        },
+        "quality.audioMedium": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.audioMedium",
+          "description": "Interface text.",
+          "default": "Medium (about 128 kbit/s)",
+          "examples": [
+            "Medium (about 128 kbit/s)"
+          ]
+        },
+        "quality.audioLow": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.audioLow",
+          "description": "Interface text.",
+          "default": "Low (about 64 kbit/s)",
+          "examples": [
+            "Low (about 64 kbit/s)"
+          ]
+        },
+        "quality.ruleNote": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.ruleNote",
+          "description": "Interface text.",
+          "default": "A video that does not have this quality uses the closest one.",
+          "examples": [
+            "A video that does not have this quality uses the closest one."
+          ]
+        },
+        "quality.specific": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.specific",
+          "description": "Interface text.",
+          "default": "Or choose exact formats for this video:",
+          "examples": [
+            "Or choose exact formats for this video:"
+          ]
+        },
+        "quality.auto": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.auto",
+          "description": "Interface text.",
+          "default": "Automatic (by the quality above)",
+          "examples": [
+            "Automatic (by the quality above)"
+          ]
+        },
+        "quality.formatTogether": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.formatTogether",
+          "description": "Interface text.",
+          "default": "Format",
+          "examples": [
+            "Format"
+          ]
+        },
+        "quality.formatVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.formatVideo",
+          "description": "Interface text.",
+          "default": "Video format",
+          "examples": [
+            "Video format"
+          ]
+        },
+        "quality.formatAudio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.formatAudio",
+          "description": "Interface text.",
+          "default": "Audio format",
+          "examples": [
+            "Audio format"
+          ]
+        },
+        "quality.playlist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.playlist",
+          "description": "Interface text.",
+          "default": "Add to playlist",
+          "examples": [
+            "Add to playlist"
+          ]
+        },
+        "quality.newPlaylist": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.newPlaylist",
+          "description": "Interface text. Keep the placeholders {name} in the text.",
+          "default": "New playlist “{name}”",
+          "examples": [
+            "New playlist “{name}”"
+          ],
+          "x-placeholders": [
+            "name"
+          ]
+        },
+        "quality.folder": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.folder",
+          "description": "Interface text.",
+          "default": "Save to",
+          "examples": [
+            "Save to"
+          ]
+        },
+        "quality.folderDefault": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.folderDefault",
+          "description": "Interface text.",
+          "default": "The Videos folder",
+          "examples": [
+            "The Videos folder"
+          ]
+        },
+        "quality.browse": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.browse",
+          "description": "Interface text.",
+          "default": "Browse…",
+          "examples": [
+            "Browse…"
+          ]
+        },
+        "quality.remember": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.remember",
+          "description": "Interface text.",
+          "default": "Remember these choices as my default",
+          "examples": [
+            "Remember these choices as my default"
+          ]
+        },
+        "quality.start": {
+          "type": "string",
+          "minLength": 1,
+          "title": "quality.start",
+          "description": "Interface text.",
+          "default": "Download",
+          "examples": [
+            "Download"
+          ]
+        },
+        "downloads.title": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.title",
+          "description": "Interface text.",
+          "default": "Downloads",
+          "examples": [
+            "Downloads"
+          ]
+        },
+        "downloads.queue": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.queue",
+          "description": "Interface text.",
+          "default": "Queue",
+          "examples": [
+            "Queue"
+          ]
+        },
+        "downloads.history": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.history",
+          "description": "Interface text.",
+          "default": "History",
+          "examples": [
+            "History"
+          ]
+        },
+        "downloads.empty": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.empty",
+          "description": "Interface text.",
+          "default": "Nothing is downloading.",
+          "examples": [
+            "Nothing is downloading."
+          ]
+        },
+        "downloads.historyEmpty": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.historyEmpty",
+          "description": "Interface text.",
+          "default": "No finished downloads yet.",
+          "examples": [
+            "No finished downloads yet."
+          ]
+        },
+        "downloads.inQueue.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.inQueue.one",
+          "description": "Interface text. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} video in the queue",
+          "examples": [
+            "{count} video in the queue"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "downloads.inQueue.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.inQueue.other",
+          "description": "Interface text. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} videos in the queue",
+          "examples": [
+            "{count} videos in the queue"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "downloads.inQueue.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.inQueue.zero",
+          "description": "Interface text. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos in the queue"
+          ]
+        },
+        "downloads.inQueue.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.inQueue.two",
+          "description": "Interface text. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos in the queue"
+          ]
+        },
+        "downloads.inQueue.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.inQueue.few",
+          "description": "Interface text. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos in the queue"
+          ]
+        },
+        "downloads.inQueue.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.inQueue.many",
+          "description": "Interface text. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} videos in the queue"
+          ]
+        },
+        "downloads.moreWaiting.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.moreWaiting.one",
+          "description": "Interface text. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} more is waiting",
+          "examples": [
+            "{count} more is waiting"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "downloads.moreWaiting.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.moreWaiting.other",
+          "description": "Interface text. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} more are waiting",
+          "examples": [
+            "{count} more are waiting"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "downloads.moreWaiting.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.moreWaiting.zero",
+          "description": "Interface text. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} more are waiting"
+          ]
+        },
+        "downloads.moreWaiting.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.moreWaiting.two",
+          "description": "Interface text. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} more are waiting"
+          ]
+        },
+        "downloads.moreWaiting.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.moreWaiting.few",
+          "description": "Interface text. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} more are waiting"
+          ]
+        },
+        "downloads.moreWaiting.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.moreWaiting.many",
+          "description": "Interface text. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} more are waiting"
+          ]
+        },
+        "downloads.status.queued": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.queued",
+          "description": "Interface text.",
+          "default": "Queued",
+          "examples": [
+            "Queued"
+          ]
+        },
+        "downloads.status.downloading": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.downloading",
+          "description": "Interface text.",
+          "default": "Downloading",
+          "examples": [
+            "Downloading"
+          ]
+        },
+        "downloads.status.waiting": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.waiting",
+          "description": "Interface text.",
+          "default": "Waiting",
+          "examples": [
+            "Waiting"
+          ]
+        },
+        "downloads.status.needsSignIn": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.needsSignIn",
+          "description": "Interface text.",
+          "default": "Sign-in needed",
+          "examples": [
+            "Sign-in needed"
+          ]
+        },
+        "downloads.status.paused": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.paused",
+          "description": "Interface text.",
+          "default": "Paused",
+          "examples": [
+            "Paused"
+          ]
+        },
+        "downloads.status.done": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.done",
+          "description": "Interface text.",
+          "default": "Done",
+          "examples": [
+            "Done"
+          ]
+        },
+        "downloads.status.failed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.failed",
+          "description": "Interface text.",
+          "default": "Failed",
+          "examples": [
+            "Failed"
+          ]
+        },
+        "downloads.status.cancelled": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.status.cancelled",
+          "description": "Interface text.",
+          "default": "Cancelled",
+          "examples": [
+            "Cancelled"
+          ]
+        },
+        "downloads.part.together": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.part.together",
+          "description": "Interface text.",
+          "default": "Video + audio",
+          "examples": [
+            "Video + audio"
+          ]
+        },
+        "downloads.part.video": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.part.video",
+          "description": "Interface text.",
+          "default": "Video",
+          "examples": [
+            "Video"
+          ]
+        },
+        "downloads.part.audio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.part.audio",
+          "description": "Interface text.",
+          "default": "Audio",
+          "examples": [
+            "Audio"
+          ]
+        },
+        "downloads.partDone": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.partDone",
+          "description": "Interface text.",
+          "default": "Done",
+          "examples": [
+            "Done"
+          ]
+        },
+        "downloads.eta": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.eta",
+          "description": "Interface text. Keep the placeholders {time} in the text.",
+          "default": "{time} left",
+          "examples": [
+            "{time} left"
+          ],
+          "x-placeholders": [
+            "time"
+          ]
+        },
+        "downloads.moveTop": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.moveTop",
+          "description": "Interface text.",
+          "default": "Move to top",
+          "examples": [
+            "Move to top"
+          ]
+        },
+        "downloads.now": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.now",
+          "description": "Interface text.",
+          "default": "Download now",
+          "examples": [
+            "Download now"
+          ]
+        },
+        "downloads.pause": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.pause",
+          "description": "Interface text.",
+          "default": "Pause",
+          "examples": [
+            "Pause"
+          ]
+        },
+        "downloads.resume": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.resume",
+          "description": "Interface text.",
+          "default": "Resume",
+          "examples": [
+            "Resume"
+          ]
+        },
+        "downloads.cancel": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.cancel",
+          "description": "Interface text.",
+          "default": "Cancel",
+          "examples": [
+            "Cancel"
+          ]
+        },
+        "downloads.cancelDelete": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.cancelDelete",
+          "description": "Interface text.",
+          "default": "Cancel and delete partial files",
+          "examples": [
+            "Cancel and delete partial files"
+          ]
+        },
+        "downloads.retry": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.retry",
+          "description": "Interface text.",
+          "default": "Retry",
+          "examples": [
+            "Retry"
+          ]
+        },
+        "downloads.remove": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.remove",
+          "description": "Interface text.",
+          "default": "Remove from list",
+          "examples": [
+            "Remove from list"
+          ]
+        },
+        "downloads.clear": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.clear",
+          "description": "Interface text.",
+          "default": "Clear history",
+          "examples": [
+            "Clear history"
+          ]
+        },
+        "downloads.play": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.play",
+          "description": "Interface text.",
+          "default": "Play",
+          "examples": [
+            "Play"
+          ]
+        },
+        "downloads.pauseAll": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.pauseAll",
+          "description": "Interface text.",
+          "default": "Pause all",
+          "examples": [
+            "Pause all"
+          ]
+        },
+        "downloads.resumeAll": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.resumeAll",
+          "description": "Interface text.",
+          "default": "Resume all",
+          "examples": [
+            "Resume all"
+          ]
+        },
+        "downloads.onHold": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.onHold",
+          "description": "Interface text.",
+          "default": "Downloads are on hold.",
+          "examples": [
+            "Downloads are on hold."
+          ]
+        },
+        "downloads.openManager": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.openManager",
+          "description": "Interface text.",
+          "default": "Open downloads manager",
+          "examples": [
+            "Open downloads manager"
+          ]
+        },
+        "downloads.collapse": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.collapse",
+          "description": "Interface text.",
+          "default": "Collapse",
+          "examples": [
+            "Collapse"
+          ]
+        },
+        "downloads.expand": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.expand",
+          "description": "Interface text.",
+          "default": "Expand",
+          "examples": [
+            "Expand"
+          ]
+        },
+        "downloads.nextIn": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.nextIn",
+          "description": "Interface text. Keep the placeholders {seconds} in the text.",
+          "default": "Next download in {seconds} s",
+          "examples": [
+            "Next download in {seconds} s"
+          ],
+          "x-placeholders": [
+            "seconds"
+          ]
+        },
+        "downloads.dragHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.dragHint",
+          "description": "Interface text.",
+          "default": "Drag to change the priority",
+          "examples": [
+            "Drag to change the priority"
+          ]
+        },
+        "downloads.alert.signIn": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.alert.signIn",
+          "description": "Interface text.",
+          "default": "YouTube asks you to sign in. Choose a browser in Settings → Downloads, then press Resume.",
+          "examples": [
+            "YouTube asks you to sign in. Choose a browser in Settings → Downloads, then press Resume."
+          ]
+        },
+        "downloads.alert.disk": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.alert.disk",
+          "description": "Interface text. Keep the placeholders {detail} in the text.",
+          "default": "The disk is full or the folder cannot be written ({detail}). Fix it, then press Resume all.",
+          "examples": [
+            "The disk is full or the folder cannot be written ({detail}). Fix it, then press Resume all."
+          ],
+          "x-placeholders": [
+            "detail"
+          ]
+        },
+        "settings.downloads": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads",
+          "description": "The Settings dialog.",
+          "default": "YouTube downloads",
+          "examples": [
+            "YouTube downloads"
+          ]
+        },
+        "settings.downloads.delay": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.delay",
+          "description": "The Settings dialog.",
+          "default": "Pause between videos (seconds)",
+          "examples": [
+            "Pause between videos (seconds)"
+          ]
+        },
+        "settings.downloads.speed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.speed",
+          "description": "The Settings dialog.",
+          "default": "Speed limit (KB/s, 0 = none)",
+          "examples": [
+            "Speed limit (KB/s, 0 = none)"
+          ]
+        },
+        "settings.downloads.autoResume": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.autoResume",
+          "description": "The Settings dialog.",
+          "default": "Continue unfinished downloads when the app starts",
+          "examples": [
+            "Continue unfinished downloads when the app starts"
+          ]
+        },
+        "settings.downloads.cookies": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.cookies",
+          "description": "The Settings dialog.",
+          "default": "Use YouTube sign-in from a browser",
+          "examples": [
+            "Use YouTube sign-in from a browser"
+          ]
+        },
+        "settings.downloads.cookiesHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.cookiesHint",
+          "description": "The Settings dialog.",
+          "default": "For age-restricted videos, or when YouTube asks to confirm you are not a robot.",
+          "examples": [
+            "For age-restricted videos, or when YouTube asks to confirm you are not a robot."
+          ]
+        },
+        "settings.downloads.cookiesNone": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.cookiesNone",
+          "description": "The Settings dialog.",
+          "default": "None",
+          "examples": [
+            "None"
+          ]
+        },
+        "settings.downloads.checkVersion": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.checkVersion",
+          "description": "The Settings dialog.",
+          "default": "Downloader version",
+          "examples": [
+            "Downloader version"
+          ]
+        },
+        "settings.downloads.update": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.update",
+          "description": "The Settings dialog.",
+          "default": "Update the downloader",
+          "examples": [
+            "Update the downloader"
+          ]
+        },
+        "settings.downloads.updating": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.updating",
+          "description": "The Settings dialog.",
+          "default": "Updating…",
+          "examples": [
+            "Updating…"
+          ]
+        },
+        "settings.downloads.restore": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.restore",
+          "description": "The Settings dialog.",
+          "default": "Use the one that came with the app",
+          "examples": [
+            "Use the one that came with the app"
+          ]
+        },
+        "settings.downloads.reset": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.reset",
+          "description": "The Settings dialog.",
+          "default": "Reset download settings",
+          "examples": [
+            "Reset download settings"
+          ]
+        },
+        "settings.downloads.version": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.version",
+          "description": "The Settings dialog. Keep the placeholders {version} in the text.",
+          "default": "Downloader version: {version}",
+          "examples": [
+            "Downloader version: {version}"
+          ],
+          "x-placeholders": [
+            "version"
+          ]
+        },
+        "settings.downloads.updated": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.updated",
+          "description": "The Settings dialog. Keep the placeholders {version} in the text.",
+          "default": "The downloader is now at version {version}.",
+          "examples": [
+            "The downloader is now at version {version}."
+          ],
+          "x-placeholders": [
+            "version"
+          ]
+        },
+        "settings.downloads.restored": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.restored",
+          "description": "The Settings dialog.",
+          "default": "The downloader that came with the app is used again.",
+          "examples": [
+            "The downloader that came with the app is used again."
+          ]
+        },
+        "settings.downloads.failed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.downloads.failed",
+          "description": "The Settings dialog. Keep the placeholders {error} in the text.",
+          "default": "The downloader action failed: {error}",
+          "examples": [
+            "The downloader action failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "downloads.summary.videos": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.summary.videos",
+          "description": "Interface text. Keep the placeholders {done}, {total} in the text.",
+          "default": "Videos {done} / {total}",
+          "examples": [
+            "Videos {done} / {total}"
+          ],
+          "x-placeholders": [
+            "done",
+            "total"
+          ]
+        },
+        "downloads.summary.audios": {
+          "type": "string",
+          "minLength": 1,
+          "title": "downloads.summary.audios",
+          "description": "Interface text. Keep the placeholders {done}, {total} in the text.",
+          "default": "Audio {done} / {total}",
+          "examples": [
+            "Audio {done} / {total}"
+          ],
+          "x-placeholders": [
+            "done",
+            "total"
+          ]
+        },
+        "menu.openDownloadManager": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.openDownloadManager",
+          "description": "Interface text.",
+          "default": "Open Download Manager…",
+          "examples": [
+            "Open Download Manager…"
+          ]
+        },
+        "menu.pauseAllDownloads": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.pauseAllDownloads",
+          "description": "Interface text.",
+          "default": "Pause All Downloads",
+          "examples": [
+            "Pause All Downloads"
+          ]
+        },
+        "menu.resumeAllDownloads": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.resumeAllDownloads",
+          "description": "Interface text.",
+          "default": "Resume All Downloads",
+          "examples": [
+            "Resume All Downloads"
+          ]
+        },
+        "menu.downloadManager": {
+          "type": "string",
+          "minLength": 1,
+          "title": "menu.downloadManager",
+          "description": "Interface text.",
+          "default": "Download Manager",
+          "examples": [
+            "Download Manager"
+          ]
+        },
+        "mgr.deleteTitle": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteTitle",
+          "description": "The playlist manager.",
+          "default": "Delete this playlist?",
+          "examples": [
+            "Delete this playlist?"
+          ]
+        },
+        "mgr.deleteBody": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteBody",
+          "description": "The playlist manager. Keep the placeholders {title} in the text.",
+          "default": "\"{title}\" is deleted, together with its previews. The video and audio files stay on disk unless you tick the box below.",
+          "examples": [
+            "\"{title}\" is deleted, together with its previews. The video and audio files stay on disk unless you tick the box below."
+          ],
+          "x-placeholders": [
+            "title"
+          ]
+        },
+        "mgr.deleteCount.one": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteCount.one",
+          "description": "The playlist manager. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} track",
+          "examples": [
+            "{count} track"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "mgr.deleteCount.other": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteCount.other",
+          "description": "The playlist manager. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
+          "default": "{count} tracks",
+          "examples": [
+            "{count} tracks"
+          ],
+          "x-placeholders": [
+            "count"
+          ]
+        },
+        "mgr.deleteCount.zero": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteCount.zero",
+          "description": "The playlist manager. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} tracks"
+          ]
+        },
+        "mgr.deleteCount.two": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteCount.two",
+          "description": "The playlist manager. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} tracks"
+          ]
+        },
+        "mgr.deleteCount.few": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteCount.few",
+          "description": "The playlist manager. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} tracks"
+          ]
+        },
+        "mgr.deleteCount.many": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteCount.many",
+          "description": "The playlist manager. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
+          "examples": [
+            "{count} tracks"
+          ]
+        },
+        "mgr.alsoDeleteFiles": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.alsoDeleteFiles",
+          "description": "The playlist manager.",
+          "default": "Also move its video and audio files to the Trash",
+          "examples": [
+            "Also move its video and audio files to the Trash"
+          ]
+        },
+        "mgr.deleteWithFiles": {
+          "type": "string",
+          "minLength": 1,
+          "title": "mgr.deleteWithFiles",
+          "description": "The playlist manager.",
+          "default": "Delete and move files to the Trash",
+          "examples": [
+            "Delete and move files to the Trash"
+          ]
+        },
         "common.cancel": {
           "type": "string",
           "minLength": 1,
@@ -91,6 +1766,56 @@
           "default": "Add",
           "examples": [
             "Add"
+          ]
+        },
+        "context.cut": {
+          "type": "string",
+          "minLength": 1,
+          "title": "context.cut",
+          "description": "Interface text.",
+          "default": "Cut",
+          "examples": [
+            "Cut"
+          ]
+        },
+        "context.copy": {
+          "type": "string",
+          "minLength": 1,
+          "title": "context.copy",
+          "description": "Interface text.",
+          "default": "Copy",
+          "examples": [
+            "Copy"
+          ]
+        },
+        "context.paste": {
+          "type": "string",
+          "minLength": 1,
+          "title": "context.paste",
+          "description": "Interface text.",
+          "default": "Paste",
+          "examples": [
+            "Paste"
+          ]
+        },
+        "context.selectAll": {
+          "type": "string",
+          "minLength": 1,
+          "title": "context.selectAll",
+          "description": "Interface text.",
+          "default": "Select all",
+          "examples": [
+            "Select all"
+          ]
+        },
+        "context.exitFullscreen": {
+          "type": "string",
+          "minLength": 1,
+          "title": "context.exitFullscreen",
+          "description": "Interface text.",
+          "default": "Exit fullscreen",
+          "examples": [
+            "Exit fullscreen"
           ]
         },
         "common.reset": {
@@ -541,76 +2266,14 @@
             "Move down"
           ]
         },
-        "mgr.confirmDelete.one": {
-          "type": "string",
-          "minLength": 1,
-          "title": "mgr.confirmDelete.one",
-          "description": "The playlist manager. Plural form \"one\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
-          "default": "Delete {count} track? Click again",
-          "examples": [
-            "Delete {count} track? Click again"
-          ],
-          "x-placeholders": [
-            "count"
-          ]
-        },
-        "mgr.confirmDelete.other": {
-          "type": "string",
-          "minLength": 1,
-          "title": "mgr.confirmDelete.other",
-          "description": "The playlist manager. Plural form \"other\" (chosen by the language's plural rules). Keep the placeholders {count} in the text.",
-          "default": "Delete {count} tracks? Click again",
-          "examples": [
-            "Delete {count} tracks? Click again"
-          ],
-          "x-placeholders": [
-            "count"
-          ]
-        },
-        "mgr.confirmDelete.zero": {
-          "type": "string",
-          "minLength": 1,
-          "title": "mgr.confirmDelete.zero",
-          "description": "The playlist manager. Optional plural form \"zero\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
-          "examples": [
-            "Delete {count} tracks? Click again"
-          ]
-        },
-        "mgr.confirmDelete.two": {
-          "type": "string",
-          "minLength": 1,
-          "title": "mgr.confirmDelete.two",
-          "description": "The playlist manager. Optional plural form \"two\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
-          "examples": [
-            "Delete {count} tracks? Click again"
-          ]
-        },
-        "mgr.confirmDelete.few": {
-          "type": "string",
-          "minLength": 1,
-          "title": "mgr.confirmDelete.few",
-          "description": "The playlist manager. Optional plural form \"few\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
-          "examples": [
-            "Delete {count} tracks? Click again"
-          ]
-        },
-        "mgr.confirmDelete.many": {
-          "type": "string",
-          "minLength": 1,
-          "title": "mgr.confirmDelete.many",
-          "description": "The playlist manager. Optional plural form \"many\" for languages whose plural rules have it; English does not use it. Placeholders may be left out.",
-          "examples": [
-            "Delete {count} tracks? Click again"
-          ]
-        },
         "mgr.deleteHint": {
           "type": "string",
           "minLength": 1,
           "title": "mgr.deleteHint",
           "description": "The playlist manager.",
-          "default": "Delete this playlist (the video files are not touched)",
+          "default": "Delete this playlist",
           "examples": [
-            "Delete this playlist (the video files are not touched)"
+            "Delete this playlist"
           ]
         },
         "mgr.import": {
