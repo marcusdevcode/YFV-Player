@@ -39,7 +39,7 @@ One-time setup:
   mkdir -p ~/.docker/cli-plugins && ln -sfn /opt/homebrew/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
   colima start --vm-type vz --vz-rosetta --cpu 6 --memory 10 --disk 80
   ```
-  The scripts need `docker buildx`. If Docker complains about `docker-credential-desktop`, remove the line `"credsStore": "desktop"` from `~/.docker/config.json` (nothing else needs it without Docker Desktop).
+  The scripts need `docker buildx`. Without Docker Desktop, `~/.docker/config.json` often still says `"credsStore": "desktop"`, which breaks image pulls (`docker-credential-desktop` not found). `scripts/docker-build.mjs` detects that and uses a temporary copy of the config for its own docker calls, so you do not need to edit anything. Plain `docker` commands you run yourself still fail until you remove that line.
 
 ```sh
 npm run build:app          # test build for this computer
@@ -109,13 +109,17 @@ The app updates itself from GitHub Releases. To be sure an update really comes f
 - Back it up somewhere safe. If you lose it, installed apps can never be updated again.
 - `.gitignore` blocks `*.key`, `*.pem`, `*.p12` and `.env*` files, and allows only `*.example` templates. Check `git status` before committing.
 
+## macOS: "is damaged and can't be opened"
+
+Without an Apple Developer ID the app cannot be properly signed or notarized. `scripts/tauri.mjs` signs the whole `.app` ad-hoc (`-`), which fixes the false "damaged" message, but macOS still warns that the developer is unverified on first launch: right-click the app, choose **Open**, then **Open** again (or run `xattr -cr "/Applications/<name>.app"`). To remove the warning for everyone you need a paid Apple Developer ID: set `APPLE_SIGNING_IDENTITY` plus the notarization variables (`APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`) before building and the script uses them instead.
+
 ## Not covered by these keys
 
 macOS and Windows code signing (so the OS doesn't warn on first launch) needs separate certificates from Apple and Microsoft. Without them, builds are unsigned and the OS shows a security warning. The keys above only protect updates.
 
 ## Troubleshooting
 
-- **`.dmg` fails with "resource busy" on macOS:** run the build again, or build only the app: `npm run build:app -- --bundles app`.
+- **`.dmg` fails on macOS ("resource busy", or Finder "Can't set statusbar visible"):** the DMG tool styles its window through Finder. `scripts/tauri.mjs` sets `CI=true` for macOS builds so Tauri skips that step (the DMG then has the default window layout). If it still fails, build only the app: `npm run build:app -- --bundles app`.
 - **"Open with" doesn't show the app:** it only works in an installed build, not in `npm start`.
 - **A video won't play (error 4):** the file's codec isn't supported by the system's web view (typically VP9/AV1 or MKV/AVI). H.264/AAC MP4 works everywhere.
 - **Don't commit large media files.** Keep test videos outside the repository.

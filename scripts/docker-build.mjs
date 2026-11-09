@@ -5,8 +5,9 @@
 // The signing key is passed to the container through the environment, never copied into it.
 
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir, tmpdir } from "node:os";
+import { delimiter, join, resolve } from "node:path";
 import { appInfo, root } from "./app-info.mjs";
 
 const [os, arch] = process.argv.slice(2);
@@ -34,13 +35,44 @@ if (!target) {
   process.exit(1);
 }
 
-if (spawnSync("docker", ["version", "--format", "{{.Server.Version}}"], { stdio: "ignore" }).status !== 0) {
+// Docker without Docker Desktop (for example Colima) often leaves "credsStore": "desktop" in
+// ~/.docker/config.json, which makes every image pull fail ("docker-credential-desktop not found").
+// If that helper is missing, use a temporary copy of the config without it for our docker calls.
+// The real config is never changed.
+const dockerEnv = { ...process.env };
+try {
+  const dockerDir = process.env.DOCKER_CONFIG ?? join(homedir(), ".docker");
+  const cfgFile = join(dockerDir, "config.json");
+  const cfg = existsSync(cfgFile) ? JSON.parse(readFileSync(cfgFile, "utf8")) : {};
+  const helper = cfg.credsStore && `docker-credential-${cfg.credsStore}`;
+  const onPath = (bin) =>
+    (process.env.PATH ?? "").split(delimiter).some((d) => existsSync(join(d, process.platform === "win32" ? `${bin}.exe` : bin)));
+  if (helper && !onPath(helper)) {
+    const host = spawnSync("docker", ["context", "inspect", "--format", "{{.Endpoints.docker.Host}}"], { encoding: "utf8" }).stdout?.trim();
+    const tmp = mkdtempSync(join(tmpdir(), "docker-config-"));
+    delete cfg.credsStore;
+    cfg.cliPluginsExtraDirs = [
+      ...(cfg.cliPluginsExtraDirs ?? []),
+      join(dockerDir, "cli-plugins"),
+      "/opt/homebrew/lib/docker/cli-plugins",
+      "/usr/local/lib/docker/cli-plugins",
+    ];
+    writeFileSync(join(tmp, "config.json"), JSON.stringify(cfg));
+    dockerEnv.DOCKER_CONFIG = tmp;
+    if (host && !dockerEnv.DOCKER_HOST) dockerEnv.DOCKER_HOST = host;
+    console.log(`Docker credentials helper "${helper}" is missing: using a temporary Docker config (yours is unchanged).`);
+  }
+} catch {
+  /* fall through to the normal docker calls */
+}
+
+if (spawnSync("docker", ["version", "--format", "{{.Server.Version}}"], { stdio: "ignore", env: dockerEnv }).status !== 0) {
   console.error("Docker is not installed or not running. Install and start Docker Desktop, then try again.");
   process.exit(1);
 }
 
 // Signing key: from the environment, or keys/private.key. Releases must be signed.
-const env = { ...process.env };
+const env = { ...dockerEnv };
 const keyFile = resolve(root, env.APP_SIGNING_KEY ?? "keys/private.key");
 if (!env.TAURI_SIGNING_PRIVATE_KEY) {
   if (!existsSync(keyFile)) {

@@ -60,6 +60,20 @@ const cargo = readFileSync(cargoFile, "utf8");
 const synced = cargo.replace(/^version = ".*"$/m, `version = "${appInfo.version}"`);
 if (synced !== cargo) writeFileSync(cargoFile, synced);
 
+// --- macOS: build the .dmg without Finder ----------------------------------------------------
+// The DMG tool styles its window with AppleScript through Finder, which randomly fails ("Can't set
+// statusbar visible ... -10006", "resource busy"). Tauri skips that step when CI is set.
+if (process.platform === "darwin" && args[0] === "build") env.CI ??= "true";
+
+// Without a paid Apple Developer ID there is no real signature, but the whole .app must still carry
+// an ad-hoc one ("-"): the compiler only signs the binary, and macOS then says the downloaded app is
+// "damaged". Set APPLE_SIGNING_IDENTITY (and the notarization variables) to sign for real instead.
+if (process.platform === "darwin" && args[0] === "build" && !env.APPLE_SIGNING_IDENTITY) {
+  config.bundle.macOS = { signingIdentity: "-" };
+  extra.length = 0;
+  extra.push("--config", JSON.stringify(config));
+}
+
 // --- signing key (build only) -----------------------------------------------------------------
 if (args[0] === "build") {
   const keyFile = resolve(root, env.APP_SIGNING_KEY ?? "keys/private.key");
