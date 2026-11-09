@@ -2,7 +2,7 @@
 // Gathers every finished build into release/v<version>/ and writes latest.json for the updater.
 //   node scripts/collect-release.mjs
 // Finds: the macOS builds in src-tauri/target, and the Docker builds in release/docker/.
-// Nothing is uploaded. At the end it prints the command to publish the release yourself.
+// Nothing is uploaded. Publishing is the next step of `npm run release` (or `npm run release:publish`).
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, copyFileSync, writeFileSync, statSync } from "node:fs";
 import { arch as hostArch, platform as hostPlatform } from "node:os";
@@ -56,7 +56,9 @@ for (const src of sources) {
   if (!files.some((f) => basename(f).includes(version))) continue;
 
   for (const [suffix, ext, updater] of kinds[src.os]) {
-    const file = files.find((f) => f.endsWith(suffix) && (updater || basename(f).includes(version)));
+    // The build folders keep installers of older versions, so the file must carry this version in its
+    // name. Only the macOS update package (YourApp.app.tar.gz) has no version in its name.
+    const file = files.find((f) => f.endsWith(suffix) && (basename(f).includes(version) || (updater && src.os === "darwin")));
     if (!file) continue;
     const published = `${id}_${version}_${src.os}-${src.arch}${ext}`;
     copyFileSync(file, join(outDir, published));
@@ -102,7 +104,4 @@ for (const entry of readdirSync(releaseRoot, { withFileTypes: true })) {
 }
 
 if (missing.length) console.warn(`\nNot included (not built): ${missing.join(", ")}`);
-console.log(`\nPublish it yourself (needs the GitHub CLI, logged in as you):
-
-  gh release create ${tag} release/${tag}/* --repo ${repoUrl.replace("https://github.com/", "")} --title "${name} ${tag}" --notes "${name} ${tag}"
-`);
+console.log(`\nNext: npm run release:publish publishes it (npm run release builds, collects and publishes in one go).\n`);

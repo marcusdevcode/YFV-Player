@@ -15,6 +15,9 @@ rsync -a --delete \
   /src/ "$work/"
 
 cd "$work"
+# The build folder lives in a volume that keeps installers of older versions: start from empty so
+# only this build's files are copied out.
+rm -rf "$work/${bundle_dir}"
 npm ci
 node scripts/run-tauri.mjs build "$@"
 
