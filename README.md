@@ -61,7 +61,7 @@ Full guide, including how to get your own update-signing keys if you copy this r
 - [ ] **3. Layout**: sidebar exactly 320px, video takes the rest; both 100vh.
 
 ### Opening files
-- [~] **4. "Open with" support** *(only the first step exists: a file passed on launch plays right away; file associations for Finder/Explorer/Files, single-window reuse and the install-time registration are not done)*: The app appears in the right-click "Open with" list for video and audio files in Finder, Windows Explorer and Ubuntu Files (mp4, m4v, mov, mkv, webm, avi, wmv, flv, mpg, ts, 3gp, ogv, m4a, mp3, aac, flac, wav, ogg, opus). Opening a second file while the app runs reuses the existing window. Clear message for unsupported codecs. *Only works in an installed build, not in dev mode.*
+- [x] **4. "Open with" support and drag and drop** *("Open with" only works in an installed build)*: the app is registered for video and audio files (mp4, m4v, mov, mkv, webm, avi, wmv, flv, mpg/mpeg, ts, 3gp, ogv, m4a, mp3, aac, flac, wav, ogg, opus) so it appears in the right-click "Open with" list in Finder, Windows Explorer and Ubuntu Files. Opening a file while the app runs plays it in the existing window (macOS: open event; Windows/Linux: a second launch is forwarded to the running copy). Dropping a video on the window plays it; a video plus an audio file play as a pair. Unsupported codecs show a clear message.
 
 ### Playlists
 - [ ] **5. Playlist model + JSON**: title, color, cover, tracks (video path, optional audio path, thumbnail, source). Save, load, import and export as `.json`; autosaved.

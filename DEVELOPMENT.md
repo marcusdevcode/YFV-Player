@@ -75,7 +75,7 @@ Extra arguments go to `tauri build`: `npm run build:app -- --bundles app` builds
 
 1. Change `version` in `package.json` (the only place; `scripts/tauri.mjs` syncs `src-tauri/Cargo.toml`).
 2. `npm run release` builds everything, then publishes it. To only build, use `npm run release:build`; to publish what is already built, `npm run release:publish`.
-3. Check `release/v<version>/`: installers named `<name>_<version>_<os>-<cpu>.<ext>` and `latest.json` (the updater file, with signatures).
+3. Check `release/v<version>/`: installers named `<name>_<version>_<os>-<cpu>.<ext>` and `latest.json` (the updater file, with signatures). Collecting a new version also **deletes the older `release/v*` folders** on this computer, so only the newest one is kept. (Releases already on GitHub are never touched by the scripts.)
 4. `release:publish` (`scripts/release-version.js`) reads name, version and repository from `package.json`, checks that all six platforms are in `release/v<version>/`, that `gh` is installed and logged in, and that the release does not exist yet, asks you to confirm, then runs `gh release create`. Options: `--yes` (no question), `--draft`, `--dry-run` (print the command only), `--allow-partial`. It runs as the GitHub account logged in with `gh auth login` on this machine.
 5. Commit and push your code yourself first (`git add . && git commit && git push`): `gh release create` makes the tag from the pushed code. The repository must be public for the updater to read the release.
 
@@ -120,6 +120,6 @@ macOS and Windows code signing (so the OS doesn't warn on first launch) needs se
 ## Troubleshooting
 
 - **`.dmg` fails on macOS ("resource busy", or Finder "Can't set statusbar visible"):** the DMG tool styles its window through Finder. `scripts/tauri.mjs` sets `CI=true` for macOS builds so Tauri skips that step (the DMG then has the default window layout). If it still fails, build only the app: `npm run build:app -- --bundles app`.
-- **"Open with" doesn't show the app:** it only works in an installed build, not in `npm start`.
+- **"Open with" doesn't show the app:** it only works in an installed build, not in `npm start`. After installing a new build, macOS can take a moment (or `killall Finder`) to refresh the list. Drag and drop does work in `npm start`.
 - **A video won't play (error 4):** the file's codec isn't supported by the system's web view (typically VP9/AV1 or MKV/AVI). H.264/AAC MP4 works everywhere.
 - **Don't commit large media files.** Keep test videos outside the repository.

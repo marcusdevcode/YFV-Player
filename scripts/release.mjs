@@ -11,7 +11,8 @@ import { appInfo, root } from "./app-info.mjs";
 
 const { id, name, version, repoUrl } = appInfo;
 const tag = `v${version}`;
-const outDir = resolve(root, "release", tag);
+const releaseRoot = resolve(root, "release");
+const outDir = resolve(releaseRoot, tag);
 
 const hostCpu = hostArch() === "arm64" ? "aarch64" : "x86_64";
 const t = (p) => resolve(root, p);
@@ -92,6 +93,14 @@ console.log(`\nRelease ${tag}: ${outDir}`);
 for (const f of readdirSync(outDir).sort()) {
   console.log(`  ${f}  (${(statSync(join(outDir, f)).size / 1048576).toFixed(1)} MB)`);
 }
+// A new release replaces the old ones on disk: remove the other release/v<version> folders.
+for (const entry of readdirSync(releaseRoot, { withFileTypes: true })) {
+  if (entry.isDirectory() && /^v\d+\.\d+\.\d+/.test(entry.name) && entry.name !== tag) {
+    rmSync(join(releaseRoot, entry.name), { recursive: true, force: true });
+    console.log(`Removed old release folder ${entry.name}`);
+  }
+}
+
 if (missing.length) console.warn(`\nNot included (not built): ${missing.join(", ")}`);
 console.log(`\nPublish it yourself (needs the GitHub CLI, logged in as you):
 

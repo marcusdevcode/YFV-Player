@@ -3,13 +3,13 @@ mod mp4;
 
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use serde::Serialize;
 use tauri::image::Image;
 use tauri::menu::{AboutMetadataBuilder, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 
 use mp4::mux::Phase;
 
@@ -99,9 +99,37 @@ fn merge_cancel(state: State<'_, MergeState>) {
     state.cancel.store(true, Ordering::SeqCst);
 }
 
-/// A media file passed on the command line (or via APP_OPEN), if any.
+/// Files handed to the app from outside ("Open with", a second launch) while the page may not be
+/// loaded yet. Once the page asked for the launch file (`ready`), new ones are sent as events.
+#[derive(Default)]
+struct OpenState {
+    ready: AtomicBool,
+    pending: Mutex<Option<String>>,
+}
+
+/// A media file was opened from outside: tell the page (or keep it until the page is ready) and
+/// bring the window to the front.
+fn deliver_open(app: &AppHandle, path: String) {
+    let state = app.state::<OpenState>();
+    if state.ready.load(Ordering::SeqCst) {
+        let _ = app.emit("open-file", &path);
+    } else {
+        *state.pending.lock().unwrap() = Some(path);
+    }
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.unminimize();
+        let _ = window.show();
+        let _ = window.set_focus();
+    }
+}
+
+/// A media file passed on the command line (or via APP_OPEN), or opened before the page was ready.
 #[tauri::command]
-fn launch_path() -> Option<String> {
+fn launch_path(state: State<'_, OpenState>) -> Option<String> {
+    state.ready.store(true, Ordering::SeqCst);
+    if let Some(path) = state.pending.lock().unwrap().take() {
+        return Some(path);
+    }
     std::env::var("APP_OPEN")
         .ok()
         .into_iter()
@@ -118,9 +146,19 @@ fn launch_audio() -> Option<String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let server = media_server::start().expect("failed to start local media server");
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+    // A second launch (Windows/Linux "Open with" while the app runs) is handed to the running
+    // window instead of starting another copy. It must be the first plugin.
+    #[cfg(desktop)]
+    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+        if let Some(path) = args.into_iter().skip(1).find(|a| PathBuf::from(a).is_file()) {
+            deliver_open(app, path);
+        }
+    }));
+    builder
         .manage(server)
         .manage(MergeState::default())
+        .manage(OpenState::default())
         .setup(|app| {
             let open_video = MenuItemBuilder::with_id("open-video", "Open Video…")
                 .accelerator("CmdOrCtrl+O")
@@ -209,6 +247,18 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
         .invoke_handler(tauri::generate_handler![media_url, media_duration, merge_av, merge_cancel, launch_path, launch_audio])
-        .run(tauri::generate_context!())
-        .expect("error while running the application");
+        .build(tauri::generate_context!())
+        .expect("error while building the application")
+        .run(|app, event| {
+            // macOS delivers "Open with" and double-clicked files as an event, not as arguments.
+            #[cfg(any(target_os = "macos", target_os = "ios"))]
+            if let tauri::RunEvent::Opened { urls } = &event {
+                let file = urls.iter().filter_map(|u| u.to_file_path().ok()).find(|p| p.is_file());
+                if let Some(path) = file {
+                    deliver_open(app, path.to_string_lossy().into_owned());
+                }
+            }
+            #[cfg(not(any(target_os = "macos", target_os = "ios")))]
+            let _ = (app, event);
+        });
 }

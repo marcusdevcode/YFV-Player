@@ -31,6 +31,161 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
+    ],
+    "fileAssociations": [
+      {
+        "ext": [
+          "mp4"
+        ],
+        "name": "MP4 video",
+        "mimeType": "video/mp4",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "m4v"
+        ],
+        "name": "M4V video",
+        "mimeType": "video/x-m4v",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "mov"
+        ],
+        "name": "QuickTime movie",
+        "mimeType": "video/quicktime",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "mkv"
+        ],
+        "name": "Matroska video",
+        "mimeType": "video/x-matroska",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "webm"
+        ],
+        "name": "WebM video",
+        "mimeType": "video/webm",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "avi"
+        ],
+        "name": "AVI video",
+        "mimeType": "video/x-msvideo",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "wmv"
+        ],
+        "name": "Windows Media video",
+        "mimeType": "video/x-ms-wmv",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "flv"
+        ],
+        "name": "Flash video",
+        "mimeType": "video/x-flv",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "mpg",
+          "mpeg"
+        ],
+        "name": "MPEG video",
+        "mimeType": "video/mpeg",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "ts"
+        ],
+        "name": "MPEG transport stream",
+        "mimeType": "video/mp2t",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "3gp"
+        ],
+        "name": "3GP video",
+        "mimeType": "video/3gpp",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "ogv"
+        ],
+        "name": "Ogg video",
+        "mimeType": "video/ogg",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "m4a"
+        ],
+        "name": "M4A audio",
+        "mimeType": "audio/mp4",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "mp3"
+        ],
+        "name": "MP3 audio",
+        "mimeType": "audio/mpeg",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "aac"
+        ],
+        "name": "AAC audio",
+        "mimeType": "audio/aac",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "flac"
+        ],
+        "name": "FLAC audio",
+        "mimeType": "audio/flac",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "wav"
+        ],
+        "name": "WAV audio",
+        "mimeType": "audio/x-wav",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "ogg"
+        ],
+        "name": "Ogg audio",
+        "mimeType": "audio/ogg",
+        "role": "Viewer"
+      },
+      {
+        "ext": [
+          "opus"
+        ],
+        "name": "Opus audio",
+        "mimeType": "audio/opus",
+        "role": "Viewer"
+      }
     ]
   },
   "plugins": {

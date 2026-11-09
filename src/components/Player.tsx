@@ -534,7 +534,12 @@ export default function Player() {
           }}
           onError={(e) => {
             const err = e.currentTarget.error;
-            setError(`This file can't be played (error ${err?.code ?? "?"}${err?.message ? `: ${err.message}` : ""}).`);
+            // MEDIA_ERR_SRC_NOT_SUPPORTED (4): the system's web view has no decoder for this file.
+            setError(
+              err?.code === 4
+                ? "This file's format or codec isn't supported on this system. H.264/AAC MP4 files play everywhere."
+                : `This file can't be played (error ${err?.code ?? "?"}${err?.message ? `: ${err.message}` : ""}).`,
+            );
           }}
         />
       </div>
