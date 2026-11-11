@@ -22,6 +22,24 @@ const registry = read("src/theme/registry.json");
 const en = read("src/locales/en.json");
 
 // ---- theme ----------------------------------------------------------------------------------
+function layoutProperties() {
+  const out = {};
+  for (const [id, f] of Object.entries(registry.layout)) {
+    out[id] =
+      f.type === "boolean"
+        ? { type: "boolean", title: f.title, description: f.description, default: f.default }
+        : {
+            type: "number",
+            title: f.title,
+            description: `${f.description} From ${f.minimum} to ${f.maximum}${f.unit ? ` ${f.unit}` : ""}.`,
+            minimum: f.minimum,
+            maximum: f.maximum,
+            default: f.default,
+          };
+  }
+  return out;
+}
+
 function themeSchema() {
   const colors = {};
   for (const [id, c] of Object.entries(registry.colors)) {
@@ -68,6 +86,23 @@ function themeSchema() {
       },
       name: { type: "string", title: "Name", description: "Name shown in the theme list.", minLength: 1, maxLength: 60, examples: ["Dark", "Ocean"] },
       base: { enum: ["dark", "light"], title: "Base", description: "Built-in theme that supplies every color not set here, and decides the system control style (light or dark).", default: "dark" },
+      windowStyle: {
+        enum: ["regular", "experimental"],
+        title: "Window style",
+        description:
+          "'regular' is the normal window with the system title bar. 'experimental' removes the title bar and the three window buttons, " +
+          "makes the window transparent with rounded corners and a large shadow, and floats the control bar over the video.",
+        default: "regular",
+      },
+      layout: {
+        type: "object",
+        title: "Window layout",
+        description:
+          "Settings of the 'experimental' window style (rounded transparent window): corner radii, transparency, shadow, blur, " +
+          "distance of the panels from the edges. Only the ones you list differ from the defaults.",
+        properties: layoutProperties(),
+        additionalProperties: false,
+      },
       description: { type: "string", title: "Description", description: "Optional note about the theme.", maxLength: 300 },
       author: { type: "string", title: "Author", description: "Optional name of the creator.", maxLength: 80 },
       colors: {
@@ -278,6 +313,9 @@ function localeSchema() {
   for (const [id, s] of Object.entries(registry.iconSlots)) {
     strings[`theme.icon.${id}`] = { type: "string", minLength: 1, title: `theme.icon.${id}`, description: `Name of the icon slot "${s.title}" in the theme editor.`, default: s.title, examples: [s.title] };
   }
+  for (const [id, f] of Object.entries(registry.layout)) {
+    strings[`theme.layout.${id}`] = { type: "string", minLength: 1, title: `theme.layout.${id}`, description: `Name of the window layout setting "${f.title}" in the theme editor.`, default: f.title, examples: [f.title] };
+  }
   for (const [id, grp] of Object.entries(registry.groups)) {
     strings[`theme.group.${id}`] = { type: "string", minLength: 1, title: `theme.group.${id}`, description: `Name of the color group "${grp.title}" in the theme editor.`, default: grp.title, examples: [grp.title] };
   }
@@ -377,6 +415,25 @@ function registrySchema() {
           additionalProperties: false,
         },
       },
+      layout: {
+        type: "object",
+        description: "Window layout settings of the experimental window style, by id (shown in the theme editor).",
+        additionalProperties: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            description: { type: "string" },
+            type: { enum: ["number", "boolean"] },
+            minimum: { type: "number" },
+            maximum: { type: "number" },
+            step: { type: "number" },
+            unit: { type: "string" },
+            default: {},
+          },
+          required: ["title", "description", "type", "default"],
+          additionalProperties: false,
+        },
+      },
       iconSlots: {
         type: "object",
         description: "Icon slots by id.",
@@ -388,7 +445,7 @@ function registrySchema() {
         },
       },
     },
-    required: ["schemaVersion", "groups", "colors", "iconSlots"],
+    required: ["schemaVersion", "groups", "colors", "iconSlots", "layout"],
     additionalProperties: false,
   };
 }
@@ -403,6 +460,128 @@ function builtinTheme(base) {
     base,
     description: `Built-in ${base} theme.`,
     colors: Object.fromEntries(Object.entries(registry.colors).map(([id, c]) => [id, c[base]])),
+  };
+}
+
+/** The floating designs: frameless, transparent, rounded windows. Each is a color set plus a layout. */
+const FLOATING_DESIGNS = [
+  {
+    id: "studio", name: "Studio", base: "light", description: "Light floating design: rounded transparent window, floating control bar.",
+    colors: { background: "#ffffff", accent: "#4338f5", accentBorder: "#6a5cff", accentText: "#ffffff", playerBackground: "#0f0f14", controlsBackground: "#ffffff", controlsText: "#1b1b1b", progressTrack: "#eeeef2", progressBar: "#4338f5" },
+    layout: {},
+  },
+  {
+    id: "studio-dark", name: "Studio dark", base: "dark", description: "Dark floating design: rounded transparent window, floating control bar.",
+    colors: { background: "#121216", border: "#2f2f38", panel: "#1c1c22", panelRaised: "#26262e", buttonBackground: "#26262e", buttonHover: "#32323c", accent: "#5b4bff", accentBorder: "#7d70ff", accentText: "#ffffff", playerBackground: "#0a0a0d", controlsBackground: "#1c1c22", controlsText: "#ffffff", progressTrack: "#33333d", progressBar: "#7d70ff" },
+    layout: {},
+  },
+  {
+    id: "espresso", name: "Espresso", base: "dark", description: "Warm brown floating design with tan highlights.",
+    colors: { background: "#24140a", text: "#f6ead9", textMuted: "#c4a98a", border: "#5a3a22", panel: "#3a2212", panelRaised: "#4a2d19", buttonBackground: "#4a2d19", buttonHover: "#5d3b22", buttonText: "#f6ead9", accent: "#c8996a", accentBorder: "#dcb184", accentText: "#2a1608", playerBackground: "#1a0e06", controlsBackground: "#3a2212", controlsText: "#f6ead9", progressTrack: "#5a3a22", progressBar: "#dcb184" },
+    layout: { cornerRadius: 36, panelRadius: 32, panelOpacity: 0.96 },
+  },
+  {
+    id: "latte", name: "Latte", base: "light", description: "Soft cream floating design with terracotta buttons, the light sibling of Espresso.",
+    colors: {
+      background: "#f6e7dc", text: "#3b2a22", textMuted: "#8a6f60", border: "#e3cdbd", accent: "#d98a6c", accentBorder: "#e9a98e", accentText: "#ffffff",
+      buttonBackground: "#fbf4ee", buttonHover: "#f1e2d6", buttonText: "#3b2a22", panel: "#f9ede4", panelRaised: "#f0dccd",
+      badgesBackground: "#f3e2d5", badgeText: "#3b2a22", badgeActiveBorder: "#d98a6c", playerBackground: "#2a1d17",
+      controlsBackground: "#fbf1ea", controlsText: "#3b2a22", progressTrack: "#ecd8ca", progressBar: "#d4806a", progressBarEnd: "#eeb394",
+      trackCurrent: "#d98a6c2e", trackHover: "#d98a6c1a", rowStripe: "#d98a6c0d", rowSelected: "#d98a6c24", errorText: "#b3402a", warningText: "#a8661a",
+      dangerBackground: "#c4523a", dangerBorder: "#e07a60", backdrop: "#3b2a2299",
+    },
+    layout: { cornerRadius: 34, panelRadius: 30, shadowSize: 28, panelOpacity: 0.96, panelBlur: 8, progressGlow: 6, progressGloss: 0.2, controlsGap: 22, playlistGap: 22 },
+  },
+  {
+    id: "midnight", name: "Midnight", base: "dark", description: "Night-blue frosted-glass floating design.",
+    colors: { background: "#1d1f3a", text: "#eceeff", textMuted: "#a9acd6", border: "#4b4f86", panel: "#2b2e55", panelRaised: "#383c6b", buttonBackground: "#383c6b", buttonHover: "#464b82", buttonText: "#eceeff", accent: "#7b83ff", accentBorder: "#a2a8ff", accentText: "#ffffff", playerBackground: "#14152b", controlsBackground: "#2b2e55", controlsText: "#eceeff", progressTrack: "#3a3d6b", progressBar: "#8f98ff" },
+    layout: { cornerRadius: 38, panelRadius: 34, panelOpacity: 0.72, panelBlur: 18 },
+  },
+  {
+    id: "glass", name: "Glass", base: "light", description: "Light frosted-glass floating design with large rounded corners.",
+    colors: { background: "#eef0fb", text: "#1d1f3a", textMuted: "#6b6f95", border: "#d6daf0", panel: "#f4f4fc", panelRaised: "#e2e6f6", buttonBackground: "#e2e6f6", buttonHover: "#d3d8ef", buttonText: "#1d1f3a", accent: "#2b2a6e", accentBorder: "#4a49a0", accentText: "#ffffff", playerBackground: "#1d2340", controlsBackground: "#f6f6fd", controlsText: "#1d1f3a", progressTrack: "#d9dcf0", progressBar: "#2b2a6e" },
+    layout: { cornerRadius: 44, panelRadius: 40, panelOpacity: 0.6, panelBlur: 22, controlsGap: 26, playlistGap: 26 },
+  },
+  {
+    id: "rosegold", name: "Rose gold", base: "dark", description: "Graphite floating design with rose-gold highlights and a glowing gradient progress bar.",
+    colors: { background: "#232428", text: "#ece6e2", textMuted: "#a79f9b", border: "#55565c", panel: "#3d3e44", panelRaised: "#4a4b52", buttonBackground: "#4a4b52", buttonHover: "#5a5b63", buttonText: "#ece6e2", accent: "#c98f7d", accentBorder: "#e6b4a0", accentText: "#2a1c17", playerBackground: "#17181b", controlsBackground: "#3d3e44", controlsText: "#ece6e2", progressTrack: "#26272b", progressBar: "#b9786a", progressBarEnd: "#f0c2ae" },
+    layout: { cornerRadius: 30, panelRadius: 26, panelOpacity: 0.94, panelBlur: 8, progressGlow: 16, progressGloss: 0.9 },
+  },
+  {
+    id: "cyberpunk", name: "Cyberpunk", base: "dark", description: "Squared neon design: crimson black, cyan panels with glowing edges, scanlines and a terminal font.",
+    colors: {
+      background: "#14070c", text: "#5fe3f0", textMuted: "#3b9aa8", border: "#2f8fa0", accent: "#ff4a42", accentBorder: "#ff7a70", accentText: "#14070c",
+      buttonBackground: "#0f2a33", buttonHover: "#17414f", buttonText: "#5fe3f0", panel: "#0f2a33", panelRaised: "#143743",
+      badgesBackground: "#0b1f27", badgeText: "#5fe3f0", badgeActiveBorder: "#ff4a42", playerBackground: "#0a0306",
+      controlsBackground: "#0f2a33", controlsText: "#5fe3f0", progressTrack: "#2a0d12", progressBar: "#d8322c", progressBarEnd: "#ff6a5e",
+      trackCurrent: "#ff4a4233", trackHover: "#5fe3f022", rowStripe: "#5fe3f00d", rowSelected: "#5fe3f01f", errorText: "#ff4a42", warningText: "#ffd24a",
+      dangerBackground: "#b3241f", dangerBorder: "#ff4a42", backdrop: "#0a0306cc",
+    },
+    layout: { cornerRadius: 2, panelRadius: 2, shadowSize: 18, panelOpacity: 0.9, panelBlur: 6, panelBorder: 1, panelGlow: 12, progressGlow: 14, textGlow: 5, scanlines: 0.2, monospace: true, controlsGap: 18, playlistGap: 18 },
+  },
+  {
+    id: "fallout-2", name: "Fallout 2", base: "dark", description: "Squared wasteland design: olive metal frames, green phosphor text and a thick border.",
+    colors: {
+      background: "#1b1a14", text: "#3dff4a", textMuted: "#22b52e", border: "#6b6a4f", accent: "#d4c23a", accentBorder: "#ece07a", accentText: "#1b1a14",
+      buttonBackground: "#3a3826", buttonHover: "#4b4832", buttonText: "#d9d27a", panel: "#26241b", panelRaised: "#33301f",
+      badgesBackground: "#211f17", badgeText: "#3dff4a", badgeActiveBorder: "#d4c23a", playerBackground: "#080d08",
+      controlsBackground: "#26241b", controlsText: "#3dff4a", progressTrack: "#0e1a0e", progressBar: "#22c030", progressBarEnd: "#8dff7a",
+      trackCurrent: "#3dff4a26", trackHover: "#3dff4a14", rowStripe: "#3dff4a0a", rowSelected: "#3dff4a1c", errorText: "#ff6a4a", warningText: "#e8d24a",
+      dangerBackground: "#7a2a1a", dangerBorder: "#c2563a", backdrop: "#050805cc",
+    },
+    layout: { cornerRadius: 4, panelRadius: 3, shadowSize: 14, panelOpacity: 1, panelBorder: 3, textGlow: 4, scanlines: 0.2, monospace: true, controlsGap: 16, playlistGap: 16 },
+  },
+  {
+    id: "townfall-crt", name: "Townfall CRT", base: "dark", description: "Squared retro-terminal design: weathered grey-olive metal, brass edges and an amber glowing CRT screen.",
+    colors: {
+      background: "#2c2b27", text: "#ffb347", textMuted: "#c28a3a", border: "#8a7a46", accent: "#d98a1f", accentBorder: "#f2b24a", accentText: "#1a1006",
+      buttonBackground: "#4a4943", buttonHover: "#5c5a52", buttonText: "#ffb347", panel: "#3b3a35", panelRaised: "#4a4943",
+      badgesBackground: "#33322e", badgeText: "#ffb347", badgeActiveBorder: "#f2b24a", playerBackground: "#140c04",
+      controlsBackground: "#3b3a35", controlsText: "#ffb347", progressTrack: "#1a1008", progressBar: "#c97a12", progressBarEnd: "#ffc766",
+      trackCurrent: "#ffb34730", trackHover: "#ffb34718", rowStripe: "#ffb3470c", rowSelected: "#ffb34722", errorText: "#ff7a4a", warningText: "#ffd24a",
+      dangerBackground: "#8a3a14", dangerBorder: "#d9742a", backdrop: "#0c0803cc",
+    },
+    layout: { cornerRadius: 6, panelRadius: 6, shadowSize: 16, panelBorder: 2, panelGlow: 8, progressGlow: 12, progressGloss: 0.3, textGlow: 7, scanlines: 0.22, monospace: true, controlsGap: 18, playlistGap: 18 },
+  },
+  {
+    id: "green-console", name: "Green console", base: "dark", description: "Squared control-room design: charcoal metal, grey keys and bright green phosphor screens with a glossy glowing progress bar.",
+    colors: {
+      background: "#1c1d1f", text: "#7dff4a", textMuted: "#4fa82e", border: "#3a3c40", accent: "#7dff4a", accentBorder: "#b4ff8a", accentText: "#0b1a06",
+      buttonBackground: "#3a3b3f", buttonHover: "#4a4b50", buttonText: "#d7d9da", panel: "#2a2b2e", panelRaised: "#35363a",
+      badgesBackground: "#232427", badgeText: "#7dff4a", badgeActiveBorder: "#7dff4a", playerBackground: "#050a04",
+      controlsBackground: "#2a2b2e", controlsText: "#7dff4a", progressTrack: "#0b1408", progressBar: "#3fbf1f", progressBarEnd: "#9dff6a",
+      trackCurrent: "#7dff4a2b", trackHover: "#7dff4a16", rowStripe: "#7dff4a0a", rowSelected: "#7dff4a1f", errorText: "#ff5a3a", warningText: "#ffb02e",
+      dangerBackground: "#b3261e", dangerBorder: "#ff5a3a", backdrop: "#050805cc",
+    },
+    layout: { cornerRadius: 10, panelRadius: 8, shadowSize: 20, panelBorder: 2, panelGlow: 6, progressGlow: 12, progressGloss: 0.4, textGlow: 4, scanlines: 0.15, monospace: true, controlsGap: 18, playlistGap: 18 },
+  },
+  {
+    id: "cream-keys", name: "Cream keys", base: "dark", description: "Squared keyboard-panel design: black body, cream keys with thin cream lines and a cyan highlight.",
+    colors: {
+      background: "#0f0d0b", text: "#f0dc8c", textMuted: "#a89a62", border: "#8a7d4a", accent: "#f0dc8c", accentBorder: "#fff0b0", accentText: "#16120a",
+      buttonBackground: "#e8d58a", buttonHover: "#f6e6a4", buttonText: "#16120a", panel: "#17140f", panelRaised: "#221e16",
+      badgesBackground: "#120f0b", badgeText: "#f0dc8c", badgeActiveBorder: "#3ec8e8", playerBackground: "#050a10",
+      controlsBackground: "#17140f", controlsText: "#f0dc8c", progressTrack: "#0a0806", progressBar: "#e8d58a", progressBarEnd: "#f6e8a8",
+      trackCurrent: "#3ec8e82b", trackHover: "#f0dc8c18", rowStripe: "#f0dc8c0a", rowSelected: "#f0dc8c1f", errorText: "#ff6a4a", warningText: "#f0b84a",
+      dangerBackground: "#a82a1c", dangerBorder: "#ff6a4a", backdrop: "#060504cc",
+    },
+    layout: { cornerRadius: 4, panelRadius: 4, shadowSize: 14, panelBorder: 1, scanlines: 0.06, monospace: true, controlsGap: 16, playlistGap: 16 },
+  },
+];
+
+function floatingTheme(design) {
+  const theme = builtinTheme(design.base);
+  return {
+    $schema: theme.$schema,
+    schemaVersion: 1,
+    id: design.id,
+    name: design.name,
+    base: design.base,
+    windowStyle: "experimental",
+    description: design.description,
+    // A design that sets only the progress bar color gets a flat bar (no red gradient end from the base theme).
+    colors: { ...theme.colors, ...design.colors, ...(design.colors.progressBar && !design.colors.progressBarEnd ? { progressBarEnd: design.colors.progressBar } : {}) },
+    ...(Object.keys(design.layout).length ? { layout: design.layout } : {}),
   };
 }
 
@@ -469,6 +648,7 @@ export function buildAll() {
     "schemas/examples/theme.json": json(exampleTheme()),
     "src/builtin-themes/dark.json": json(builtinTheme("dark")),
     "src/builtin-themes/light.json": json(builtinTheme("light")),
+    ...Object.fromEntries(FLOATING_DESIGNS.map((d) => [`src/builtin-themes/${d.id}.json`, json(floatingTheme(d))])),
   };
 }
 

@@ -20,7 +20,11 @@ import {
   type IconSlot,
   type ThemeBase,
 } from "../theme/themeEngine";
+import { LAYOUT_FIELDS, layoutOf, type LayoutField } from "../theme/windowLayout";
 import { IconByRef } from "./Icon";
+
+/** The layout settings of the progress bars: they work in every theme, not only the floating ones. */
+const PROGRESS_FIELDS = ["progressGlow", "progressGloss"];
 
 const HEX = /^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/;
 
@@ -53,7 +57,7 @@ export default function ThemesDialog() {
     const own = now.custom.find((c) => c.id === now.selected);
     if (own) return own.id;
     const shown = activeTheme(now);
-    return now.create(`${themeName(shown.id, shown.name)} 2`, shown.base);
+    return now.create(`${themeName(shown.id, shown.name)} 2`, shown.base, shown);
   };
   const colors = colorsOf(theme);
   const close = () => {
@@ -62,7 +66,7 @@ export default function ThemesDialog() {
     useInterfaceStore.getState().setThemesOpen(false);
   };
   function themeName(id: string, name: string) {
-    return id === "dark" ? t("appearance.dark") : id === "light" ? t("appearance.light") : name;
+    return isBuiltin(id) ? td(`appearance.builtin.${id}`, name) : name;
   }
 
   async function exportTheme() {
@@ -96,6 +100,50 @@ export default function ThemesDialog() {
     if (lower.length === 9 && lower.endsWith("ff")) lower = lower.slice(0, 7);
     store.setColor(ensureEditable(), token, lower);
   }
+
+  /** One window layout setting: a slider (or a tick box) with its value and a reset arrow. */
+    const layoutRow = (field: LayoutField) => {
+    const value = layoutOf(theme)[field.id];
+    const own = editing?.layout?.[field.id] !== undefined;
+    const label = td(`theme.layout.${field.id}`, field.title);
+    return (
+      <div key={field.id} className={`color-row${own ? " own" : ""}`} title={field.description}>
+        <span className="color-label">{label}</span>
+        {field.type === "boolean" ? (
+          <input
+            type="checkbox"
+            checked={value as boolean}
+            aria-label={label}
+            onChange={(e) => store.setLayout(ensureEditable(), field.id, e.target.checked)}
+          />
+        ) : (
+          <>
+            <input
+              type="range"
+              min={field.minimum}
+              max={field.maximum}
+              step={field.step}
+              value={value as number}
+              aria-label={label}
+              onChange={(e) => store.setLayout(ensureEditable(), field.id, Number(e.target.value))}
+            />
+            <span className="muted layout-value">
+              {value as number}
+              {field.unit}
+            </span>
+          </>
+        )}
+        <button
+          className="mini-btn"
+          disabled={!own}
+          title={t("appearance.resetColor")}
+          onClick={() => editing && store.setLayout(editing.id, field.id, null)}
+        >
+          ↺
+        </button>
+      </div>
+    );
+  };
 
   const query = search.trim().toLowerCase();
   const icons = ALL_ICON_REFS.filter((ref) => ref.toLowerCase().includes(query));
@@ -192,7 +240,7 @@ export default function ThemesDialog() {
             <button
               className="primary"
               onClick={() => {
-                store.create(`${themeName(theme.id, theme.name)} 2`, theme.base, isBuiltin(theme.id) ? undefined : theme);
+                store.create(`${themeName(theme.id, theme.name)} 2`, theme.base, theme);
               }}
             >
               {t("appearance.createFromThis")}
@@ -201,6 +249,27 @@ export default function ThemesDialog() {
         )}
 
         <div className="theme-scroll">
+          <h3>{t("appearance.window")}</h3>
+          <section className="theme-group">
+            <div className="color-row">
+              <span className="color-label">{t("appearance.windowStyle")}</span>
+              <select
+                value={theme.windowStyle ?? "regular"}
+                onChange={(e) => store.setWindowStyle(ensureEditable(), e.target.value as "regular" | "experimental")}
+              >
+                <option value="regular">{t("appearance.styleRegular")}</option>
+                <option value="experimental">{t("appearance.styleFloating")}</option>
+              </select>
+            </div>
+            {theme.windowStyle === "experimental" && LAYOUT_FIELDS.filter((f) => !PROGRESS_FIELDS.includes(f.id)).map(layoutRow)}
+          </section>
+
+          <h3>{t("appearance.progressBar")}</h3>
+          <section className="theme-group">
+            {LAYOUT_FIELDS.filter((f) => PROGRESS_FIELDS.includes(f.id)).map(layoutRow)}
+            <p className="muted">{t("appearance.progressHint")}</p>
+          </section>
+
           <h3>{t("appearance.colors")}</h3>
           {COLOR_GROUPS.map((group) => (
             <section key={group.id} className="theme-group">

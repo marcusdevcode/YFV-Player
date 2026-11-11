@@ -45,6 +45,153 @@
       "description": "Built-in theme that supplies every color not set here, and decides the system control style (light or dark).",
       "default": "dark"
     },
+    "windowStyle": {
+      "enum": [
+        "regular",
+        "experimental"
+      ],
+      "title": "Window style",
+      "description": "'regular' is the normal window with the system title bar. 'experimental' removes the title bar and the three window buttons, makes the window transparent with rounded corners and a large shadow, and floats the control bar over the video.",
+      "default": "regular"
+    },
+    "layout": {
+      "type": "object",
+      "title": "Window layout",
+      "description": "Settings of the 'experimental' window style (rounded transparent window): corner radii, transparency, shadow, blur, distance of the panels from the edges. Only the ones you list differ from the defaults.",
+      "properties": {
+        "titleBar": {
+          "type": "boolean",
+          "title": "System title bar",
+          "description": "Floating window style only. On keeps the operating system's title bar and window buttons (and then the transparent margin, rounded window corners and window shadow are not used). Off removes them.",
+          "default": false
+        },
+        "resizable": {
+          "type": "boolean",
+          "title": "Resizable window",
+          "description": "Floating window style only. On lets you resize the window by its edges; off keeps its size, except in full screen.",
+          "default": false
+        },
+        "cornerRadius": {
+          "type": "number",
+          "title": "Window corner radius",
+          "description": "How round the corners of the window are. From 0 to 80 px.",
+          "minimum": 0,
+          "maximum": 80,
+          "default": 30
+        },
+        "shadowSize": {
+          "type": "number",
+          "title": "Window shadow",
+          "description": "Size of the shadow around the window (it also sets the transparent margin that holds it). 0 means no shadow. From 0 to 60 px.",
+          "minimum": 0,
+          "maximum": 60,
+          "default": 30
+        },
+        "windowOpacity": {
+          "type": "number",
+          "title": "Window opacity",
+          "description": "How solid the window background behind the video is. Lower values let the desktop show through. From 0 to 1.",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        "panelRadius": {
+          "type": "number",
+          "title": "Panel corner radius",
+          "description": "How round the corners of the control bar, playlist and dialogs are. From 0 to 80 px.",
+          "minimum": 0,
+          "maximum": 80,
+          "default": 30
+        },
+        "panelOpacity": {
+          "type": "number",
+          "title": "Panel opacity",
+          "description": "How solid the control bar, playlist and dialogs are. Lower values make them see-through. From 0.2 to 1.",
+          "minimum": 0.2,
+          "maximum": 1,
+          "default": 1
+        },
+        "panelBlur": {
+          "type": "number",
+          "title": "Panel blur",
+          "description": "Frosted-glass blur behind the control bar, playlist and dialogs (best together with a lower panel opacity). From 0 to 40 px.",
+          "minimum": 0,
+          "maximum": 40,
+          "default": 0
+        },
+        "panelBorder": {
+          "type": "number",
+          "title": "Panel border",
+          "description": "Width of the colored line around the control bar, playlist and dialogs (uses the Borders color). 0 means no line. From 0 to 4 px.",
+          "minimum": 0,
+          "maximum": 4,
+          "default": 0
+        },
+        "panelGlow": {
+          "type": "number",
+          "title": "Panel glow",
+          "description": "Glow around the panels, tinted with the accent color. 0 means no glow. From 0 to 30 px.",
+          "minimum": 0,
+          "maximum": 30,
+          "default": 0
+        },
+        "progressGlow": {
+          "type": "number",
+          "title": "Progress glow",
+          "description": "Glow around the progress bars and the position slider, tinted with the gradient end color. 0 means no glow. From 0 to 30 px.",
+          "minimum": 0,
+          "maximum": 30,
+          "default": 0
+        },
+        "progressGloss": {
+          "type": "number",
+          "title": "Progress gloss",
+          "description": "Glossy, metallic look of the progress bars and the position slider: a bright highlight on top, a darker lower edge, and a sunken track. 0 means flat. From 0 to 1.",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0
+        },
+        "controlsGap": {
+          "type": "number",
+          "title": "Control bar distance",
+          "description": "Space between the control bar and the window edges. From 0 to 80 px.",
+          "minimum": 0,
+          "maximum": 80,
+          "default": 22
+        },
+        "playlistGap": {
+          "type": "number",
+          "title": "Playlist distance",
+          "description": "Space between the playlist cards and the window edges. From 0 to 80 px.",
+          "minimum": 0,
+          "maximum": 80,
+          "default": 22
+        },
+        "textGlow": {
+          "type": "number",
+          "title": "Text glow",
+          "description": "Glow around all text, like a lit screen. 0 means none. From 0 to 12 px.",
+          "minimum": 0,
+          "maximum": 12,
+          "default": 0
+        },
+        "scanlines": {
+          "type": "number",
+          "title": "Scanlines",
+          "description": "Dark horizontal lines over the whole window, like an old CRT screen. 0 means none. From 0 to 1.",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0
+        },
+        "monospace": {
+          "type": "boolean",
+          "title": "Monospace font",
+          "description": "Use a monospace (terminal) font for all text.",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
     "description": {
       "type": "string",
       "title": "Description",
@@ -320,6 +467,19 @@
             "#e53935"
           ],
           "x-cssVariable": "--progress-bar",
+          "x-group": "player"
+        },
+        "progressBarEnd": {
+          "type": "string",
+          "title": "Progress bar gradient end",
+          "description": "The far end of the progress bars' gradient. Set it equal to the progress bar color for a flat bar. Group: Player. CSS variable: --progress-bar-end. Format #rrggbb, or #rrggbbaa to make it transparent (aa = opacity, 00 invisible to ff solid).",
+          "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$",
+          "default": "#ff0000",
+          "examples": [
+            "#ff0000",
+            "#e53935"
+          ],
+          "x-cssVariable": "--progress-bar-end",
           "x-group": "player"
         },
         "overlayBackground": {

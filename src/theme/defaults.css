@@ -21,6 +21,7 @@
   --controls-text: #ffffff;
   --progress-track: #2a2a2a;
   --progress-bar: #ff0000;
+  --progress-bar-end: #ff0000;
   --overlay-bg: #000000cc;
   --overlay-text: #ffffff;
   --track-current: #8b000059;
@@ -59,6 +60,7 @@
     --controls-text: #1b1b1b;
     --progress-track: #d4d4d4;
     --progress-bar: #e53935;
+    --progress-bar-end: #e53935;
     --overlay-bg: #000000cc;
     --overlay-text: #ffffff;
     --track-current: #c6282826;

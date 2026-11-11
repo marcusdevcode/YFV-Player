@@ -43,7 +43,9 @@ function apply(s: Partial<Settings>) {
   if (s.player?.volume !== undefined) usePlayerStore.setState({ volume: s.player.volume });
   if (s.player?.muted !== undefined) usePlayerStore.setState({ muted: s.player.muted });
   if (s.player?.pauseVideoInBackground !== undefined) usePlayerStore.setState({ pauseVideoInBackground: s.player.pauseVideoInBackground });
-  if (s.theme) useThemeStore.setState({ selected: s.theme });
+  // The first floating themes were called "experimental" and "experimental-dark".
+  const renamedThemes: Record<string, string> = { experimental: "studio", "experimental-dark": "studio-dark" };
+  if (s.theme) useThemeStore.setState({ selected: renamedThemes[s.theme] ?? s.theme });
   if (s.downloads) useDownloadSettingsStore.setState(s.downloads);
 }
 

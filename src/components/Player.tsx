@@ -59,7 +59,11 @@ function saveLead(v: number) {
   }
 }
 
+/** Whether the app window had focus the last time we looked; a new player (next track) starts from it, not from a guess. */
+let appHadFocus = true;
 const isAbort = (e: unknown) => e instanceof DOMException && e.name === "AbortError";
+/** The system refused to start playback by itself (no click or key press led to it). Not an error: it waits for Play. */
+const isBlockedAutoplay = (e: unknown) => e instanceof DOMException && e.name === "NotAllowedError";
 
 export default function Player() {
   const { source, playing, currentTime, duration, videoLoop, volume, muted } = usePlayerStore();
@@ -80,7 +84,7 @@ export default function Player() {
   const seekToken = useRef(0);
   const seekBusy = useRef(0); // a seek of ours is running: pause/play events now are ours, not headphones
   const endedHandled = useRef(false);
-  const nativeFocused = useRef(true); // the app window itself has focus (not just the page inside it)
+  const nativeFocused = useRef(appHadFocus); // the app window itself has focus (not just the page inside it)
   const backgroundSince = useRef<number | null>(null); // the window lost focus at this time (and has not got it back)
   const suspended = useRef(false); // the window is in the background: only the video is paused, the audio plays on
   // The video needs a moment to start after the audio. We start it that far ahead and refine
@@ -208,7 +212,10 @@ export default function Player() {
       leadStartTime.current = v.currentTime;
       leadPending.current = true;
     } catch (e) {
-      if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
+      if (isBlockedAutoplay(e)) {
+        wantPlaying.current = false;
+        audioRef.current?.pause();
+      } else if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
     }
   }, []);
 
@@ -241,7 +248,10 @@ export default function Player() {
       leadStartTime.current = v.currentTime;
       leadPending.current = true;
     } catch (e) {
-      if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
+      if (isBlockedAutoplay(e)) {
+        wantPlaying.current = false;
+        audioRef.current?.pause();
+      } else if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
     }
   }, [playBoth]);
 
@@ -257,17 +267,17 @@ export default function Player() {
     // window has stayed away long enough, so quick back-and-forth switching never touches the video.
     const goAway = () => {
       if (performance.now() - lastFsToggle.current < FS_GUARD_MS) return; // a fullscreen switch, not leaving
-      nativeFocused.current = false;
+      nativeFocused.current = appHadFocus = false;
       if (backgroundSince.current === null) backgroundSince.current = performance.now();
     };
     const goBack = () => {
-      nativeFocused.current = true;
+      nativeFocused.current = appHadFocus = true;
       backgroundSince.current = null;
       if (!suspended.current) return;
       suspended.current = false;
       void rejoin();
     };
-    void win.isFocused().then((focused) => (nativeFocused.current = focused)).catch(() => {});
+    void win.isFocused().then((focused) => (nativeFocused.current = appHadFocus = focused)).catch(() => {});
     const native = win.onFocusChanged(({ payload: focused }) => (focused ? goBack() : goAway()));
     window.addEventListener("focus", goBack);
     window.addEventListener("pointerdown", goBack, true);
@@ -356,6 +366,8 @@ export default function Player() {
     try {
       const win = getCurrentWindow();
       const next = !(await win.isFullscreen());
+      // A fixed-size floating window would also block full screen on some systems.
+      if (next && document.documentElement.dataset.windowResizable === "no") await win.setResizable(true);
       await win.setFullscreen(next);
       setFullscreen(next);
     } catch (e) {
@@ -379,6 +391,8 @@ export default function Player() {
       const full = await win.isFullscreen();
       if (full !== usePlayerStore.getState().fullscreen) lastFsToggle.current = performance.now(); // entering/leaving fullscreen shuffles focus
       setFullscreen(full);
+      // A fixed-size floating window is resizable only while full screen.
+      if (document.documentElement.dataset.windowResizable === "no") void win.setResizable(full).catch(() => {});
     };
     void sync();
     const unlisten = win.onResized(() => void sync());
@@ -428,15 +442,38 @@ export default function Player() {
 
   /** Autoplay once everything needed is ready, so video and audio begin together. */
   const tryAutoStart = useCallback(() => {
-    if (autoStarted.current || !videoReady.current || !audioReady.current) return;
+    if (autoStarted.current || !audioReady.current) return;
+    // The window is in the background and there is a separate audio file: the picture may not load (or may
+    // not be allowed to start) there, and nobody is looking at it. Then the sound starts alone, like the
+    // background mode that was already running, and the picture joins when the window comes back.
+    const audio = audioRef.current;
+    const inBackground = !!audio && (document.hidden || !nativeFocused.current) && usePlayerStore.getState().pauseVideoInBackground;
+    if (!videoReady.current && !inBackground) return;
     autoStarted.current = true;
     // The video restored at startup waits, paused, at its saved position. A player that replaces one
     // that was playing and was torn down (rebuilt) continues to play.
     const state = usePlayerStore.getState();
     const resume = state.resumeAfterRemount;
     if (resume) usePlayerStore.setState({ resumeAfterRemount: false });
-    if (state.autoStart || resume) void playBoth();
-  }, [playBoth]);
+    if (!(state.autoStart || resume)) return;
+    if (!videoReady.current && audio && source) {
+      const position = state.fromStart ? 0 : loadPosition(source.videoPath);
+      wantPlaying.current = true;
+      suspended.current = true;
+      ownPauseAt.current = performance.now();
+      if (position > 0) audio.currentTime = position;
+      void audio.play().then(
+        () => setPlaying(true),
+        (e) => {
+          wantPlaying.current = false;
+          suspended.current = false;
+          if (!isBlockedAutoplay(e) && !isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
+        },
+      );
+      return;
+    }
+    void playBoth();
+  }, [playBoth, source, setPlaying]);
 
   // Keyboard. Space toggles; arrows seek 5 s (tap); holding an arrow scrubs, driven by the key's
   // auto-repeat events; Shift = 30 s.
@@ -716,8 +753,9 @@ export default function Player() {
             }
           }}
           onEnded={() => {
-            // The audio ran out while the picture was paused in the background: that is the end.
-            if (suspended.current) {
+            // The audio ran out while nobody is looking (the picture was paused by us, or held back by the
+            // system, in the background): that is the end of the track. In front, the video decides.
+            if (suspended.current || document.hidden || !nativeFocused.current) {
               suspended.current = false;
               handleEnded();
             }
@@ -727,9 +765,9 @@ export default function Player() {
 
       {error && <div className="player-error">{error}</div>}
 
-      <div className="controls">
+      <div className="controls" data-tauri-drag-region>
         <div className="button-group">
-          <button onClick={togglePlay} title={playing ? t("player.pause") : t("player.play")}>
+          <button className="play-button" onClick={togglePlay} title={playing ? t("player.pause") : t("player.play")}>
             <Icon slot={playing ? "pause" : "play"} />
           </button>
           <button onClick={() => void seekBy(-10)} title={t("player.back10")}>

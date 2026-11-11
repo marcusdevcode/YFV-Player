@@ -53,6 +53,10 @@ export default function App() {
   const sidebarOpen = useInterfaceStore((s) => s.sidebarOpen);
   const sidebarSide = useInterfaceStore((s) => s.sidebarSide);
   const language = useInterfaceStore((s) => s.language);
+  // The experimental window style drops its frame, margin and shadow while the video is full screen.
+  useEffect(() => {
+    document.documentElement.dataset.fullscreen = fullscreen ? "yes" : "no";
+  }, [fullscreen]);
   const { t } = useT();
 
   // The remembered settings (panel, last video, positions, volume) load from files at startup.
@@ -239,6 +243,8 @@ export default function App() {
 
   return (
     <div className="app" onContextMenu={showGeneralMenu}>
+      {/* Experimental window style has no title bar: this strip at the top moves the window. */}
+      <div className="window-drag-strip" data-tauri-drag-region />
       <ContextMenu />
       <UpdateBanner />
       <MergeDialog />

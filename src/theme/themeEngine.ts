@@ -1,10 +1,22 @@
-import { getCurrentWindow } from "@tauri-apps/api/window";
 import builtinPack from "../icons/builtin.json";
 import icomoonPack from "../icons/icomoon.json";
 import themeSchema from "../../schemas/theme.schema.json";
 import { validate } from "../jsonSchemaValidator";
 import darkJson from "../builtin-themes/dark.json";
 import lightJson from "../builtin-themes/light.json";
+import studioJson from "../builtin-themes/studio.json";
+import studioDarkJson from "../builtin-themes/studio-dark.json";
+import espressoJson from "../builtin-themes/espresso.json";
+import latteJson from "../builtin-themes/latte.json";
+import midnightJson from "../builtin-themes/midnight.json";
+import glassJson from "../builtin-themes/glass.json";
+import rosegoldJson from "../builtin-themes/rosegold.json";
+import cyberpunkJson from "../builtin-themes/cyberpunk.json";
+import falloutJson from "../builtin-themes/fallout-2.json";
+import townfallJson from "../builtin-themes/townfall-crt.json";
+import greenConsoleJson from "../builtin-themes/green-console.json";
+import creamKeysJson from "../builtin-themes/cream-keys.json";
+import { applyWindowLayout, type LayoutKey } from "./windowLayout";
 import registry from "./registry.json";
 
 export type ColorToken = keyof typeof registry.colors;
@@ -17,13 +29,17 @@ export interface Theme {
   id: string;
   name: string;
   base: ThemeBase;
+  /** "experimental": frameless transparent rounded window. Missing means "regular". */
+  windowStyle?: "regular" | "experimental";
+  /** Settings of the experimental window style (see src/theme/registry.json "layout"). */
+  layout?: Partial<Record<LayoutKey, number | boolean>>;
   description?: string;
   author?: string;
   colors?: Partial<Record<ColorToken, string>>;
   icons?: Partial<Record<IconSlot, string>>;
 }
 
-export const BUILTIN_THEMES: Theme[] = [darkJson, lightJson] as Theme[];
+export const BUILTIN_THEMES: Theme[] = [darkJson, lightJson, studioJson, studioDarkJson, espressoJson, latteJson, midnightJson, glassJson, rosegoldJson, cyberpunkJson, falloutJson, townfallJson, greenConsoleJson, creamKeysJson] as Theme[];
 
 export const COLOR_TOKENS = Object.entries(registry.colors).map(([id, c]) => ({ id: id as ColorToken, ...c }));
 export const ICON_SLOTS = Object.entries(registry.iconSlots).map(([id, s]) => ({ id: id as IconSlot, ...s }));
@@ -60,7 +76,11 @@ export function iconRefOf(theme: Theme, slot: IconSlot): string {
 /** Every color token of a theme: its own values over the base theme's. */
 export function colorsOf(theme: Theme): Record<ColorToken, string> {
   const base = theme.base === "light" ? lightJson.colors : darkJson.colors;
-  return { ...base, ...theme.colors } as Record<ColorToken, string>;
+  const colors = { ...base, ...theme.colors } as Record<ColorToken, string>;
+  // A theme that changes the progress bar color but says nothing about the gradient end gets a flat bar
+  // (the end color would otherwise come from the base theme and show up as a stray red tip).
+  if (theme.colors?.progressBar && !theme.colors.progressBarEnd) colors.progressBarEnd = colors.progressBar;
+  return colors;
 }
 
 /** Put a theme on the page: its colors as CSS variables, and light/dark control styling. */
@@ -70,9 +90,8 @@ export function applyThemeToDocument(theme: Theme) {
   for (const token of COLOR_TOKENS) root.style.setProperty(token.cssVar, colors[token.id]);
   root.dataset.theme = theme.base;
   root.style.colorScheme = theme.base;
-  // The window's own background shows where the page has not been redrawn yet while the window is
-  // being resized: make it the video area color, not white.
-  void getCurrentWindow().setBackgroundColor(colors.playerBackground).catch(() => {});
+  // Window style (floating or regular) and its layout; also sets the native window's background.
+  applyWindowLayout(theme, colors.playerBackground);
 }
 
 // ---- validation ------------------------------------------------------------------------------

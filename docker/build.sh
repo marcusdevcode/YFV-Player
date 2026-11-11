@@ -10,7 +10,7 @@ work="${WORK_DIR:-/work}"
 mkdir -p "$work"
 # Copy the sources, but never the host's node_modules/build output or any private key.
 rsync -a --delete \
-  --exclude /node_modules --exclude /dist --exclude /release --exclude /.git \
+  --exclude /node_modules --exclude /dist --exclude /release --exclude /builds --exclude /.git \
   --exclude /src-tauri/target --exclude '*.key' \
   /src/ "$work/"
 
@@ -19,7 +19,8 @@ cd "$work"
 # only this build's files are copied out.
 rm -rf "$work/${bundle_dir}"
 npm ci
-node scripts/run-tauri.mjs build "$@"
+# This script copies the installers out itself, so the build must leave them where they are.
+APP_KEEP_BUNDLE=1 node scripts/run-tauri.mjs build "$@"
 
 rm -rf /out/*
 cp -R "$work/${bundle_dir}/." /out/

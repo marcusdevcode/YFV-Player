@@ -84,7 +84,8 @@ for (const file of list("src/locales")) {
     const fromRegistry =
       (key.startsWith("theme.color.") && key.slice(12) in registry.colors) ||
       (key.startsWith("theme.icon.") && key.slice(11) in registry.iconSlots) ||
-      (key.startsWith("theme.group.") && key.slice(12) in registry.groups);
+      (key.startsWith("theme.group.") && key.slice(12) in registry.groups) ||
+      (key.startsWith("theme.layout.") && key.slice(13) in registry.layout);
     if (fromRegistry) continue;
     if (!(key in en) && !extraForm) fail(file, `unknown text key ${key}`);
     const reference = en[key] ?? en[key.replace(/\.(zero|two|few|many)$/, ".other")];

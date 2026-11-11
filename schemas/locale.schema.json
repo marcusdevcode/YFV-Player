@@ -3318,6 +3318,206 @@
             "Theme"
           ]
         },
+        "appearance.window": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.window",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Window",
+          "examples": [
+            "Window"
+          ]
+        },
+        "appearance.windowStyle": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.windowStyle",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Window style",
+          "examples": [
+            "Window style"
+          ]
+        },
+        "appearance.styleRegular": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.styleRegular",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Regular (system window)",
+          "examples": [
+            "Regular (system window)"
+          ]
+        },
+        "appearance.styleFloating": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.styleFloating",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Floating (transparent, rounded)",
+          "examples": [
+            "Floating (transparent, rounded)"
+          ]
+        },
+        "appearance.builtin.dark": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.dark",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Dark",
+          "examples": [
+            "Dark"
+          ]
+        },
+        "appearance.builtin.light": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.light",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Light",
+          "examples": [
+            "Light"
+          ]
+        },
+        "appearance.builtin.studio": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.studio",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Studio",
+          "examples": [
+            "Studio"
+          ]
+        },
+        "appearance.builtin.studio-dark": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.studio-dark",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Studio dark",
+          "examples": [
+            "Studio dark"
+          ]
+        },
+        "appearance.builtin.espresso": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.espresso",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Espresso",
+          "examples": [
+            "Espresso"
+          ]
+        },
+        "appearance.builtin.midnight": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.midnight",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Midnight",
+          "examples": [
+            "Midnight"
+          ]
+        },
+        "appearance.builtin.glass": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.glass",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Glass",
+          "examples": [
+            "Glass"
+          ]
+        },
+        "appearance.builtin.rosegold": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.rosegold",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Rose gold",
+          "examples": [
+            "Rose gold"
+          ]
+        },
+        "appearance.progressBar": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.progressBar",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Progress bar",
+          "examples": [
+            "Progress bar"
+          ]
+        },
+        "appearance.progressHint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.progressHint",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "The bar's colors, including the gradient end, are under Colors → Player.",
+          "examples": [
+            "The bar's colors, including the gradient end, are under Colors → Player."
+          ]
+        },
+        "appearance.builtin.cyberpunk": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.cyberpunk",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Cyberpunk",
+          "examples": [
+            "Cyberpunk"
+          ]
+        },
+        "appearance.builtin.fallout-2": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.fallout-2",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Fallout 2",
+          "examples": [
+            "Fallout 2"
+          ]
+        },
+        "appearance.builtin.townfall-crt": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.townfall-crt",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Townfall CRT",
+          "examples": [
+            "Townfall CRT"
+          ]
+        },
+        "appearance.builtin.green-console": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.green-console",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Green console",
+          "examples": [
+            "Green console"
+          ]
+        },
+        "appearance.builtin.cream-keys": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.cream-keys",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Cream keys",
+          "examples": [
+            "Cream keys"
+          ]
+        },
+        "appearance.builtin.latte": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.latte",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Latte",
+          "examples": [
+            "Latte"
+          ]
+        },
         "appearance.system": {
           "type": "string",
           "minLength": 1,
@@ -3896,6 +4096,16 @@
             "Progress bar"
           ]
         },
+        "theme.color.progressBarEnd": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.color.progressBarEnd",
+          "description": "Name of the color \"Progress bar gradient end\" in the theme editor.",
+          "default": "Progress bar gradient end",
+          "examples": [
+            "Progress bar gradient end"
+          ]
+        },
         "theme.color.overlayBackground": {
           "type": "string",
           "minLength": 1,
@@ -4244,6 +4454,176 @@
           "default": "Show panel (panel on the right)",
           "examples": [
             "Show panel (panel on the right)"
+          ]
+        },
+        "theme.layout.titleBar": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.titleBar",
+          "description": "Name of the window layout setting \"System title bar\" in the theme editor.",
+          "default": "System title bar",
+          "examples": [
+            "System title bar"
+          ]
+        },
+        "theme.layout.resizable": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.resizable",
+          "description": "Name of the window layout setting \"Resizable window\" in the theme editor.",
+          "default": "Resizable window",
+          "examples": [
+            "Resizable window"
+          ]
+        },
+        "theme.layout.cornerRadius": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.cornerRadius",
+          "description": "Name of the window layout setting \"Window corner radius\" in the theme editor.",
+          "default": "Window corner radius",
+          "examples": [
+            "Window corner radius"
+          ]
+        },
+        "theme.layout.shadowSize": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.shadowSize",
+          "description": "Name of the window layout setting \"Window shadow\" in the theme editor.",
+          "default": "Window shadow",
+          "examples": [
+            "Window shadow"
+          ]
+        },
+        "theme.layout.windowOpacity": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.windowOpacity",
+          "description": "Name of the window layout setting \"Window opacity\" in the theme editor.",
+          "default": "Window opacity",
+          "examples": [
+            "Window opacity"
+          ]
+        },
+        "theme.layout.panelRadius": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.panelRadius",
+          "description": "Name of the window layout setting \"Panel corner radius\" in the theme editor.",
+          "default": "Panel corner radius",
+          "examples": [
+            "Panel corner radius"
+          ]
+        },
+        "theme.layout.panelOpacity": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.panelOpacity",
+          "description": "Name of the window layout setting \"Panel opacity\" in the theme editor.",
+          "default": "Panel opacity",
+          "examples": [
+            "Panel opacity"
+          ]
+        },
+        "theme.layout.panelBlur": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.panelBlur",
+          "description": "Name of the window layout setting \"Panel blur\" in the theme editor.",
+          "default": "Panel blur",
+          "examples": [
+            "Panel blur"
+          ]
+        },
+        "theme.layout.panelBorder": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.panelBorder",
+          "description": "Name of the window layout setting \"Panel border\" in the theme editor.",
+          "default": "Panel border",
+          "examples": [
+            "Panel border"
+          ]
+        },
+        "theme.layout.panelGlow": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.panelGlow",
+          "description": "Name of the window layout setting \"Panel glow\" in the theme editor.",
+          "default": "Panel glow",
+          "examples": [
+            "Panel glow"
+          ]
+        },
+        "theme.layout.progressGlow": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.progressGlow",
+          "description": "Name of the window layout setting \"Progress glow\" in the theme editor.",
+          "default": "Progress glow",
+          "examples": [
+            "Progress glow"
+          ]
+        },
+        "theme.layout.progressGloss": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.progressGloss",
+          "description": "Name of the window layout setting \"Progress gloss\" in the theme editor.",
+          "default": "Progress gloss",
+          "examples": [
+            "Progress gloss"
+          ]
+        },
+        "theme.layout.controlsGap": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.controlsGap",
+          "description": "Name of the window layout setting \"Control bar distance\" in the theme editor.",
+          "default": "Control bar distance",
+          "examples": [
+            "Control bar distance"
+          ]
+        },
+        "theme.layout.playlistGap": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.playlistGap",
+          "description": "Name of the window layout setting \"Playlist distance\" in the theme editor.",
+          "default": "Playlist distance",
+          "examples": [
+            "Playlist distance"
+          ]
+        },
+        "theme.layout.textGlow": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.textGlow",
+          "description": "Name of the window layout setting \"Text glow\" in the theme editor.",
+          "default": "Text glow",
+          "examples": [
+            "Text glow"
+          ]
+        },
+        "theme.layout.scanlines": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.scanlines",
+          "description": "Name of the window layout setting \"Scanlines\" in the theme editor.",
+          "default": "Scanlines",
+          "examples": [
+            "Scanlines"
+          ]
+        },
+        "theme.layout.monospace": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.layout.monospace",
+          "description": "Name of the window layout setting \"Monospace font\" in the theme editor.",
+          "default": "Monospace font",
+          "examples": [
+            "Monospace font"
           ]
         },
         "theme.group.window": {

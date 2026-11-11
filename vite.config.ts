@@ -17,5 +17,7 @@ export default defineConfig({
   },
   clearScreen: false,
   server: { port: 1420, strictPort: true },
-  build: { target: "safari15" },
+  // The page is loaded from the app's own files, not over a network, so one chunk of about 500 kB costs nothing:
+  // the warning limit is raised instead of splitting the code up.
+  build: { target: "safari15", chunkSizeWarningLimit: 1000 },
 });

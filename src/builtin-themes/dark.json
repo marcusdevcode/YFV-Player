@@ -26,6 +26,7 @@
     "controlsText": "#ffffff",
     "progressTrack": "#2a2a2a",
     "progressBar": "#ff0000",
+    "progressBarEnd": "#ff0000",
     "overlayBackground": "#000000cc",
     "overlayText": "#ffffff",
     "trackCurrent": "#8b000059",

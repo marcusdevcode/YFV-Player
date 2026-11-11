@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { tr } from "../translate";
 import { usePlaylistLibraryStore } from "./playlistLibraryStore";
 import { BUILTIN_THEMES, themeProblems, isBuiltin, makeThemeId, type ColorToken, type IconSlot, type Theme, type ThemeBase } from "../theme/themeEngine";
+import type { LayoutKey } from "../theme/windowLayout";
 
 interface ThemeState {
   /** Themes the user made or imported (built-in ones are in BUILTIN_THEMES). */
@@ -20,6 +21,10 @@ interface ThemeState {
   remove: (id: string) => void;
   setColor: (id: string, token: ColorToken, value: string | null) => void;
   setIcon: (id: string, slot: IconSlot, ref: string | null) => void;
+  /** Regular window, or the floating (transparent, rounded) one. */
+  setWindowStyle: (id: string, style: "regular" | "experimental") => void;
+  /** One window layout value; null puts it back to the default. */
+  setLayout: (id: string, key: LayoutKey, value: number | boolean | null) => void;
   exportText: (id: string) => string | null;
   /** Add a theme from file text. Throws a readable Error when the file is not a valid theme. */
   importText: (text: string) => Theme;
@@ -96,13 +101,16 @@ export const useThemeStore = create<ThemeState>()((set, get) => {
     create: (name, base, from) => {
       const source = from ?? BUILTIN_THEMES.find((t) => t.id === base)!;
       const id = makeThemeId(name, get().custom.map((t) => t.id));
-      // A new theme lists no colors of its own when based on a built-in one: it follows the base.
+      // A new theme lists no colors of its own when based on the plain dark or light theme: it follows the base.
+      // A copy of any other theme (your own, or a built-in design) keeps its colors, icons and window layout.
+      const plain = source.id === "dark" || source.id === "light";
       const theme: Theme = {
         schemaVersion: 1,
         id,
         name: name.trim() || "Theme",
         base: source.base,
-        ...(isBuiltin(source.id) ? {} : { colors: { ...source.colors }, icons: { ...source.icons } }),
+        ...(source.windowStyle ? { windowStyle: source.windowStyle } : {}),
+        ...(plain ? {} : { colors: { ...source.colors }, icons: { ...source.icons }, ...(source.layout ? { layout: { ...source.layout } } : {}) }),
       };
       set((s) => ({ custom: [...s.custom, theme], selected: id }));
       void persist(id);
@@ -128,6 +136,15 @@ export const useThemeStore = create<ThemeState>()((set, get) => {
         if (ref === null) delete icons[slot];
         else icons[slot] = ref;
         return { ...t, icons };
+      }),
+
+    setWindowStyle: (id, style) => change(id, (t) => ({ ...t, windowStyle: style })),
+    setLayout: (id, key, value) =>
+      change(id, (t) => {
+        const layout = { ...t.layout };
+        if (value === null) delete layout[key];
+        else layout[key] = value;
+        return { ...t, layout };
       }),
 
     exportText: (id) => {

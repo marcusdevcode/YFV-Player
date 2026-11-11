@@ -33,6 +33,7 @@
     "docker:all": "npm run docker:linux && npm run docker:win",
     "release": "npm run build && npm run release:publish",
     "release:publish": "node scripts/release-version.js",
+    "clean:rust": "cargo clean --manifest-path src-tauri/Cargo.toml",
     "schemas": "node scripts/generate-schemas.mjs",
     "validate:json": "node scripts/validate-json.mjs"
   },

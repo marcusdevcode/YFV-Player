@@ -136,7 +136,8 @@ const cli = join(dirname(pkgPath), bin);
 const result = spawnSync(process.execPath, [cli, ...args, ...extra], { stdio: "inherit", env, cwd: root });
 // A finished build moves into builds/v<version>/ (one folder for all builds of this version); the bundle
 // folder in src-tauri/target is removed, so no installers stay there.
-if (result.status === 0 && args[0] === "build") {
+// (Inside the Docker build container, APP_KEEP_BUNDLE is set: docker/build.sh copies the installers out itself.)
+if (result.status === 0 && args[0] === "build" && !env.APP_KEEP_BUNDLE) {
   const at = args.findIndex((a) => a === "--target" || a === "-t");
   const triple = (at >= 0 ? args[at + 1] : hostTarget()) ?? "";
   const bundleDir = resolve(root, "src-tauri/target", ...(at >= 0 ? [triple] : []), "release/bundle");

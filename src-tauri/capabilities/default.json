@@ -12,6 +12,10 @@
     "dialog:default",
     "updater:default",
     "process:allow-restart",
-    "core:window:allow-set-background-color"
+    "core:window:allow-set-background-color",
+    "core:window:allow-set-decorations",
+    "core:window:allow-set-shadow",
+    "core:window:allow-set-resizable",
+    "core:window:allow-start-dragging"
   ]
 }

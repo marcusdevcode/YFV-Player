@@ -54,8 +54,8 @@ button:disabled, input:disabled { cursor: default; }
 .modal-sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
 .modal-error { color: var(--error-text); font-size: 14px; overflow-wrap: anywhere; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
-.progress { height: 10px; border-radius: 5px; background: var(--progress-track); overflow: hidden; }
-.progress-bar { height: 100%; background: var(--progress-bar); transition: width .1s linear; }
+.progress { height: 10px; border-radius: 5px; background: var(--progress-track); overflow: hidden; box-shadow: inset 0 2px 4px color-mix(in srgb, black calc(var(--layout-progress-gloss, 0) * 70%), transparent); }
+.progress-bar { height: 100%; border-radius: inherit; background: linear-gradient(to bottom, color-mix(in srgb, white calc(var(--layout-progress-gloss, 0) * 60%), transparent), transparent 50%, color-mix(in srgb, black calc(var(--layout-progress-gloss, 0) * 35%), transparent)), linear-gradient(90deg, var(--progress-bar), var(--progress-bar-end)); box-shadow: 0 0 var(--layout-progress-glow, 0px) color-mix(in srgb, var(--progress-bar-end) 75%, transparent); transition: width .1s linear; }
 .progress-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13px; color: var(--muted); }
 
 .volume { display: flex; align-items: center; gap: 6px; }
@@ -64,12 +64,27 @@ button:disabled, input:disabled { cursor: default; }
 /* The player's position and volume sliders use the theme's "Progress track" (empty part) and "Progress bar"
    (filled part) colors. --fill is the filled share, set by the component from the value. */
 input[type="range"].progress-slider { -webkit-appearance: none; appearance: none; height: 16px; background: transparent; }
-.progress-slider::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--progress-bar) var(--fill), var(--progress-track) var(--fill)); }
-html[dir="rtl"] .progress-slider::-webkit-slider-runnable-track { background: linear-gradient(to left, var(--progress-bar) var(--fill), var(--progress-track) var(--fill)); }
-.progress-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -4px; border-radius: 50%; border: 0; background: var(--progress-bar); }
+.progress-slider::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 3px;
+  /* top to bottom: glow at the tip, gloss over the fill, the fill gradient (as wide as the filled part), the empty track */
+  background:
+    radial-gradient(circle at var(--fill) 50%, color-mix(in srgb, var(--progress-bar-end) calc(var(--layout-progress-gloss, 0) * 100%), transparent) 0, transparent 16px),
+    linear-gradient(to bottom, color-mix(in srgb, white calc(var(--layout-progress-gloss, 0) * 60%), transparent), transparent 50%, color-mix(in srgb, black calc(var(--layout-progress-gloss, 0) * 35%), transparent)) left / var(--fill) 100% no-repeat,
+    linear-gradient(to right, var(--progress-bar), var(--progress-bar-end)) left / var(--fill) 100% no-repeat,
+    var(--progress-track);
+  box-shadow: inset 0 2px 5px color-mix(in srgb, black calc(var(--layout-progress-gloss, 0) * 70%), transparent), 0 0 var(--layout-progress-glow, 0px) color-mix(in srgb, var(--progress-bar-end) 60%, transparent);
+}
+html[dir="rtl"] .progress-slider::-webkit-slider-runnable-track {
+  background:
+    radial-gradient(circle at calc(100% - var(--fill)) 50%, color-mix(in srgb, var(--progress-bar-end) calc(var(--layout-progress-gloss, 0) * 100%), transparent) 0, transparent 16px),
+    linear-gradient(to bottom, color-mix(in srgb, white calc(var(--layout-progress-gloss, 0) * 60%), transparent), transparent 50%, color-mix(in srgb, black calc(var(--layout-progress-gloss, 0) * 35%), transparent)) right / var(--fill) 100% no-repeat,
+    linear-gradient(to left, var(--progress-bar), var(--progress-bar-end)) right / var(--fill) 100% no-repeat,
+    var(--progress-track);
+}
+.progress-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -4px; border-radius: 50%; border: 0; background: var(--progress-bar-end); box-shadow: 0 0 var(--layout-progress-glow, 0px) var(--progress-bar-end); }
 .progress-slider::-moz-range-track { height: 6px; border-radius: 3px; background: var(--progress-track); }
-.progress-slider::-moz-range-progress { height: 6px; border-radius: 3px; background: var(--progress-bar); }
-.progress-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; border: 0; background: var(--progress-bar); }
+.progress-slider::-moz-range-progress { height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--progress-bar), var(--progress-bar-end)); }
+.progress-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; border: 0; background: var(--progress-bar-end); }
 
 .drop-hint {
   position: absolute; inset: 12px; z-index: 50; display: flex; align-items: center; justify-content: center;
@@ -125,12 +140,12 @@ html[dir="rtl"] .progress-slider::-webkit-slider-runnable-track { background: li
 .track.drop-before { border-top-color: var(--drop-indicator); }
 .track.drop-after { border-bottom-color: var(--drop-indicator); }
 .grip { cursor: grab; padding: 6px 4px; color: var(--muted); user-select: none; touch-action: none; }
-.track-main { flex: 1; min-width: 0; justify-content: flex-start; gap: 8px; padding: 4px; background: transparent; border-color: transparent; text-align: left; }
+.track-main { flex: 1; min-width: 0; justify-content: flex-start; gap: 8px; padding: 4px; background: transparent; border-color: transparent; color: var(--text); text-align: left; }
 .track-main:hover, .track-menu-btn:hover { background: var(--track-hover); }
 .track-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
-.track-menu-btn { padding: 4px 8px; background: transparent; border-color: transparent; }
+.track-menu-btn { padding: 4px 8px; background: transparent; border-color: transparent; color: var(--text); }
 .row-menu { position: absolute; right: 6px; top: 100%; z-index: 20; min-width: 210px; display: flex; flex-direction: column; gap: 2px; padding: 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow); }
-.row-menu button { justify-content: flex-start; background: transparent; border-color: transparent; font-size: 13px; }
+.row-menu button { justify-content: flex-start; background: transparent; border-color: transparent; color: var(--text); font-size: 13px; }
 .row-menu button:hover:not(:disabled) { background: var(--panel); }
 .danger-text { color: var(--error-text); }
 
@@ -209,7 +224,7 @@ html[dir="rtl"] :is(.sidebar, .badges, .modal, .notice, .update-banner, .empty, 
 
 /* The app's own right-click menu (the system one is switched off). */
 .context-menu { position: fixed; z-index: 300; min-width: 190px; display: flex; flex-direction: column; gap: 2px; padding: 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow); }
-.context-menu button { justify-content: flex-start; background: transparent; border-color: transparent; font-size: 13px; text-align: start; }
+.context-menu button { justify-content: flex-start; background: transparent; border-color: transparent; color: var(--text); font-size: 13px; text-align: start; }
 .context-menu button:hover:not(:disabled) { background: var(--panel); }
 .context-separator { height: 1px; margin: 3px 4px; background: var(--border); }
 html[dir="rtl"] .context-menu { direction: rtl; }
@@ -265,3 +280,114 @@ html[dir="rtl"] .context-menu { direction: rtl; }
 .download-buttons { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .download-row .grip { cursor: grab; user-select: none; color: var(--muted); touch-action: none; }
 html[dir="rtl"] :is(.download-popup, .download-row) { direction: rtl; }
+
+
+/* ---- Theme effects that work in every window style: glowing text, terminal font, CRT scanlines ---- */
+body { text-shadow: var(--layout-text-shadow, none); }
+html[data-monospace="yes"] :is(body, button, input, select, textarea) { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+/* Scanlines and a soft dark edge over everything, without taking any clicks. */
+body::after {
+  content: ""; position: fixed; inset: var(--frame-inset, 0px); z-index: 1000; pointer-events: none;
+  border-radius: var(--layout-window-radius, 0px); opacity: var(--layout-scanlines, 0);
+  background:
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, .55) 0, rgba(0, 0, 0, .55) 1px, transparent 1px, transparent 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .55) 100%);
+}
+
+/* ---- Floating window style (theme "windowStyle": "experimental") ----
+   A frameless transparent rounded window. Every size comes from the theme's layout (src/theme/windowLayout.ts sets the
+   --layout-* variables on <html>), so a theme can change corners, shadow, transparency, blur and distances. */
+.window-drag-strip { display: none; }
+html[data-window-style="experimental"] {
+  --frame-inset: var(--layout-margin);
+  --dock-width: calc(398px + 2 * var(--layout-playlist-gap));
+  --card-shadow: 0 14px 40px rgba(0, 0, 0, .28), 0 3px 10px rgba(0, 0, 0, .12);
+  --small-card-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+  --glow-shadow: 0 0 var(--layout-panel-glow) color-mix(in srgb, var(--accent) 55%, transparent);
+  --panel-line: var(--layout-panel-border) solid var(--border);
+  /* Fills that follow the theme's colors and its transparency settings */
+  --panel-fill: color-mix(in srgb, var(--panel) calc(var(--layout-panel-opacity) * 100%), transparent);
+  --badges-fill: color-mix(in srgb, var(--badges-bg) calc(var(--layout-panel-opacity) * 100%), transparent);
+  --controls-fill: color-mix(in srgb, var(--controls-bg) calc(var(--layout-panel-opacity) * 100%), transparent);
+  --window-fill: color-mix(in srgb, var(--bg) calc(var(--layout-window-opacity) * 100%), transparent);
+  --stage-fill: color-mix(in srgb, var(--player-bg) calc(var(--layout-window-opacity) * 100%), transparent);
+  background: transparent;
+}
+html[data-window-style="experimental"] body { background: transparent; }
+html[data-window-style="experimental"] #root { box-sizing: border-box; padding: var(--frame-inset); }
+html[data-window-style="experimental"] .app {
+  width: 100%; height: 100%; border-radius: var(--layout-window-radius); overflow: hidden; background: var(--window-fill);
+  box-shadow: 0 calc(var(--layout-shadow) / 3) var(--layout-shadow) rgba(0, 0, 0, .4), 0 calc(var(--layout-shadow) / 10) calc(var(--layout-shadow) / 3) rgba(0, 0, 0, .25);
+}
+html[data-window-style="experimental"] :is(.stage, .player, .empty) { background: var(--stage-fill); }
+html[data-window-style="experimental"] .window-drag-strip { display: block; position: absolute; top: 0; left: 0; right: 0; height: 26px; z-index: 30; }
+/* Dialogs dim only the rounded window, not the transparent margin around it. */
+html[data-window-style="experimental"] .modal-backdrop { inset: var(--frame-inset); border-radius: var(--layout-window-radius); backdrop-filter: blur(3px); }
+/* Full screen: the plain, full-size window again. */
+html[data-window-style="experimental"][data-fullscreen="yes"] { --frame-inset: 0px; }
+html[data-window-style="experimental"][data-fullscreen="yes"] .app { border-radius: 0; box-shadow: none; }
+html[data-window-style="experimental"][data-fullscreen="yes"] .window-drag-strip { display: none; }
+
+/* The control bar floats over the bottom of the video as a rounded card (also in full screen). */
+html[data-window-style="experimental"] .player .controls {
+  position: absolute; left: var(--layout-controls-gap); right: var(--layout-controls-gap); bottom: var(--layout-controls-gap);
+  padding: 14px 22px; border-radius: var(--layout-panel-radius); z-index: 5; border: var(--panel-line);
+  background: var(--controls-fill); backdrop-filter: blur(var(--layout-panel-blur));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .28), 0 2px 8px rgba(0, 0, 0, .12), var(--glow-shadow);
+}
+html[data-window-style="experimental"] .play-button {
+  width: 56px; height: 56px; padding: 0; border: 0; border-radius: var(--layout-control-radius); color: var(--accent-text);
+  background: linear-gradient(135deg, var(--accent-border), var(--accent));
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+html[data-window-style="experimental"] .controls button:not(.play-button) { border-color: transparent; background: transparent; color: var(--controls-text); }
+html[data-window-style="experimental"] .progress-slider { height: 26px; }
+html[data-window-style="experimental"] .progress-slider::-webkit-slider-runnable-track { height: calc(12px + var(--layout-progress-gloss, 0) * 6px); border-radius: var(--layout-bar-radius); box-shadow: inset 0 2px 5px color-mix(in srgb, black calc(var(--layout-progress-gloss, 0) * 70%), transparent), 0 0 calc(6px + var(--layout-progress-glow, 0px)) color-mix(in srgb, var(--progress-bar-end) 55%, transparent); }
+html[data-window-style="experimental"] .progress-slider::-webkit-slider-thumb { border-radius: var(--layout-control-radius); width: 22px; height: 22px; margin-top: calc((12px + var(--layout-progress-gloss, 0) * 6px - 22px) / 2); background: var(--progress-bar-end); border: 5px solid var(--controls-bg); box-shadow: 0 2px 8px rgba(0, 0, 0, .3), 0 0 var(--layout-progress-glow, 0px) var(--progress-bar-end); box-sizing: border-box; }
+html[data-window-style="experimental"] .progress-slider::-moz-range-track { height: 12px; border-radius: 6px; }
+html[data-window-style="experimental"] .progress-slider::-moz-range-progress { height: 12px; border-radius: 6px; }
+
+/* Dialogs */
+html[data-window-style="experimental"] .modal { border: var(--panel-line); border-radius: var(--layout-panel-radius); padding: 26px; background: var(--panel-fill); backdrop-filter: blur(var(--layout-panel-blur)); box-shadow: var(--card-shadow), var(--glow-shadow); }
+html[data-window-style="experimental"] .staged,
+html[data-window-style="experimental"] input:not([type]),
+html[data-window-style="experimental"] input[type="text"],
+html[data-window-style="experimental"] select { border-radius: var(--layout-input-radius); }
+/* Buttons: pills, the main one with the same gradient as the play button */
+html[data-window-style="experimental"] button { border-radius: var(--layout-button-radius); padding-inline: 16px; }
+html[data-window-style="experimental"] button.primary,
+html[data-window-style="experimental"] button.active:not(.play-button) {
+  background: linear-gradient(135deg, var(--accent-border), var(--accent)); border-color: transparent;
+}
+html[data-window-style="experimental"] .track-menu-btn { padding: 4px 8px; }
+
+/* Playlist panel: the badge column and the track list are two floating cards on top of the video
+   (the video keeps the whole window; nothing white shows behind the cards). */
+html[data-window-style="experimental"] .shell { position: relative; }
+html[data-window-style="experimental"] .dock {
+  position: absolute; top: 0; bottom: 0; left: 0; z-index: 25; width: var(--dock-width); flex: none; pointer-events: none; transition: none;
+}
+html[data-window-style="experimental"] .shell.side-right .dock { left: auto; right: 0; }
+html[data-window-style="experimental"] .dock-inner { width: var(--dock-width); box-sizing: border-box; padding: var(--layout-playlist-gap); gap: 14px; }
+html[data-window-style="experimental"] :is(.badges, .sidebar) {
+  pointer-events: auto; border: var(--panel-line); border-radius: var(--layout-panel-radius); box-shadow: var(--small-card-shadow), var(--glow-shadow);
+  backdrop-filter: blur(var(--layout-panel-blur));
+}
+html[data-window-style="experimental"] .badges { background: var(--badges-fill); }
+html[data-window-style="experimental"] .sidebar { background: var(--panel-fill); overflow: hidden; }
+/* The show/hide tab is a small rounded pill: 8px from the open panel's card, or from the window edge when closed. */
+html[data-window-style="experimental"] .edge-tab {
+  width: 30px; height: 60px; padding: 0; border: var(--panel-line); border-radius: min(15px, var(--layout-control-radius)); opacity: .9;
+  background: var(--panel); color: var(--text); box-shadow: var(--small-card-shadow);
+}
+html[data-window-style="experimental"] .edge-tab:hover { opacity: 1; }
+html[data-window-style="experimental"] .edge-tab.left { left: 10px; }
+html[data-window-style="experimental"] .edge-tab.right { right: 10px; }
+html[data-window-style="experimental"] .shell:has(.dock:not(.closed)) .edge-tab.left { left: calc(var(--dock-width) - var(--layout-playlist-gap) + 8px); }
+html[data-window-style="experimental"] .shell:has(.dock:not(.closed)) .edge-tab.right { right: calc(var(--dock-width) - var(--layout-playlist-gap) + 8px); }
+
+/* Popups and menus */
+html[data-window-style="experimental"] .context-menu { border: var(--panel-line); border-radius: min(18px, var(--layout-panel-radius)); padding: 6px; box-shadow: var(--card-shadow), var(--glow-shadow); }
+html[data-window-style="experimental"] .context-menu button { border-radius: min(12px, var(--layout-button-radius)); }
+html[data-window-style="experimental"] .download-popup { border: var(--panel-line); border-radius: min(var(--layout-panel-radius), 28px); padding: 14px 16px; bottom: calc(var(--layout-controls-gap) + 98px); box-shadow: var(--card-shadow), var(--glow-shadow); }
+html[data-window-style="experimental"] :is(.update-banner, .notice) { border: var(--panel-line); border-radius: min(20px, var(--layout-panel-radius)); box-shadow: var(--card-shadow), var(--glow-shadow); }

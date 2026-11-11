@@ -192,6 +192,14 @@
    "dark": "#ff0000",
    "light": "#e53935"
   },
+  "progressBarEnd": {
+   "cssVar": "--progress-bar-end",
+   "group": "player",
+   "title": "Progress bar gradient end",
+   "description": "The far end of the progress bars' gradient. Set it equal to the progress bar color for a flat bar.",
+   "dark": "#ff0000",
+   "light": "#e53935"
+  },
   "overlayBackground": {
    "cssVar": "--overlay-bg",
    "group": "player",
@@ -413,6 +421,166 @@
    "title": "Show panel (panel on the right)",
    "description": "Tab that shows the playlist panel when it is on the right.",
    "default": "builtin:chevronLeft"
+  }
+ },
+ "layout": {
+  "titleBar": {
+   "title": "System title bar",
+   "description": "Floating window style only. On keeps the operating system's title bar and window buttons (and then the transparent margin, rounded window corners and window shadow are not used). Off removes them.",
+   "type": "boolean",
+   "default": false
+  },
+  "resizable": {
+   "title": "Resizable window",
+   "description": "Floating window style only. On lets you resize the window by its edges; off keeps its size, except in full screen.",
+   "type": "boolean",
+   "default": false
+  },
+  "cornerRadius": {
+   "title": "Window corner radius",
+   "description": "How round the corners of the window are.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 80,
+   "step": 1,
+   "unit": "px",
+   "default": 30
+  },
+  "shadowSize": {
+   "title": "Window shadow",
+   "description": "Size of the shadow around the window (it also sets the transparent margin that holds it). 0 means no shadow.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 60,
+   "step": 1,
+   "unit": "px",
+   "default": 30
+  },
+  "windowOpacity": {
+   "title": "Window opacity",
+   "description": "How solid the window background behind the video is. Lower values let the desktop show through.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 1,
+   "step": 0.05,
+   "unit": "",
+   "default": 1
+  },
+  "panelRadius": {
+   "title": "Panel corner radius",
+   "description": "How round the corners of the control bar, playlist and dialogs are.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 80,
+   "step": 1,
+   "unit": "px",
+   "default": 30
+  },
+  "panelOpacity": {
+   "title": "Panel opacity",
+   "description": "How solid the control bar, playlist and dialogs are. Lower values make them see-through.",
+   "type": "number",
+   "minimum": 0.2,
+   "maximum": 1,
+   "step": 0.05,
+   "unit": "",
+   "default": 1
+  },
+  "panelBlur": {
+   "title": "Panel blur",
+   "description": "Frosted-glass blur behind the control bar, playlist and dialogs (best together with a lower panel opacity).",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 40,
+   "step": 1,
+   "unit": "px",
+   "default": 0
+  },
+  "panelBorder": {
+   "title": "Panel border",
+   "description": "Width of the colored line around the control bar, playlist and dialogs (uses the Borders color). 0 means no line.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 4,
+   "step": 1,
+   "unit": "px",
+   "default": 0
+  },
+  "panelGlow": {
+   "title": "Panel glow",
+   "description": "Glow around the panels, tinted with the accent color. 0 means no glow.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 30,
+   "step": 1,
+   "unit": "px",
+   "default": 0
+  },
+  "progressGlow": {
+   "title": "Progress glow",
+   "description": "Glow around the progress bars and the position slider, tinted with the gradient end color. 0 means no glow.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 30,
+   "step": 1,
+   "unit": "px",
+   "default": 0
+  },
+  "progressGloss": {
+   "title": "Progress gloss",
+   "description": "Glossy, metallic look of the progress bars and the position slider: a bright highlight on top, a darker lower edge, and a sunken track. 0 means flat.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 1,
+   "step": 0.05,
+   "unit": "",
+   "default": 0
+  },
+  "controlsGap": {
+   "title": "Control bar distance",
+   "description": "Space between the control bar and the window edges.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 80,
+   "step": 1,
+   "unit": "px",
+   "default": 22
+  },
+  "playlistGap": {
+   "title": "Playlist distance",
+   "description": "Space between the playlist cards and the window edges.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 80,
+   "step": 1,
+   "unit": "px",
+   "default": 22
+  },
+  "textGlow": {
+   "title": "Text glow",
+   "description": "Glow around all text, like a lit screen. 0 means none.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 12,
+   "step": 1,
+   "unit": "px",
+   "default": 0
+  },
+  "scanlines": {
+   "title": "Scanlines",
+   "description": "Dark horizontal lines over the whole window, like an old CRT screen. 0 means none.",
+   "type": "number",
+   "minimum": 0,
+   "maximum": 1,
+   "step": 0.05,
+   "unit": "",
+   "default": 0
+  },
+  "monospace": {
+   "title": "Monospace font",
+   "description": "Use a monospace (terminal) font for all text.",
+   "type": "boolean",
+   "default": false
   }
  }
 }

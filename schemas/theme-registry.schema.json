@@ -78,6 +78,47 @@
         "additionalProperties": false
       }
     },
+    "layout": {
+      "type": "object",
+      "description": "Window layout settings of the experimental window style, by id (shown in the theme editor).",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "number",
+              "boolean"
+            ]
+          },
+          "minimum": {
+            "type": "number"
+          },
+          "maximum": {
+            "type": "number"
+          },
+          "step": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "default": {}
+        },
+        "required": [
+          "title",
+          "description",
+          "type",
+          "default"
+        ],
+        "additionalProperties": false
+      }
+    },
     "iconSlots": {
       "type": "object",
       "description": "Icon slots by id.",
@@ -108,7 +149,8 @@
     "schemaVersion",
     "groups",
     "colors",
-    "iconSlots"
+    "iconSlots",
+    "layout"
   ],
   "additionalProperties": false
 }

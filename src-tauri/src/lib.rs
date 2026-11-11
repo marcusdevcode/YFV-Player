@@ -248,7 +248,11 @@ pub fn run() {
             {
                 file = file.item(&settings_item).separator();
             }
-            let file = file.item(&predefined(PredefinedMenuItem::close_window(app, Some(&en("closeWindow"))), "closeWindow")?).build()?;
+            // Minimize and Close are also here, for the frameless experimental window styles (no title bar buttons).
+            let file = file
+                .item(&predefined(PredefinedMenuItem::minimize(app, Some(&en("minimize"))), "minimize")?)
+                .item(&predefined(PredefinedMenuItem::close_window(app, Some(&en("closeWindow"))), "closeWindow")?)
+                .build()?;
             tx!("file", file);
 
             let toggle_sidebar = MenuItemBuilder::with_id("toggle-sidebar", en("togglePanel"))
