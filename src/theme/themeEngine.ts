@@ -10,6 +10,9 @@ import espressoJson from "../builtin-themes/espresso.json";
 import latteJson from "../builtin-themes/latte.json";
 import midnightJson from "../builtin-themes/midnight.json";
 import glassJson from "../builtin-themes/glass.json";
+import detroitJson from "../builtin-themes/detroit.json";
+import rpgJson from "../builtin-themes/rpg.json";
+import glassBlurJson from "../builtin-themes/glass-blur.json";
 import rosegoldJson from "../builtin-themes/rosegold.json";
 import cyberpunkJson from "../builtin-themes/cyberpunk.json";
 import falloutJson from "../builtin-themes/fallout-2.json";
@@ -31,6 +34,8 @@ export interface Theme {
   base: ThemeBase;
   /** "experimental": frameless transparent rounded window. Missing means "regular". */
   windowStyle?: "regular" | "experimental";
+  /** Floating style only: "detroit" draws double-line borders, corner brackets and moving button borders; "rpg" draws wood frames with gold corner ornaments. Missing means "plain". */
+  frame?: "plain" | "detroit" | "rpg";
   /** Settings of the experimental window style (see src/theme/registry.json "layout"). */
   layout?: Partial<Record<LayoutKey, number | boolean>>;
   description?: string;
@@ -39,7 +44,7 @@ export interface Theme {
   icons?: Partial<Record<IconSlot, string>>;
 }
 
-export const BUILTIN_THEMES: Theme[] = [darkJson, lightJson, studioJson, studioDarkJson, espressoJson, latteJson, midnightJson, glassJson, rosegoldJson, cyberpunkJson, falloutJson, townfallJson, greenConsoleJson, creamKeysJson] as Theme[];
+export const BUILTIN_THEMES: Theme[] = [darkJson, lightJson, studioJson, studioDarkJson, espressoJson, latteJson, midnightJson, glassJson, glassBlurJson, detroitJson, rpgJson, rosegoldJson, cyberpunkJson, falloutJson, townfallJson, greenConsoleJson, creamKeysJson] as Theme[];
 
 export const COLOR_TOKENS = Object.entries(registry.colors).map(([id, c]) => ({ id: id as ColorToken, ...c }));
 export const ICON_SLOTS = Object.entries(registry.iconSlots).map(([id, s]) => ({ id: id as IconSlot, ...s }));

@@ -430,7 +430,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![media_url, media_duration, merge_av, merge_cancel, launch_path, launch_audio,
             app_data::library_load, app_data::library_save, app_data::thumbnail_save, app_data::thumbnail_import,
             app_data::thumbnail_delete, app_data::trash_files, app_data::text_file_read, app_data::text_file_write,
-            app_data::settings_get, app_data::settings_set, app_data::settings_remove, app_data::theme_list, app_data::theme_save, app_data::theme_delete,
+            app_data::settings_get, app_data::settings_set, app_data::settings_remove, app_data::theme_list, app_data::theme_save, app_data::theme_delete, app_data::language_list, app_data::language_save, app_data::language_delete,
             app_data::position_note, menu_set_language, menu_set_sidebar_side, menu_set_visible, playback_allow_start,
             youtube::youtube_commands::youtube_lookup, youtube::youtube_commands::downloads_configure,
             youtube::youtube_commands::downloads_snapshot, youtube::youtube_commands::downloads_enqueue,

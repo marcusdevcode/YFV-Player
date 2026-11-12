@@ -111,6 +111,43 @@ pub fn theme_delete(app: AppHandle, id: String) -> Result<(), String> {
     Ok(())
 }
 
+fn languages_dir(app: &AppHandle) -> Result<PathBuf, String> {
+    let dir = data_dir(app)?.join("languages");
+    fs::create_dir_all(&dir).map_err(|e| format!("Cannot create the languages folder: {e}"))?;
+    Ok(dir)
+}
+
+/// Every imported language file: (language code, text). The page validates the texts.
+#[tauri::command]
+pub fn language_list(app: AppHandle) -> Result<Vec<(String, String)>, String> {
+    let mut languages = Vec::new();
+    for entry in fs::read_dir(languages_dir(&app)?).map_err(|e| e.to_string())? {
+        let path = entry.map_err(|e| e.to_string())?.path();
+        if path.extension().and_then(|e| e.to_str()) != Some("json") {
+            continue;
+        }
+        if let (Some(code), Ok(text)) = (path.file_stem().and_then(|s| s.to_str()), fs::read_to_string(&path)) {
+            languages.push((code.to_string(), text));
+        }
+    }
+    Ok(languages)
+}
+
+#[tauri::command]
+pub fn language_save(app: AppHandle, code: String, json: String) -> Result<(), String> {
+    serde_json::from_str::<serde_json::Value>(&json).map_err(|e| format!("Not valid JSON: {e}"))?;
+    write_atomic(&languages_dir(&app)?.join(format!("{}.json", safe_name(&code)?)), json.as_bytes())
+}
+
+#[tauri::command]
+pub fn language_delete(app: AppHandle, code: String) -> Result<(), String> {
+    let path = languages_dir(&app)?.join(format!("{}.json", safe_name(&code)?));
+    if path.exists() {
+        fs::remove_file(path).map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
 /// The newest playback position the page reported: (settings file name, video path, seconds).
 /// It lives in memory only. It is written to the positions file when the program exits, so the
 /// position does not have to be saved to disk while a video plays.

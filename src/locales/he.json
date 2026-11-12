@@ -319,6 +319,7 @@
     "theme.layout.panelBlur": "טשטוש הלוחות",
     "theme.layout.controlsGap": "מרחק פקדי הנגן מהקצוות",
     "theme.layout.playlistGap": "מרחק רשימת ההשמעה מהקצוות",
+    "appearance.builtin.glass-blur": "זכוכית מטושטשת",
     "appearance.builtin.rosegold": "זהב ורוד",
     "theme.layout.progressGloss": "ברק מתכתי של סרגל ההתקדמות",
     "theme.layout.progressGlow": "זוהר סרגל ההתקדמות",
@@ -433,6 +434,24 @@
     "theme.group.dialogs": "חלונות והדגשות",
     "theme.group.feedback": "הודעות ואזהרות",
     "settings.pauseInBackground": "השהיית הווידאו כשהחלון ברקע",
-    "settings.pauseInBackgroundHint": "רק התמונה מושהית והשמע ממשיך להתנגן. לסרטונים עם קובץ שמע נפרד."
+    "settings.pauseInBackgroundHint": "רק התמונה מושהית והשמע ממשיך להתנגן. לסרטונים עם קובץ שמע נפרד.",
+    "filter.language": "קובץ שפה",
+    "settings.translation": "קבצי תרגום",
+    "settings.translation.hint": "ייצאו את השפה הזו לקובץ ‎.json כדי לתרגם או לתקן אותה, ואז ייבאו את הקובץ שנערך. שם הקובץ הוא קוד השפה (למשל fr.json): הייבוא מוסיף את השפה או מחליף את המובנית.",
+    "settings.translation.export": "ייצוא השפה הזו…",
+    "settings.translation.import": "ייבוא שפה…",
+    "settings.translation.remove": "הסרת הקובץ המיובא של השפה הזו",
+    "settings.translation.exportedOk": "קובץ השפה יוצא.",
+    "settings.translation.importedOk": "השפה ״{name}״ יובאה.",
+    "settings.translation.removedOk": "קובץ השפה המיובא הוסר.",
+    "settings.translation.exportFailed": "הייצוא נכשל: {error}",
+    "settings.translation.importFailed": "הייבוא נכשל: {error}",
+    "settings.translation.badCode": "שם הקובץ חייב להיות קוד שפה, למשל fr.json או pt-BR.json.",
+    "appearance.frame": "סגנון מסגרת",
+    "appearance.framePlain": "פשוט",
+    "appearance.frameDetroit": "דטרויט (קווים כפולים, סוגריים בפינות, מסגרות כפתורים נעות)",
+    "appearance.builtin.detroit": "דטרויט",
+    "appearance.frameRpg": "RPG (מסגרות עץ, עיטורי פינה מוזהבים)",
+    "appearance.builtin.rpg": "סגנון RPG"
   }
 }

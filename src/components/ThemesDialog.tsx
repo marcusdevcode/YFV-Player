@@ -261,6 +261,16 @@ export default function ThemesDialog() {
                 <option value="experimental">{t("appearance.styleFloating")}</option>
               </select>
             </div>
+            {theme.windowStyle === "experimental" && (
+              <div className="color-row">
+                <span className="color-label">{t("appearance.frame")}</span>
+                <select value={theme.frame ?? "plain"} onChange={(e) => store.setFrame(ensureEditable(), e.target.value as "plain" | "detroit" | "rpg")}>
+                  <option value="plain">{t("appearance.framePlain")}</option>
+                  <option value="detroit">{t("appearance.frameDetroit")}</option>
+                  <option value="rpg">{t("appearance.frameRpg")}</option>
+                </select>
+              </div>
+            )}
             {theme.windowStyle === "experimental" && LAYOUT_FIELDS.filter((f) => !PROGRESS_FIELDS.includes(f.id)).map(layoutRow)}
           </section>
 

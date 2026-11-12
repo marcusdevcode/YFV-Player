@@ -54,6 +54,16 @@
       "description": "'regular' is the normal window with the system title bar. 'experimental' removes the title bar and the three window buttons, makes the window transparent with rounded corners and a large shadow, and floats the control bar over the video.",
       "default": "regular"
     },
+    "frame": {
+      "enum": [
+        "plain",
+        "detroit",
+        "rpg"
+      ],
+      "title": "Frame style",
+      "description": "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, white corner brackets on the selected item and a light that travels around the border of every button. 'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons.",
+      "default": "plain"
+    },
     "layout": {
       "type": "object",
       "title": "Window layout",

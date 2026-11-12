@@ -94,6 +94,15 @@ function themeSchema() {
           "makes the window transparent with rounded corners and a large shadow, and floats the control bar over the video.",
         default: "regular",
       },
+      frame: {
+        enum: ["plain", "detroit", "rpg"],
+        title: "Frame style",
+        description:
+          "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, " +
+          "white corner brackets on the selected item and a light that travels around the border of every button. " +
+          "'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons.",
+        default: "plain",
+      },
       layout: {
         type: "object",
         title: "Window layout",
@@ -503,6 +512,41 @@ const FLOATING_DESIGNS = [
     layout: { cornerRadius: 44, panelRadius: 40, panelOpacity: 0.6, panelBlur: 22, controlsGap: 26, playlistGap: 26 },
   },
   {
+    id: "glass-blur", name: "Glass blur", base: "dark", description: "Frosted-glass floating design: a see-through window, and a heavily blurred control bar and playlist cards, with white controls.",
+    colors: {
+      background: "#5c5c60", text: "#ffffff", textMuted: "#d4d4d8", border: "#ffffff4d", accent: "#ffffff", accentBorder: "#ffffff", accentText: "#1c1c1e",
+      buttonBackground: "#ffffff26", buttonHover: "#ffffff40", buttonText: "#ffffff", panel: "#8e8e93", panelRaised: "#ffffff1f",
+      badgesBackground: "#8e8e93", badgeText: "#ffffff", badgeActiveBorder: "#ffffff", playerBackground: "#000000",
+      controlsBackground: "#9a9a9f", controlsText: "#ffffff", progressTrack: "#ffffff59", progressBar: "#ffffff",
+      trackCurrent: "#ffffff2e", trackHover: "#ffffff1a", rowStripe: "#ffffff0a", rowSelected: "#ffffff29", backdrop: "#00000066",
+    },
+    layout: { cornerRadius: 52, panelRadius: 40, shadowSize: 30, windowOpacity: 0.55, panelOpacity: 0.42, panelBlur: 40, panelBorder: 1, progressGlow: 4, progressGloss: 0.25, controlsGap: 24, playlistGap: 24 },
+  },
+  {
+    id: "detroit", name: "Detroit", base: "dark", frame: "detroit", description: "Blue sci-fi interface: dark navy glass panels, thin light borders, corner brackets on the selected item and buttons whose borders have a moving light.",
+    colors: {
+      background: "#0b1a2b", text: "#dcecf7", textMuted: "#6f8ca6", border: "#35597a", accent: "#31c6ff", accentBorder: "#8fe3ff", accentText: "#04141f",
+      buttonBackground: "#14304b", buttonHover: "#1d4262", buttonText: "#cfe6f5", panel: "#0f2740", panelRaised: "#17344f",
+      badgesBackground: "#0c2236", badgeText: "#cfe6f5", badgeActiveBorder: "#8fe3ff", playerBackground: "#07121e",
+      controlsBackground: "#0f2740", controlsText: "#dcecf7", progressTrack: "#1b3a57", progressBar: "#1fa8e6", progressBarEnd: "#8fe3ff",
+      trackCurrent: "#31c6ff2e", trackHover: "#31c6ff14", rowStripe: "#ffffff08", rowSelected: "#31c6ff26", backdrop: "#020a12b3",
+      errorText: "#ff7a7a", warningText: "#ffd36b", dangerBackground: "#a82a3a", dangerBorder: "#ff6b7d",
+    },
+    layout: { cornerRadius: 4, panelRadius: 2, shadowSize: 24, windowOpacity: 0.97, panelOpacity: 0.86, panelBlur: 14, panelBorder: 1, panelGlow: 8, progressGlow: 10, progressGloss: 0.35, textGlow: 2, controlsGap: 18, playlistGap: 18 },
+  },
+  {
+    id: "rpg", name: "RPG style", base: "light", frame: "rpg", description: "Fantasy-game interface: carved wood frames with gold corner ornaments, parchment panels, gold and brown gradient buttons and capital letters in a serif face.",
+    colors: {
+      background: "#5a3a1c", text: "#3a2410", textMuted: "#7a5a38", border: "#7a4e24", accent: "#d9a553", accentBorder: "#3b2410", accentText: "#3a2410",
+      buttonBackground: "#6e4826", buttonHover: "#86603a", buttonText: "#f5e6c4", panel: "#f1e3bf", panelRaised: "#e6d3a4",
+      badgesBackground: "#e3d0a0", badgeText: "#3a2410", badgeActiveBorder: "#3b2410", playerBackground: "#1b120a",
+      controlsBackground: "#5a3a1c", controlsText: "#f5e6c4", progressTrack: "#7d7a72", progressBar: "#b98a3a", progressBarEnd: "#efc66e",
+      trackCurrent: "#d9a5532e", trackHover: "#b4823c26", rowStripe: "#7a4e2410", rowSelected: "#d9a5534d", backdrop: "#1b120acc",
+      errorText: "#a82a1a", warningText: "#8a5a10", dangerBackground: "#a8402a", dangerBorder: "#3b2410",
+    },
+    layout: { cornerRadius: 24, panelRadius: 16, shadowSize: 28, windowOpacity: 1, panelOpacity: 1, panelBlur: 0, panelBorder: 0, panelGlow: 0, progressGlow: 0, progressGloss: 0.3, controlsGap: 18, playlistGap: 18 },
+  },
+  {
     id: "rosegold", name: "Rose gold", base: "dark", description: "Graphite floating design with rose-gold highlights and a glowing gradient progress bar.",
     colors: { background: "#232428", text: "#ece6e2", textMuted: "#a79f9b", border: "#55565c", panel: "#3d3e44", panelRaised: "#4a4b52", buttonBackground: "#4a4b52", buttonHover: "#5a5b63", buttonText: "#ece6e2", accent: "#c98f7d", accentBorder: "#e6b4a0", accentText: "#2a1c17", playerBackground: "#17181b", controlsBackground: "#3d3e44", controlsText: "#ece6e2", progressTrack: "#26272b", progressBar: "#b9786a", progressBarEnd: "#f0c2ae" },
     layout: { cornerRadius: 30, panelRadius: 26, panelOpacity: 0.94, panelBlur: 8, progressGlow: 16, progressGloss: 0.9 },
@@ -578,6 +622,7 @@ function floatingTheme(design) {
     name: design.name,
     base: design.base,
     windowStyle: "experimental",
+    ...(design.frame ? { frame: design.frame } : {}),
     description: design.description,
     // A design that sets only the progress bar color gets a flat bar (no red gradient end from the base theme).
     colors: { ...theme.colors, ...design.colors, ...(design.colors.progressBar && !design.colors.progressBarEnd ? { progressBarEnd: design.colors.progressBar } : {}) },

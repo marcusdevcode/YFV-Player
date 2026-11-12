@@ -35,3 +35,18 @@ export const DEFAULT_LANGUAGE = "en";
 export function defaultSidebarSide(language: string): SidebarSide {
   return LOCALES[language]?.sidebarSide === "right" ? "right" : "left";
 }
+
+/** Add (or replace) a language while the app runs: a file the user imported (see src/translationFiles.ts). */
+export function registerLocale(code: string, locale: Locale) {
+  LOCALES[code] = locale;
+}
+
+/** Take an imported language away again; a built-in language of that code comes back. */
+export function unregisterLocale(code: string) {
+  const builtin = Object.entries(modules).find(([path]) => path === `./${code}.json`)?.[1];
+  if (builtin) LOCALES[code] = builtin;
+  else delete LOCALES[code];
+}
+
+/** True when the language is one of the files shipped in src/locales. */
+export const isBuiltInLanguage = (code: string) => `./${code}.json` in modules;

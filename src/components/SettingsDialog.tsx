@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { open as chooseFolder } from "@tauri-apps/plugin-dialog";
-import { LOCALES, defaultSidebarSide, type SidebarSide } from "../locales";
+import { LOCALES, defaultSidebarSide, isBuiltInLanguage, type SidebarSide } from "../locales";
 import { useT } from "../translate";
 import { usePlayerStore } from "../store/playerStore";
 import { useInterfaceStore } from "../store/interfaceStore";
@@ -11,6 +11,7 @@ import {
   useDownloadSettingsStore,
   type DownloadMode,
 } from "../store/downloadSettingsStore";
+import { exportTranslation, importTranslation, removeImportedTranslation } from "../translationFiles";
 import { downloaderVersion, restoreDownloader, updateDownloader } from "../youtubeApi";
 
 /** Settings: the language and where the playlist panel sits. */
@@ -55,6 +56,16 @@ export default function SettingsDialog() {
             ))}
           </select>
         </label>
+
+        <div className="row">
+          <span className="muted">{t("settings.translation")}</span>
+          <button onClick={() => void exportTranslation(language)}>{t("settings.translation.export")}</button>
+          <button onClick={() => void importTranslation()}>{t("settings.translation.import")}</button>
+          {!isBuiltInLanguage(language) && (
+            <button onClick={() => void removeImportedTranslation(language)}>{t("settings.translation.remove")}</button>
+          )}
+        </div>
+        <p className="muted">{t("settings.translation.hint")}</p>
 
         <label className="field">
           <span>{t("settings.panel")}</span>

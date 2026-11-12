@@ -303,6 +303,7 @@
     "appearance.builtin.espresso": "Espresso",
     "appearance.builtin.midnight": "Midnight",
     "appearance.builtin.glass": "Glass",
+    "appearance.builtin.glass-blur": "Glass blur",
     "appearance.builtin.rosegold": "Rose gold",
     "appearance.progressBar": "Progress bar",
     "appearance.progressHint": "The bar's colors, including the gradient end, are under Colors → Player.",
@@ -347,6 +348,24 @@
     "appearance.loadProblems": "Some themes could not be loaded: {problems}",
     "settings.invalidFile": "The settings file is not valid and was ignored: {problems}",
     "settings.pauseInBackground": "Pause the video when the window is in the background",
-    "settings.pauseInBackgroundHint": "Only the picture pauses; the audio keeps playing. For videos with a separate audio file."
+    "settings.pauseInBackgroundHint": "Only the picture pauses; the audio keeps playing. For videos with a separate audio file.",
+    "filter.language": "Language file",
+    "settings.translation": "Translation files",
+    "settings.translation.hint": "Export this language as a .json file to translate or correct it, then import the edited file. The file name is the language code (for example fr.json): importing adds that language, or replaces the built-in one.",
+    "settings.translation.export": "Export this language…",
+    "settings.translation.import": "Import a language…",
+    "settings.translation.remove": "Remove the imported file of this language",
+    "settings.translation.exportedOk": "Language file exported.",
+    "settings.translation.importedOk": "Imported the language “{name}”.",
+    "settings.translation.removedOk": "The imported language file was removed.",
+    "settings.translation.exportFailed": "Export failed: {error}",
+    "settings.translation.importFailed": "Import failed: {error}",
+    "settings.translation.badCode": "The file name must be a language code, for example fr.json or pt-BR.json.",
+    "appearance.frame": "Frame style",
+    "appearance.framePlain": "Plain",
+    "appearance.frameDetroit": "Detroit (double lines, corner brackets, moving button borders)",
+    "appearance.builtin.detroit": "Detroit",
+    "appearance.frameRpg": "RPG (wood frames, gold corner ornaments)",
+    "appearance.builtin.rpg": "RPG style"
   }
 }

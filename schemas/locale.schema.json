@@ -3428,6 +3428,16 @@
             "Glass"
           ]
         },
+        "appearance.builtin.glass-blur": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.glass-blur",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Glass blur",
+          "examples": [
+            "Glass blur"
+          ]
+        },
         "appearance.builtin.rosegold": {
           "type": "string",
           "minLength": 1,
@@ -3894,6 +3904,195 @@
           "default": "Only the picture pauses; the audio keeps playing. For videos with a separate audio file.",
           "examples": [
             "Only the picture pauses; the audio keeps playing. For videos with a separate audio file."
+          ]
+        },
+        "filter.language": {
+          "type": "string",
+          "minLength": 1,
+          "title": "filter.language",
+          "description": "Names of file types in open/save dialogs.",
+          "default": "Language file",
+          "examples": [
+            "Language file"
+          ]
+        },
+        "settings.translation": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation",
+          "description": "The Settings dialog.",
+          "default": "Translation files",
+          "examples": [
+            "Translation files"
+          ]
+        },
+        "settings.translation.hint": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.hint",
+          "description": "The Settings dialog.",
+          "default": "Export this language as a .json file to translate or correct it, then import the edited file. The file name is the language code (for example fr.json): importing adds that language, or replaces the built-in one.",
+          "examples": [
+            "Export this language as a .json file to translate or correct it, then import the edited file. The file name is the language code (for example fr.json): importing adds that language, or replaces the built-in one."
+          ]
+        },
+        "settings.translation.export": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.export",
+          "description": "The Settings dialog.",
+          "default": "Export this language…",
+          "examples": [
+            "Export this language…"
+          ]
+        },
+        "settings.translation.import": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.import",
+          "description": "The Settings dialog.",
+          "default": "Import a language…",
+          "examples": [
+            "Import a language…"
+          ]
+        },
+        "settings.translation.remove": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.remove",
+          "description": "The Settings dialog.",
+          "default": "Remove the imported file of this language",
+          "examples": [
+            "Remove the imported file of this language"
+          ]
+        },
+        "settings.translation.exportedOk": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.exportedOk",
+          "description": "The Settings dialog.",
+          "default": "Language file exported.",
+          "examples": [
+            "Language file exported."
+          ]
+        },
+        "settings.translation.importedOk": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.importedOk",
+          "description": "The Settings dialog. Keep the placeholders {name} in the text.",
+          "default": "Imported the language “{name}”.",
+          "examples": [
+            "Imported the language “{name}”."
+          ],
+          "x-placeholders": [
+            "name"
+          ]
+        },
+        "settings.translation.removedOk": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.removedOk",
+          "description": "The Settings dialog.",
+          "default": "The imported language file was removed.",
+          "examples": [
+            "The imported language file was removed."
+          ]
+        },
+        "settings.translation.exportFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.exportFailed",
+          "description": "The Settings dialog. Keep the placeholders {error} in the text.",
+          "default": "Export failed: {error}",
+          "examples": [
+            "Export failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "settings.translation.importFailed": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.importFailed",
+          "description": "The Settings dialog. Keep the placeholders {error} in the text.",
+          "default": "Import failed: {error}",
+          "examples": [
+            "Import failed: {error}"
+          ],
+          "x-placeholders": [
+            "error"
+          ]
+        },
+        "settings.translation.badCode": {
+          "type": "string",
+          "minLength": 1,
+          "title": "settings.translation.badCode",
+          "description": "The Settings dialog.",
+          "default": "The file name must be a language code, for example fr.json or pt-BR.json.",
+          "examples": [
+            "The file name must be a language code, for example fr.json or pt-BR.json."
+          ]
+        },
+        "appearance.frame": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frame",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Frame style",
+          "examples": [
+            "Frame style"
+          ]
+        },
+        "appearance.framePlain": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.framePlain",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Plain",
+          "examples": [
+            "Plain"
+          ]
+        },
+        "appearance.frameDetroit": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameDetroit",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Detroit (double lines, corner brackets, moving button borders)",
+          "examples": [
+            "Detroit (double lines, corner brackets, moving button borders)"
+          ]
+        },
+        "appearance.builtin.detroit": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.detroit",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Detroit",
+          "examples": [
+            "Detroit"
+          ]
+        },
+        "appearance.frameRpg": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameRpg",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "RPG (wood frames, gold corner ornaments)",
+          "examples": [
+            "RPG (wood frames, gold corner ornaments)"
+          ]
+        },
+        "appearance.builtin.rpg": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.rpg",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "RPG style",
+          "examples": [
+            "RPG style"
           ]
         },
         "theme.color.background": {

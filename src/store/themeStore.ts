@@ -23,6 +23,7 @@ interface ThemeState {
   setIcon: (id: string, slot: IconSlot, ref: string | null) => void;
   /** Regular window, or the floating (transparent, rounded) one. */
   setWindowStyle: (id: string, style: "regular" | "experimental") => void;
+  setFrame: (id: string, frame: "plain" | "detroit" | "rpg") => void;
   /** One window layout value; null puts it back to the default. */
   setLayout: (id: string, key: LayoutKey, value: number | boolean | null) => void;
   exportText: (id: string) => string | null;
@@ -110,6 +111,7 @@ export const useThemeStore = create<ThemeState>()((set, get) => {
         name: name.trim() || "Theme",
         base: source.base,
         ...(source.windowStyle ? { windowStyle: source.windowStyle } : {}),
+        ...(source.frame ? { frame: source.frame } : {}),
         ...(plain ? {} : { colors: { ...source.colors }, icons: { ...source.icons }, ...(source.layout ? { layout: { ...source.layout } } : {}) }),
       };
       set((s) => ({ custom: [...s.custom, theme], selected: id }));
@@ -139,6 +141,7 @@ export const useThemeStore = create<ThemeState>()((set, get) => {
       }),
 
     setWindowStyle: (id, style) => change(id, (t) => ({ ...t, windowStyle: style })),
+    setFrame: (id, frame) => change(id, (t) => ({ ...t, frame })),
     setLayout: (id, key, value) =>
       change(id, (t) => {
         const layout = { ...t.layout };

@@ -26,6 +26,7 @@ import { useAddDialogStore } from "./store/addDialogStore";
 import { usePlaylistLibraryStore } from "./store/playlistLibraryStore";
 import { usePlayerStore } from "./store/playerStore";
 import { usePlaybackPositionStore } from "./store/playbackPositionStore";
+import { loadImportedLanguages } from "./translationFiles";
 import { loadSettings, startSavingSettings } from "./generalSettings";
 import { activeTheme, useThemeStore } from "./store/themeStore";
 import { IS_MAC, layoutOf } from "./theme/windowLayout";
@@ -79,7 +80,7 @@ export default function App() {
       if (settingsLoaded && stores.every((s) => s.persist.hasHydrated())) setReady(true);
     };
     // The general settings file and the custom themes, then the theme goes on before the first draw.
-    void Promise.all([loadSettings(), useThemeStore.getState().load()]).then(() => {
+    void loadImportedLanguages().then(() => Promise.all([loadSettings(), useThemeStore.getState().load()])).then(() => {
       applyThemeToDocument(activeTheme(useThemeStore.getState()));
       startSavingSettings();
       settingsLoaded = true;

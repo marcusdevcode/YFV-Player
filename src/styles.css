@@ -285,13 +285,11 @@ html[dir="rtl"] :is(.download-popup, .download-row) { direction: rtl; }
 /* ---- Theme effects that work in every window style: glowing text, terminal font, CRT scanlines ---- */
 body { text-shadow: var(--layout-text-shadow, none); }
 html[data-monospace="yes"] :is(body, button, input, select, textarea) { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
-/* Scanlines and a soft dark edge over everything, without taking any clicks. */
-body::after {
-  content: ""; position: fixed; inset: var(--frame-inset, 0px); z-index: 1000; pointer-events: none;
-  border-radius: var(--layout-window-radius, 0px); opacity: var(--layout-scanlines, 0);
-  background:
-    repeating-linear-gradient(to bottom, rgba(0, 0, 0, .55) 0, rgba(0, 0, 0, .55) 1px, transparent 1px, transparent 3px),
-    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .55) 100%);
+/* Scanlines on the panels (playlist, badges, control bar), never over the video picture. */
+:where(.badges, .sidebar, .controls) { position: relative; }
+:is(.badges, .sidebar, .controls)::after {
+  content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; border-radius: inherit; opacity: var(--layout-scanlines, 0);
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .55) 0, rgba(0, 0, 0, .55) 1px, transparent 1px, transparent 3px);
 }
 
 /* ---- Floating window style (theme "windowStyle": "experimental") ----
@@ -406,3 +404,133 @@ html[data-window-style="experimental"] .context-menu { border: var(--panel-line)
 html[data-window-style="experimental"] .context-menu button { border-radius: min(12px, var(--layout-button-radius)); }
 html[data-window-style="experimental"] .download-popup { border: var(--panel-line); border-radius: min(var(--layout-panel-radius), 28px); padding: 14px 16px; bottom: calc(var(--layout-controls-gap) + 98px); box-shadow: var(--card-shadow), var(--glow-shadow); }
 html[data-window-style="experimental"] :is(.update-banner, .notice) { border: var(--panel-line); border-radius: min(20px, var(--layout-panel-radius)); box-shadow: var(--card-shadow), var(--glow-shadow); }
+
+/* ---- Detroit frame (theme "frame": "detroit", floating style only) ----
+   Blue sci-fi interface: square panels with a thin outer line and a second inner line, a light top edge, white corner
+   brackets on the selected item, upper-case spaced text, and a light that travels around the border of every button
+   (a CSS animation: no script timers). */
+@keyframes frame-light { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+html[data-frame="detroit"] {
+  --line: color-mix(in srgb, var(--accent-border) 38%, transparent);
+  --line-soft: color-mix(in srgb, var(--border) 60%, transparent);
+  --bracket: var(--accent-text);
+  --brackets:
+    linear-gradient(#fff, #fff) top left / 14px 2px no-repeat, linear-gradient(#fff, #fff) top left / 2px 14px no-repeat,
+    linear-gradient(#fff, #fff) top right / 14px 2px no-repeat, linear-gradient(#fff, #fff) top right / 2px 14px no-repeat,
+    linear-gradient(#fff, #fff) bottom left / 14px 2px no-repeat, linear-gradient(#fff, #fff) bottom left / 2px 14px no-repeat,
+    linear-gradient(#fff, #fff) bottom right / 14px 2px no-repeat, linear-gradient(#fff, #fff) bottom right / 2px 14px no-repeat;
+  --selected-glow: radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--accent) 55%, transparent), color-mix(in srgb, var(--accent) 14%, transparent) 70%);
+}
+/* Panels: square, thin outer line, a second line inside, a light top edge, a faint blue sheen */
+html[data-frame="detroit"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice, .edge-tab) {
+  border: 1px solid var(--line); border-radius: 0;
+  outline: 1px solid var(--line-soft); outline-offset: -5px;
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 55%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 10px 30px rgba(0, 0, 0, .4), var(--glow-shadow);
+}
+html[data-frame="detroit"] .player .controls { padding: 16px 26px; }
+html[data-frame="detroit"] .edge-tab { outline: 0; }
+html[data-frame="detroit"] .app { border: 1px solid var(--line-soft); }
+/* Titles, list entries and fields: upper case with spaced letters */
+html[data-frame="detroit"] :is(.modal h2, .modal h3, .side-title strong, .track-title, .empty h1, .field > span, .topbar-title, .topbar-entry) {
+  text-transform: uppercase; letter-spacing: .09em;
+}
+html[data-frame="detroit"] .modal h2 { font-size: 22px; font-weight: 500; letter-spacing: .14em; }
+html[data-frame="detroit"] .track-title { color: var(--muted); font-size: 13px; }
+html[data-frame="detroit"] .track.current .track-title { color: var(--accent-border); }
+/* The selected entries get white corner brackets and a blue glow, like the selected tile in the reference */
+html[data-frame="detroit"] .track { border-radius: 0; padding: 2px 0; }
+html[data-frame="detroit"] .track.current { background: var(--brackets), var(--selected-glow); box-shadow: inset 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent); }
+html[data-frame="detroit"] .badge { border-radius: 0; border: 1px solid var(--line-soft); }
+html[data-frame="detroit"] .badge.active { border-color: transparent; background: var(--brackets), var(--selected-glow); }
+html[data-frame="detroit"] button.primary,
+html[data-frame="detroit"] button.active:not(.play-button) { background: var(--brackets), var(--selected-glow); color: #fff; border-color: var(--line); text-shadow: 0 0 8px var(--accent); }
+html[data-frame="detroit"] :is(.staged, input:not([type]), input[type="text"], select) { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: color-mix(in srgb, var(--accent) 10%, var(--panel-2)); text-transform: uppercase; letter-spacing: .06em; }
+html[data-frame="detroit"] ::placeholder { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+html[data-frame="detroit"] .play-button { border-radius: 0; background: var(--brackets), var(--selected-glow); box-shadow: inset 0 0 0 1px var(--line); color: #fff; }
+/* Every button: a thin line, and a light that travels around it */
+html[data-frame="detroit"] button { border-radius: 0; border: 1px solid var(--line-soft); letter-spacing: .05em; }
+html[data-frame="detroit"] button:not(.edge-tab) { position: relative; }
+html[data-frame="detroit"] button:not(.track-main, .track-menu-btn, .topbar-title, .topbar-entry, .row-menu button, .context-menu button, .badge:not(.tool))::before {
+  content: ""; position: absolute; inset: -1px; padding: 1px; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(100deg, transparent 0 38%, var(--accent-border) 50%, transparent 62% 100%) 0 0 / 300% 100%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: frame-light 3.2s linear infinite;
+}
+html[data-frame="detroit"] .controls button:not(.play-button) { border-color: var(--line-soft); }
+html[data-frame="detroit"] .progress-slider::-webkit-slider-thumb { border-radius: 0; }
+@media (prefers-reduced-motion: reduce) { html[data-frame="detroit"] button::before { animation: none; } }
+
+/* ---- RPG frame (theme "frame": "rpg", floating style only) ----
+   A fantasy-game window: carved wood frames with gold scroll-work corners, cream parchment panels, gold and brown
+   gradient buttons, a serif face in capitals, and gold sliders with a pointed gray track. */
+html[data-frame="rpg"] {
+  --wood: linear-gradient(135deg, #8a5c32, #5a3a1c 45%, #7d5430 75%, #4a2e15);
+  --parchment: linear-gradient(180deg, #f6ebcf, #e9d6a8);
+  --gold-button: linear-gradient(180deg, #f1cf8c, #c18b3f 55%, #a8742f);
+  --wood-button: linear-gradient(180deg, #86603a, #5e3d20 60%, #4d3118);
+  --rpg-edge: #3b2410;
+  --rpg-gold: #f0cf8a;
+  --rpg-corner-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cg%20transform%3D%22translate%280%200%29%20scale%281%201%29%22%3E%3Cpath%20d%3D%22M3%2038%20V16%20C3%208%208%203%2016%203%20H38%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M9%2034%20V18%20C9%2013%2013%209%2018%209%20H34%22%20fill%3D%22none%22%20stroke%3D%22%237a4a1f%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M16%2016%20C16%2010%2025%2010%2025%2016%20C25%2021%2018%2022%2017%2018%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2231%22%20cy%3D%226%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2231%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --rpg-corner-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cg%20transform%3D%22translate%2840%200%29%20scale%28-1%201%29%22%3E%3Cpath%20d%3D%22M3%2038%20V16%20C3%208%208%203%2016%203%20H38%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M9%2034%20V18%20C9%2013%2013%209%2018%209%20H34%22%20fill%3D%22none%22%20stroke%3D%22%237a4a1f%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M16%2016%20C16%2010%2025%2010%2025%2016%20C25%2021%2018%2022%2017%2018%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2231%22%20cy%3D%226%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2231%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --rpg-corner-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cg%20transform%3D%22translate%280%2040%29%20scale%281%20-1%29%22%3E%3Cpath%20d%3D%22M3%2038%20V16%20C3%208%208%203%2016%203%20H38%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M9%2034%20V18%20C9%2013%2013%209%2018%209%20H34%22%20fill%3D%22none%22%20stroke%3D%22%237a4a1f%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M16%2016%20C16%2010%2025%2010%2025%2016%20C25%2021%2018%2022%2017%2018%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2231%22%20cy%3D%226%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2231%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --rpg-corner-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cg%20transform%3D%22translate%2840%2040%29%20scale%28-1%20-1%29%22%3E%3Cpath%20d%3D%22M3%2038%20V16%20C3%208%208%203%2016%203%20H38%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M9%2034%20V18%20C9%2013%2013%209%2018%209%20H34%22%20fill%3D%22none%22%20stroke%3D%22%237a4a1f%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M16%2016%20C16%2010%2025%2010%2025%2016%20C25%2021%2018%2022%2017%2018%22%20fill%3D%22none%22%20stroke%3D%22%23f0cf8a%22%20stroke-width%3D%222.4%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2231%22%20cy%3D%226%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2231%22%20r%3D%222.2%22%20fill%3D%22%23f0cf8a%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --rpg-corners: var(--rpg-corner-tl) top left / 40px 40px no-repeat border-box, var(--rpg-corner-tr) top right / 40px 40px no-repeat border-box,
+                 var(--rpg-corner-bl) bottom left / 40px 40px no-repeat border-box, var(--rpg-corner-br) bottom right / 40px 40px no-repeat border-box;
+  font-family: "Cinzel", "Trajan Pro", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+}
+html[data-frame="rpg"] body, html[data-frame="rpg"] button, html[data-frame="rpg"] input, html[data-frame="rpg"] select { font-family: inherit; }
+/* The window itself is the dark wood frame */
+html[data-frame="rpg"][data-window-style] .app { background: var(--wood); box-shadow: 0 0 0 2px var(--rpg-edge), inset 0 0 0 3px #c79a5a, inset 0 0 0 5px var(--rpg-edge), 0 18px 44px rgba(0, 0, 0, .45); }
+html[data-frame="rpg"][data-window-style] .app::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 60; border-radius: inherit;
+  background: var(--rpg-corner-tl) top left / 40px 40px no-repeat, var(--rpg-corner-tr) top right / 40px 40px no-repeat,
+              var(--rpg-corner-bl) bottom left / 40px 40px no-repeat, var(--rpg-corner-br) bottom right / 40px 40px no-repeat; }
+html[data-frame="rpg"][data-window-style][data-fullscreen="yes"] .app::after { display: none; }
+/* Parchment panels in a carved frame, gold scroll-work in the corners */
+html[data-frame="rpg"][data-window-style] :is(.badges, .sidebar, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  color: #3a2410; border: 5px solid transparent; border-radius: 14px; outline: 0; backdrop-filter: none;
+  background: var(--rpg-corners), var(--parchment) padding-box, var(--wood) border-box;
+  box-shadow: 0 0 0 1px var(--rpg-edge), inset 0 0 0 1px #c79a5a, inset 0 0 14px rgba(120, 80, 30, .35), 0 10px 26px rgba(0, 0, 0, .4);
+}
+html[data-frame="rpg"][data-window-style] .badges { background: var(--rpg-corners), linear-gradient(180deg, #ead9ae, #d9c28d) padding-box, var(--wood) border-box; }
+html[data-frame="rpg"][data-window-style] .player .controls {
+  border: 5px solid transparent; border-radius: 16px; outline: 0; backdrop-filter: none; color: #f5e6c4;
+  background: var(--rpg-corners), linear-gradient(180deg, #6e4826, #4d3018) padding-box, var(--wood) border-box;
+  box-shadow: 0 0 0 1px var(--rpg-edge), inset 0 0 0 1px #c79a5a, inset 0 6px 14px rgba(0, 0, 0, .3), 0 12px 30px rgba(0, 0, 0, .45);
+}
+html[data-frame="rpg"][data-window-style] .edge-tab { border: 3px solid var(--rpg-edge); border-radius: 12px; background: var(--wood-button); color: #f5e6c4; box-shadow: inset 0 0 0 1px #c79a5a; }
+/* Capitals in a serif face */
+html[data-frame="rpg"] :is(.modal h2, .modal h3, .side-title strong, .track-title, .empty h1, .field > span, button, .topbar-title, .topbar-entry) {
+  text-transform: uppercase; letter-spacing: .05em; font-weight: 700;
+}
+html[data-frame="rpg"] .modal h2 { font-size: 24px; text-align: center; text-shadow: 0 1px 0 #fff6, 0 2px 2px rgba(60, 30, 5, .35); }
+html[data-frame="rpg"] .track-title { font-size: 13px; }
+/* Buttons: brown wood bevel; the chosen one is gold (like the active tab) */
+html[data-frame="rpg"][data-window-style] button {
+  border: 2px solid var(--rpg-edge); border-radius: 10px; background: var(--wood-button); color: #f5e6c4;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 190, .35), inset 0 0 0 1px #a97c46, 0 2px 3px rgba(0, 0, 0, .35); text-shadow: 0 1px 1px rgba(0, 0, 0, .5);
+}
+html[data-frame="rpg"][data-window-style] button:hover:not(:disabled) { background: linear-gradient(180deg, #9a7044, #6e4826 60%, #5a3a1c); }
+html[data-frame="rpg"][data-window-style] :is(button.primary, button.active:not(.play-button), .badge.active, .track.current) {
+  background: var(--gold-button); color: #3a2410; border-color: var(--rpg-edge); text-shadow: 0 1px 0 rgba(255, 245, 210, .6);
+}
+html[data-frame="rpg"][data-window-style] .track.current { border-radius: 10px; box-shadow: inset 0 0 0 1px #fff4cf, 0 1px 3px rgba(0, 0, 0, .35); }
+html[data-frame="rpg"][data-window-style] .play-button { border-radius: 10px; background: var(--gold-button); color: #3a2410; border: 2px solid var(--rpg-edge); box-shadow: inset 0 1px 0 rgba(255, 235, 190, .35), inset 0 0 0 1px #a97c46, 0 2px 3px rgba(0, 0, 0, .35); }
+html[data-frame="rpg"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button) { background: transparent; border: 0; box-shadow: none; color: #3a2410; text-shadow: none; border-radius: 8px; }
+html[data-frame="rpg"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button):hover:not(:disabled) { background: rgba(180, 130, 60, .28); }
+html[data-frame="rpg"][data-window-style] .controls button:not(.play-button) { border-radius: 10px; }
+html[data-frame="rpg"][data-window-style] .track.current .track-main { color: #3a2410; }
+/* Fields: inset parchment */
+html[data-frame="rpg"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) {
+  border: 2px solid #7a4e24; border-radius: 9px; color: #3a2410; background: linear-gradient(180deg, #efe0b8, #f8eed2); box-shadow: inset 0 2px 4px rgba(90, 55, 20, .35);
+}
+html[data-frame="rpg"] ::placeholder { color: #8a6a44; text-transform: uppercase; letter-spacing: .05em; }
+/* Sliders: gold fill, gray track with pointed ends, a beige square handle */
+html[data-frame="rpg"][data-window-style] .progress-slider::-webkit-slider-runnable-track {
+  height: 18px; border-radius: 0; clip-path: polygon(0 50%, 9px 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 9px 100%);
+  box-shadow: inset 0 0 0 2px #4d3118, inset 0 3px 5px rgba(0, 0, 0, .4);
+}
+html[data-frame="rpg"][data-window-style] .progress-slider::-webkit-slider-thumb {
+  width: 16px; height: 30px; margin-top: -6px; border-radius: 6px; border: 2px solid #5a4630; box-sizing: border-box;
+  background: linear-gradient(180deg, #d9ccb0, #a99877); box-shadow: inset 0 1px 0 #fff8, 0 2px 4px rgba(0, 0, 0, .5);
+}
