@@ -1,6 +1,10 @@
+import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import registry from "./registry.json";
 import type { Theme } from "./themeEngine";
+
+/** macOS has its menu bar at the top of the screen, so only Windows and Linux get the custom menu bar. */
+export const IS_MAC = navigator.userAgent.includes("Mac");
 
 /** One setting of the floating window style, from the registry (src/theme/registry.json). */
 export interface LayoutField {
@@ -65,11 +69,15 @@ export function applyWindowLayout(theme: Theme, playerBackground: string) {
   set("controls-gap", `${layout.controlsGap}px`);
   set("playlist-gap", `${layout.playlistGap}px`);
   root.dataset.windowStyle = floating ? "experimental" : "regular";
+  // Without the system title bar the window gets its own menu bar (CustomTopBar), so the native one is hidden
+  // (macOS keeps its menu at the top of the screen: hiding does not apply there).
+  root.dataset.customTopbar = floating && !framed && !IS_MAC ? "yes" : "no";
   const resizable = !floating || layout.resizable;
   root.dataset.windowResizable = resizable ? "yes" : "no";
 
   const window = getCurrentWindow();
   const decorated = !floating || framed;
+  void invoke("menu_set_visible", { visible: !(floating && !framed && !IS_MAC) }).catch(() => {});
   void window.setDecorations(decorated).catch(() => {});
   void window.setShadow(decorated).catch(() => {});
   void window.isFullscreen().then((full) => window.setResizable(resizable || full)).catch(() => {});

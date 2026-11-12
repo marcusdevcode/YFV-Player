@@ -62,15 +62,50 @@ function saveLead(v: number) {
 /** Whether the app window had focus the last time we looked; a new player (next track) starts from it, not from a guess. */
 let appHadFocus = true;
 const isAbort = (e: unknown) => e instanceof DOMException && e.name === "AbortError";
-/** The system refused to start playback by itself (no click or key press led to it). Not an error: it waits for Play. */
+/** The system refused to start playback by itself (no click or key press led to it). */
+/**
+ * Run `start` as if the user had started it. The system refuses to start media by itself (NotAllowedError),
+ * for example the next track of a playlist, but accepts it from a script that the native side runs:
+ * the backend (playback_allow_start in lib.rs) calls the function registered here.
+ */
+function startAllowed(start: () => void) {
+  const w = window as unknown as { __startPlayback?: () => void };
+  w.__startPlayback = () => {
+    w.__startPlayback = undefined;
+    start();
+  };
+  invoke("playback_allow_start").catch(() => w.__startPlayback?.());
+}
+
 const isBlockedAutoplay = (e: unknown) => e instanceof DOMException && e.name === "NotAllowedError";
+
+/**
+ * One video and one audio element for the whole life of the app. The system lets an element that was started
+ * by a click or key press start again by itself (the next track of a playlist, with nobody at the keyboard),
+ * but refuses (NotAllowedError) to start a brand-new element that way. So the elements are reused for every
+ * track: Player puts its handlers on them while it exists and empties them when it goes.
+ */
+const sharedVideo = document.createElement("video");
+sharedVideo.preload = "auto";
+sharedVideo.playsInline = true;
+const sharedAudio = document.createElement("audio");
+sharedAudio.preload = "auto";
+
+type MediaEvent = Event & { currentTarget: HTMLMediaElement };
+type MediaHandlers = { video: Record<string, (e: MediaEvent) => void>; audio: Record<string, (e: MediaEvent) => void> };
+const MEDIA_EVENTS = ["canplay", "loadedmetadata", "timeupdate", "ended", "play", "pause", "error"];
 
 export default function Player() {
   const { source, playing, currentTime, duration, videoLoop, volume, muted } = usePlayerStore();
   const { setPlaying, setTime, setDuration, toggleVideoLoop, setVolume, toggleMute } = usePlayerStore.getState();
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(sharedVideo);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  audioRef.current = source?.audioPath ? sharedAudio : null; // null: this track has no separate audio file
+  const mediaHandlers = useRef<MediaHandlers | null>(null);
+  const attachVideo = useCallback((host: HTMLDivElement | null) => {
+    if (host && sharedVideo.parentElement !== host) host.appendChild(sharedVideo);
+  }, []);
   const seeking = useRef(false); // the timeline slider is being dragged
   const autoStarted = useRef(false);
   const videoReady = useRef(false);
@@ -215,6 +250,7 @@ export default function Player() {
       if (isBlockedAutoplay(e)) {
         wantPlaying.current = false;
         audioRef.current?.pause();
+        setError(tr("player.errPlayback", { error: String(e) }));
       } else if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
     }
   }, []);
@@ -251,6 +287,7 @@ export default function Player() {
       if (isBlockedAutoplay(e)) {
         wantPlaying.current = false;
         audioRef.current?.pause();
+        setError(tr("player.errPlayback", { error: String(e) }));
       } else if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
     }
   }, [playBoth]);
@@ -375,6 +412,32 @@ export default function Player() {
     }
   }, []);
 
+  // Put the handlers on the shared elements while this player exists.
+  useEffect(() => {
+    const forVideo = (e: Event) => mediaHandlers.current?.video[e.type]?.(e as MediaEvent);
+    const forAudio = (e: Event) => mediaHandlers.current?.audio[e.type]?.(e as MediaEvent);
+    for (const type of MEDIA_EVENTS) {
+      sharedVideo.addEventListener(type, forVideo);
+      sharedAudio.addEventListener(type, forAudio);
+    }
+    return () => {
+      for (const type of MEDIA_EVENTS) {
+        sharedVideo.removeEventListener(type, forVideo);
+        sharedAudio.removeEventListener(type, forAudio);
+      }
+    };
+  }, []);
+
+  // The files of this track go onto the shared elements.
+  useEffect(() => {
+    if (!videoSrc) return;
+    sharedVideo.muted = !!audioSrc; // the sound comes from the audio file then
+    sharedVideo.src = videoSrc;
+  }, [videoSrc, audioSrc]);
+  useEffect(() => {
+    if (audioSrc) sharedAudio.src = audioSrc;
+  }, [audioSrc]);
+
   // Volume and mute go to whichever element makes the sound: the separate audio file if there is
   // one (the video is muted then), otherwise the video itself.
   useEffect(() => {
@@ -442,13 +505,16 @@ export default function Player() {
 
   /** Autoplay once everything needed is ready, so video and audio begin together. */
   const tryAutoStart = useCallback(() => {
-    if (autoStarted.current || !audioReady.current) return;
-    // The window is in the background and there is a separate audio file: the picture may not load (or may
-    // not be allowed to start) there, and nobody is looking at it. Then the sound starts alone, like the
-    // background mode that was already running, and the picture joins when the window comes back.
+    if (autoStarted.current) return;
+    // The window is in the background (the track changed while nobody is looking): a hidden page may never
+    // report "can play", so the player does not wait for it. With a separate audio file the sound starts
+    // alone (the picture joins when the window comes back); without one the video is simply told to play.
     const audio = audioRef.current;
-    const inBackground = !!audio && (document.hidden || !nativeFocused.current) && usePlayerStore.getState().pauseVideoInBackground;
-    if (!videoReady.current && !inBackground) return;
+    if (source?.audioPath && !audio) return; // the audio element is not there yet
+    const inBackground = document.hidden || !nativeFocused.current;
+    const picture = !audio || usePlayerStore.getState().pauseVideoInBackground;
+    const startNow = inBackground && picture && !!videoRef.current;
+    if (!startNow && (!audioReady.current || !videoReady.current)) return;
     autoStarted.current = true;
     // The video restored at startup waits, paused, at its saved position. A player that replaces one
     // that was playing and was torn down (rebuilt) continues to play.
@@ -456,24 +522,47 @@ export default function Player() {
     const resume = state.resumeAfterRemount;
     if (resume) usePlayerStore.setState({ resumeAfterRemount: false });
     if (!(state.autoStart || resume)) return;
-    if (!videoReady.current && audio && source) {
-      const position = state.fromStart ? 0 : loadPosition(source.videoPath);
-      wantPlaying.current = true;
-      suspended.current = true;
-      ownPauseAt.current = performance.now();
-      if (position > 0) audio.currentTime = position;
-      void audio.play().then(
-        () => setPlaying(true),
-        (e) => {
-          wantPlaying.current = false;
-          suspended.current = false;
-          if (!isBlockedAutoplay(e) && !isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
-        },
-      );
-      return;
-    }
-    void playBoth();
+    // Starting by itself (nobody pressed anything) is refused by the system for new media. A script run by the
+    // native side counts as user-started there, so the start goes through the backend (playback_allow_start).
+    startAllowed(() => {
+      if (!videoReady.current && !audio && source) {
+        wantPlaying.current = true;
+        ownPauseAt.current = performance.now();
+        void videoRef.current?.play().then(
+          () => setPlaying(true),
+          (e) => {
+            wantPlaying.current = false;
+      if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
+          },
+        );
+        return;
+      }
+      if (!videoReady.current && audio && source) {
+        const position = state.fromStart ? 0 : loadPosition(source.videoPath);
+        wantPlaying.current = true;
+        suspended.current = true;
+        ownPauseAt.current = performance.now();
+        if (position > 0) audio.currentTime = position;
+        void audio.play().then(
+          () => setPlaying(true),
+          (e) => {
+            wantPlaying.current = false;
+            suspended.current = false;
+      if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
+          },
+        );
+        return;
+      }
+      void playBoth();
+    });
   }, [playBoth, source, setPlaying]);
+
+  // A new track that starts while the window is in the background: start it as soon as its files are set,
+  // without waiting for events a hidden page may not send.
+  useEffect(() => {
+    if (!videoSrc || (source?.audioPath && !audioSrc)) return;
+    if (document.hidden || !nativeFocused.current) tryAutoStart();
+  }, [videoSrc, audioSrc, source, tryAutoStart]);
 
   // Keyboard. Space toggles; arrows seek 5 s (tap); holding an arrow scrubs, driven by the key's
   // auto-repeat events; Shift = 30 s.
@@ -586,6 +675,19 @@ export default function Player() {
     };
   }, [videoSrc, audioSrc]);
 
+  // The player goes away: empty the shared elements, so nothing of this track stays on them
+  // (this also drops their pending events). Declared after the effect that saves the position.
+  useEffect(() => {
+    return () => {
+      for (const el of [sharedVideo, sharedAudio]) {
+        el.pause();
+        el.removeAttribute("src");
+        el.load();
+      }
+      sharedVideo.remove();
+    };
+  }, []);
+
   // Remember the position: noted in memory while playing, saved to disk on pause, when the video is replaced, and (by the program) on exit.
   useEffect(() => {
     if (!source) return;
@@ -603,46 +705,26 @@ export default function Player() {
 
   if (!source) return null;
   if (!videoSrc || (source.audioPath && !audioSrc)) {
+    mediaHandlers.current = null;
     return <div className="player">{error && <div className="player-error">{error}</div>}</div>;
   }
 
-  const shown = seeking.current ? scrubValue : currentTime;
-
-  return (
-    <div className={`player${hidden ? " hide-interface" : ""}${fullscreen ? " is-fullscreen" : ""}`} onMouseMove={wakeInterface}
-      onContextMenu={(e) =>
-        openContextMenu(e, [
-          { label: playing ? t("player.pause") : t("player.play"), onSelect: togglePlay },
-          { label: fullscreen ? t("context.exitFullscreen") : t("player.fullscreen"), onSelect: () => void toggleFullscreen() },
-          "separator",
-          {
-            label: useInterfaceStore.getState().sidebarOpen ? t("app.hidePanel") : t("app.showPanel"),
-            onSelect: () => useInterfaceStore.getState().toggleSidebar(),
-          },
-        ])
-      }
-    >
-      <div className="video-wrapper" onClick={togglePlay}>
-        <video
-          key={videoSrc}
-          ref={videoRef}
-          src={videoSrc}
-          preload="auto"
-          playsInline
-          muted={!!audioSrc}
-          onCanPlay={() => {
+  // The handlers of the shared media elements (set on every render, so they see the current state).
+  mediaHandlers.current = {
+    video: {
+      canplay: () => {
             videoReady.current = true;
             tryAutoStart();
-          }}
-          onLoadedMetadata={(e) => {
-            const v = e.currentTarget;
+          },
+      loadedmetadata: (e: MediaEvent) => {
+            const v = e.currentTarget as HTMLVideoElement;
             setHeaderDuration(v.duration);
             const pos = usePlayerStore.getState().fromStart ? 0 : loadPosition(source.videoPath);
             const limit = effectiveRef.current || v.duration;
             if (pos > 0 && pos < limit - 2) void seekTo(pos, false);
-          }}
-          onTimeUpdate={(e) => {
-            const v = e.currentTarget;
+          },
+      timeupdate: (e: MediaEvent) => {
+            const v = e.currentTarget as HTMLVideoElement;
             const a = audioRef.current;
             const t = v.currentTime;
             const now = performance.now();
@@ -672,53 +754,47 @@ export default function Player() {
                 saveLead(videoLead.current);
               }
             }
-          }}
-          onEnded={handleEnded}
-          onPlay={(e) => {
+          },
+      ended: () => handleEnded(),
+      play: (e: MediaEvent) => {
             setPlaying(true);
             wakeInterface();
             // An outside play that reached the video only: start the audio with it.
             if (isOutsidePlay(e) && audioRef.current) void playBoth();
-          }}
-          onPause={(e) => {
+          },
+      pause: (e: MediaEvent) => {
             if (suspended.current) return; // paused by us in the background: still "playing" for the user
             setPlaying(false);
             setHidden(false);
-            savePosition(source.videoPath, e.currentTarget.currentTime);
+            savePosition(source.videoPath, (e.currentTarget as HTMLMediaElement).currentTime);
             // An outside pause (headphones, media keys) can reach the video instead of the audio.
             if (isOutsidePause(e)) pauseBoth();
-          }}
-          onError={(e) => {
-            const err = e.currentTarget.error;
+          },
+      error: (e: MediaEvent) => {
+            const err = (e.currentTarget as HTMLVideoElement).error;
             // MEDIA_ERR_SRC_NOT_SUPPORTED (4): the system's web view has no decoder for this file.
             setError(
               err?.code === 4
                 ? t("player.errUnsupported")
                 : t("player.errCannotPlay", { code: err?.code ?? "?", detail: err?.message ? `: ${err.message}` : "" }),
             );
-          }}
-        />
-      </div>
-      {audioSrc && (
-        <audio
-          key={audioSrc}
-          ref={audioRef}
-          src={audioSrc}
-          preload="auto"
-          onCanPlay={() => {
+          },
+    },
+    audio: {
+      canplay: () => {
             audioReady.current = true;
             tryAutoStart();
-          }}
-          // Headphone / media-key pause and play act on the audio element only. Our own pauses
-          // clear wantPlaying first, so a pause while we still want playback came from outside:
-          // pause the video too (and start both again on an outside play).
-          onPause={(e) => {
+          },
+      pause: (e: MediaEvent) => {
             if (isOutsidePause(e)) pauseBoth();
-          }}
-          onPlay={(e) => {
+          },
+      play: (e: MediaEvent) => {
             if (isOutsidePlay(e) && videoRef.current?.paused) void playBoth();
-          }}
-          onTimeUpdate={(e) => {
+          },
+      timeupdate: (e: MediaEvent) => {
+        // The real end of the track: the audio file's header may claim a longer file than there is, so the audio never
+        // "ends" by itself. The video's clock sees the end too, but the system pauses the video in the background.
+        if (effectiveRef.current > 0 && (e.currentTarget as HTMLMediaElement).currentTime >= effectiveRef.current - 0.1) handleEnded();
             // Safety net: the picture is held back for the background, but the window has focus again
             // and no focus event told us (the audio keeps reporting time, the video does not).
             if (suspended.current && nativeFocused.current) {
@@ -739,7 +815,7 @@ export default function Player() {
               video &&
               wantPlaying.current &&
               !video.paused &&
-              !e.currentTarget.paused
+              !(e.currentTarget as HTMLMediaElement).paused
             ) {
               suspended.current = true;
               ownPauseAt.current = performance.now(); // our own pause: not a headphone / media-key pause
@@ -749,19 +825,35 @@ export default function Player() {
             const now = performance.now();
             if (suspended.current && now - lastSave.current > SAVE_EVERY_MS) {
               lastSave.current = now;
-              notePosition(source.videoPath, e.currentTarget.currentTime);
+              notePosition(source.videoPath, (e.currentTarget as HTMLMediaElement).currentTime);
             }
-          }}
-          onEnded={() => {
-            // The audio ran out while nobody is looking (the picture was paused by us, or held back by the
-            // system, in the background): that is the end of the track. In front, the video decides.
-            if (suspended.current || document.hidden || !nativeFocused.current) {
-              suspended.current = false;
-              handleEnded();
-            }
-          }}
-        />
-      )}
+          },
+      ended: () => {
+            // The audio is the shortest part (the track's length is the shorter of the two files), so its end
+            // is the end of the track, whatever the window or the picture is doing. Counted once.
+            suspended.current = false;
+            handleEnded();
+          },
+    },
+  };
+
+  const shown = seeking.current ? scrubValue : currentTime;
+
+  return (
+    <div className={`player${hidden ? " hide-interface" : ""}${fullscreen ? " is-fullscreen" : ""}`} onMouseMove={wakeInterface}
+      onContextMenu={(e) =>
+        openContextMenu(e, [
+          { label: playing ? t("player.pause") : t("player.play"), onSelect: togglePlay },
+          { label: fullscreen ? t("context.exitFullscreen") : t("player.fullscreen"), onSelect: () => void toggleFullscreen() },
+          "separator",
+          {
+            label: useInterfaceStore.getState().sidebarOpen ? t("app.hidePanel") : t("app.showPanel"),
+            onSelect: () => useInterfaceStore.getState().toggleSidebar(),
+          },
+        ])
+      }
+    >
+      <div className="video-wrapper" onClick={togglePlay} ref={attachVideo} />
 
       {error && <div className="player-error">{error}</div>}
 

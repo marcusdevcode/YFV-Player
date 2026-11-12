@@ -297,7 +297,6 @@ body::after {
 /* ---- Floating window style (theme "windowStyle": "experimental") ----
    A frameless transparent rounded window. Every size comes from the theme's layout (src/theme/windowLayout.ts sets the
    --layout-* variables on <html>), so a theme can change corners, shadow, transparency, blur and distances. */
-.window-drag-strip { display: none; }
 html[data-window-style="experimental"] {
   --frame-inset: var(--layout-margin);
   --dock-width: calc(398px + 2 * var(--layout-playlist-gap));
@@ -320,13 +319,29 @@ html[data-window-style="experimental"] .app {
   box-shadow: 0 calc(var(--layout-shadow) / 3) var(--layout-shadow) rgba(0, 0, 0, .4), 0 calc(var(--layout-shadow) / 10) calc(var(--layout-shadow) / 3) rgba(0, 0, 0, .25);
 }
 html[data-window-style="experimental"] :is(.stage, .player, .empty) { background: var(--stage-fill); }
-html[data-window-style="experimental"] .window-drag-strip { display: block; position: absolute; top: 0; left: 0; right: 0; height: 26px; z-index: 30; }
+.window-drag-strip { position: absolute; top: 0; left: 0; right: 0; height: 26px; z-index: 30; }
+/* The custom menu bar (src/components/CustomTopBar.tsx) is the top row of the window; the player and playlist sit below it. */
+.custom-topbar { flex: none; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 10px; position: relative; z-index: 40; box-sizing: border-box; color: var(--text); background: var(--panel-fill, var(--panel)); border-bottom: var(--panel-line, 1px solid var(--border)); }
+.topbar-menus { display: flex; gap: 2px; }
+.topbar-menu { position: relative; }
+.topbar-spacer { flex: 1; align-self: stretch; }
+.custom-topbar button { color: var(--text); background: transparent; border: 0; padding: 4px 12px; height: 28px; }
+.custom-topbar .topbar-title:hover, .custom-topbar .topbar-title.open { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.topbar-dropdown { position: absolute; top: calc(100% + 4px); inset-inline-start: 0; min-width: 240px; padding: 6px; z-index: 50; background: var(--panel); border: var(--panel-line, 1px solid var(--border)); border-radius: min(14px, var(--layout-panel-radius, 8px)); box-shadow: var(--card-shadow); }
+.topbar-entry { display: flex; width: 100%; justify-content: space-between; gap: 24px; text-align: start; white-space: nowrap; }
+.custom-topbar .topbar-entry:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.topbar-hint { opacity: .6; font-size: 12px; }
+.topbar-sub { padding-inline-start: 12px; }
+.topbar-separator { height: 1px; margin: 5px 6px; background: var(--border); }
+.topbar-window-buttons { display: flex; gap: 2px; }
+.topbar-window-buttons button { width: 32px; padding: 0; display: grid; place-items: center; }
+.custom-topbar .topbar-window-buttons .close:hover { background: #e5484d; color: #fff; }
+
 /* Dialogs dim only the rounded window, not the transparent margin around it. */
 html[data-window-style="experimental"] .modal-backdrop { inset: var(--frame-inset); border-radius: var(--layout-window-radius); backdrop-filter: blur(3px); }
 /* Full screen: the plain, full-size window again. */
 html[data-window-style="experimental"][data-fullscreen="yes"] { --frame-inset: 0px; }
 html[data-window-style="experimental"][data-fullscreen="yes"] .app { border-radius: 0; box-shadow: none; }
-html[data-window-style="experimental"][data-fullscreen="yes"] .window-drag-strip { display: none; }
 
 /* The control bar floats over the bottom of the video as a rounded card (also in full screen). */
 html[data-window-style="experimental"] .player .controls {

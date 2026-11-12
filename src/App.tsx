@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/plugin-dialog";
+import CustomTopBar from "./components/CustomTopBar";
 import ContextMenu from "./components/ContextMenu";
 import DownloadManagerDialog from "./components/DownloadManagerDialog";
 import DownloadProgressPopup from "./components/DownloadProgressPopup";
@@ -27,6 +28,7 @@ import { usePlayerStore } from "./store/playerStore";
 import { usePlaybackPositionStore } from "./store/playbackPositionStore";
 import { loadSettings, startSavingSettings } from "./generalSettings";
 import { activeTheme, useThemeStore } from "./store/themeStore";
+import { IS_MAC, layoutOf } from "./theme/windowLayout";
 import { applyThemeToDocument } from "./theme/themeEngine";
 import { useInterfaceStore } from "./store/interfaceStore";
 import { queueMissingThumbnails } from "./videoThumbnails";
@@ -58,6 +60,14 @@ export default function App() {
     document.documentElement.dataset.fullscreen = fullscreen ? "yes" : "no";
   }, [fullscreen]);
   const { t } = useT();
+  const customTopbar = useThemeStore((s) => {
+    const th = activeTheme(s);
+    return th.windowStyle === "experimental" && !layoutOf(th).titleBar;
+  });
+  const dragStrip = useThemeStore((s) => {
+    const th = activeTheme(s);
+    return IS_MAC && th.windowStyle === "experimental" && !layoutOf(th).titleBar;
+  });
 
   // The remembered settings (panel, last video, positions, volume) load from files at startup.
   // Nothing is shown or opened before they are in, so the panel does not flash open and close.
@@ -243,8 +253,10 @@ export default function App() {
 
   return (
     <div className="app" onContextMenu={showGeneralMenu}>
-      {/* Experimental window style has no title bar: this strip at the top moves the window. */}
-      <div className="window-drag-strip" data-tauri-drag-region />
+      {/* Floating themes without the system title bar get their own menu bar (hidden in full screen). */}
+      {customTopbar && !IS_MAC && !fullscreen && <CustomTopBar />}
+      {/* macOS keeps its native menu at the top of the screen: only a strip to drag the window. */}
+      {dragStrip && !fullscreen && <div className="window-drag-strip" data-tauri-drag-region />}
       <ContextMenu />
       <UpdateBanner />
       <MergeDialog />

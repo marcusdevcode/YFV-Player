@@ -3,7 +3,7 @@
   "productName": "YFV Player",
   "description": "A cross-platform video player that plays video with a separate audio track and can merge them into one file.",
   "private": true,
-  "version": "0.1.6",
+  "version": "0.1.7",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "author": {
@@ -31,9 +31,9 @@
     "docker:linux": "npm run docker:linux-x64 && npm run docker:linux-arm64",
     "docker:win": "npm run docker:win-x64 && npm run docker:win-arm64",
     "docker:all": "npm run docker:linux && npm run docker:win",
-    "release": "npm run build && npm run release:publish",
+    "publish": "npm run build && npm run release:publish && npm run clean",
     "release:publish": "node scripts/release-version.js",
-    "clean:rust": "cargo clean --manifest-path src-tauri/Cargo.toml",
+    "clean": "cargo clean --manifest-path src-tauri/Cargo.toml",
     "schemas": "node scripts/generate-schemas.mjs",
     "validate:json": "node scripts/validate-json.mjs"
   },
