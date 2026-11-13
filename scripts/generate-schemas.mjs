@@ -95,12 +95,16 @@ function themeSchema() {
         default: "regular",
       },
       frame: {
-        enum: ["plain", "detroit", "rpg"],
+        enum: ["plain", "detroit", "rpg", "terminal", "re4", "requiem", "cyberpunk2"],
         title: "Frame style",
         description:
           "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, " +
           "white corner brackets on the selected item and a light that travels around the border of every button. " +
-          "'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons.",
+          "'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons. " +
+          "'terminal' draws a thick border in the accent color around the whole window, a filled title bar, and panels separated by lines. " +
+          "'re4' draws a worn dark book: serif text, thin dividing lines, and a smudged light brush stroke behind the chosen item. " +
+          "'requiem' draws a dark tactical inventory: grid-lined square cells with notched corners, thin white stat bars, and a red glowing selection. " +
+          "'cyberpunk2' draws the neon window and button images of the Cyberpunk UI asset pack (cyan chamfered frames, image buttons and progress bar).",
         default: "plain",
       },
       layout: {
@@ -545,6 +549,54 @@ const FLOATING_DESIGNS = [
       errorText: "#a82a1a", warningText: "#8a5a10", dangerBackground: "#a8402a", dangerBorder: "#3b2410",
     },
     layout: { cornerRadius: 24, panelRadius: 16, shadowSize: 28, windowOpacity: 1, panelOpacity: 1, panelBlur: 0, panelBorder: 0, panelGlow: 0, progressGlow: 0, progressGloss: 0.3, controlsGap: 18, playlistGap: 18 },
+  },
+  {
+    id: "orange-terminal", name: "Orange terminal", base: "dark", frame: "terminal", description: "Amber terminal: black screen, orange monospace text, a thick orange border around the window, a filled orange title bar and panels cut by thin orange lines.",
+    colors: {
+      background: "#0d0a04", text: "#ffb21e", textMuted: "#b9780f", border: "#ffb21e", accent: "#ffb21e", accentBorder: "#ffc94d", accentText: "#0d0a04",
+      buttonBackground: "#17110a", buttonHover: "#2a1d08", buttonText: "#ffb21e", panel: "#100c05", panelRaised: "#1b1407",
+      badgesBackground: "#0b0803", badgeText: "#ffb21e", badgeActiveBorder: "#ffc94d", playerBackground: "#050301",
+      controlsBackground: "#100c05", controlsText: "#ffb21e", progressTrack: "#3a2a0a", progressBar: "#ffb21e",
+      trackCurrent: "#ffb21e", trackHover: "#ffb21e26", rowStripe: "#ffb21e0d", rowSelected: "#ffb21e40", backdrop: "#000000cc",
+      errorText: "#ff6a4a", warningText: "#ffd24a", dangerBackground: "#8a2a10", dangerBorder: "#ff6a4a",
+    },
+    layout: { cornerRadius: 0, panelRadius: 0, shadowSize: 0, windowOpacity: 1, panelOpacity: 1, panelBlur: 0, panelBorder: 2, panelGlow: 8, progressGlow: 8, progressGloss: 0, textGlow: 4, scanlines: 0.18, monospace: true, controlsGap: 14, playlistGap: 14 },
+  },
+  {
+    id: "re4", name: "RE4", base: "dark", frame: "re4", description: "Worn dark-book interface: charcoal smoke, pale serif text, thin dividing lines and a smudged light brush stroke behind the chosen item.",
+    colors: {
+      background: "#0c0c0d", text: "#d8d5cf", textMuted: "#8b8982", border: "#4b4a46", accent: "#cfcbc2", accentBorder: "#f1eee7", accentText: "#101011",
+      buttonBackground: "#1a1a1b", buttonHover: "#2b2b2c", buttonText: "#d8d5cf", panel: "#141415", panelRaised: "#1f1f20",
+      badgesBackground: "#101011", badgeText: "#d8d5cf", badgeActiveBorder: "#f1eee7", playerBackground: "#050505",
+      controlsBackground: "#131314", controlsText: "#e4e1da", progressTrack: "#3a3936", progressBar: "#cfcbc2", progressBarEnd: "#f1eee7",
+      trackCurrent: "#cfcbc247", trackHover: "#cfcbc21a", rowStripe: "#ffffff06", rowSelected: "#cfcbc238", backdrop: "#000000b8",
+      errorText: "#e0705a", warningText: "#d9b45a", dangerBackground: "#6e2a22", dangerBorder: "#c4503f",
+    },
+    layout: { cornerRadius: 6, panelRadius: 2, shadowSize: 22, windowOpacity: 0.98, panelOpacity: 0.88, panelBlur: 6, panelBorder: 0, panelGlow: 0, progressGlow: 0, progressGloss: 0, textGlow: 0, controlsGap: 16, playlistGap: 16 },
+  },
+  {
+    id: "re-requiem", name: "RE Requiem", base: "dark", frame: "requiem", description: "Dark tactical inventory: charcoal grid-lined square cells with notched corners, thin white bars and a red glowing selection.",
+    colors: {
+      background: "#0e0f10", text: "#dedede", textMuted: "#8c9094", border: "#3b3d40", accent: "#c4343a", accentBorder: "#e8575e", accentText: "#ffffff",
+      buttonBackground: "#1c1e20", buttonHover: "#2a2d30", buttonText: "#e4e4e4", panel: "#151617", panelRaised: "#1f2123",
+      badgesBackground: "#101112", badgeText: "#e4e4e4", badgeActiveBorder: "#e8575e", playerBackground: "#050505",
+      controlsBackground: "#131415", controlsText: "#ececec", progressTrack: "#2d2f31", progressBar: "#e6e6e6", progressBarEnd: "#e6e6e6",
+      trackCurrent: "#c4343a4d", trackHover: "#ffffff12", rowStripe: "#ffffff05", rowSelected: "#c4343a40", backdrop: "#000000bf",
+      errorText: "#ff6b6b", warningText: "#e0b84a", dangerBackground: "#8a1f25", dangerBorder: "#e8575e",
+    },
+    layout: { cornerRadius: 4, panelRadius: 0, shadowSize: 22, windowOpacity: 0.97, panelOpacity: 0.9, panelBlur: 4, panelBorder: 1, panelGlow: 0, progressGlow: 0, progressGloss: 0, textGlow: 0, controlsGap: 16, playlistGap: 16 },
+  },
+  {
+    id: "cyberpunk-2", name: "Cyberpunk 2.0", base: "dark", frame: "cyberpunk2", description: "Neon cyberpunk interface built from the Cyberpunk UI asset pack images: a chamfered glowing window frame, image buttons with hover and pressed states, and an image progress bar.",
+    colors: {
+      background: "#060b12", text: "#c6f8ff", textMuted: "#5fb6c4", border: "#1fc8d6", accent: "#19e6f0", accentBorder: "#7ffbff", accentText: "#031318",
+      buttonBackground: "#101a2b", buttonHover: "#16263d", buttonText: "#c6f8ff", panel: "#0b1420", panelRaised: "#122033",
+      badgesBackground: "#0a121d", badgeText: "#c6f8ff", badgeActiveBorder: "#7ffbff", playerBackground: "#03070c",
+      controlsBackground: "#0b1420", controlsText: "#d9fbff", progressTrack: "#14243a", progressBar: "#19e6f0", progressBarEnd: "#7ffbff",
+      trackCurrent: "#19e6f033", trackHover: "#19e6f01a", rowStripe: "#19e6f008", rowSelected: "#19e6f040", backdrop: "#02060ccc",
+      errorText: "#ff6f8a", warningText: "#ffd45a", dangerBackground: "#8a1f4a", dangerBorder: "#ff4d8d",
+    },
+    layout: { cornerRadius: 0, panelRadius: 0, shadowSize: 0, windowOpacity: 1, panelOpacity: 1, panelBlur: 0, panelBorder: 0, panelGlow: 0, progressGlow: 8, progressGloss: 0, textGlow: 3, controlsGap: 10, playlistGap: 10 },
   },
   {
     id: "rosegold", name: "Rose gold", base: "dark", description: "Graphite floating design with rose-gold highlights and a glowing gradient progress bar.",

@@ -9,6 +9,7 @@ import { newId } from "../uniqueIds";
 import { cancelDownload } from "../youtubeApi";
 import ConfirmDialog from "./ConfirmDialog";
 import ThumbnailImage from "./ThumbnailImage";
+import ScrollArea from "./ScrollArea";
 
 /** Add, rename, recolor, reorder and delete playlists; import and export. */
 export default function PlaylistManager() {
@@ -57,7 +58,7 @@ export default function PlaylistManager() {
 
   return (
     <div className="modal-backdrop" onClick={close}>
-      <div className="modal wide" role="dialog" aria-label={t("mgr.title")} onClick={(e) => e.stopPropagation()}>
+      <ScrollArea className="modal wide" role="dialog" aria-label={t("mgr.title")} onClick={(e) => e.stopPropagation()}>
         <h2>{t("mgr.title")}</h2>
         <form
           className="row"
@@ -73,7 +74,7 @@ export default function PlaylistManager() {
           </button>
         </form>
 
-        <div className="manager-list">
+        <ScrollArea className="manager-list">
           {playlists.length === 0 && <p className="muted">{t("mgr.none")}</p>}
           {playlists.map((p, i) => (
             <div key={p.id} className={`manager-row${p.id === activeId ? " active" : ""}`}>
@@ -121,7 +122,7 @@ export default function PlaylistManager() {
               </button>
             </div>
           ))}
-        </div>
+        </ScrollArea>
 
         {pendingDelete && (
           <ConfirmDialog
@@ -151,7 +152,7 @@ export default function PlaylistManager() {
             {t("common.done")}
           </button>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

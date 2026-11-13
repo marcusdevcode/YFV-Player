@@ -301,7 +301,7 @@ export default function App() {
             <Player key={playId} />
           ) : (
             <div className="empty">
-              <img src="/icon.svg" width={96} height={96} alt="" />
+              <img src="/icon.png" width={96} height={96} alt="" />
               <h1>{__APP_NAME__}</h1>
               <div className="empty-actions">
                 <button className="primary" onClick={() => void openVideo(false)}>

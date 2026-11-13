@@ -8,6 +8,7 @@ import { useT } from "../translate";
 import { fileName } from "../filePaths";
 import YouTubeSearchPanel from "./YouTubeSearchPanel";
 import { newId } from "../uniqueIds";
+import ScrollArea from "./ScrollArea";
 
 /** "Add videos": a drop area, a list you tick, and a button that adds the ticked ones. */
 export default function AddVideosDialog() {
@@ -49,7 +50,7 @@ export default function AddVideosDialog() {
 
   return (
     <div className="modal-backdrop" onClick={add.close}>
-      <div className="modal wide" role="dialog" aria-label={t("add.title")} onClick={(e) => e.stopPropagation()}>
+      <ScrollArea className="modal wide" role="dialog" aria-label={t("add.title")} onClick={(e) => e.stopPropagation()}>
         <h2>{t("add.title")}</h2>
         <div className="tabs" role="tablist">
           <button role="tab" aria-selected={tab === "files"} className={tab === "files" ? "active" : ""} onClick={() => add.setTab("files")}>
@@ -96,7 +97,7 @@ export default function AddVideosDialog() {
         </div>
 
         {items.length > 0 && (
-          <div className="staged">
+          <ScrollArea className="staged">
             {items.map((i) => (
               <label key={i.id} className="staged-row">
                 <input type="checkbox" checked={!unchecked.includes(i.id)} onChange={() => add.toggle(i.id)} />
@@ -106,7 +107,7 @@ export default function AddVideosDialog() {
                 )}
               </label>
             ))}
-          </div>
+          </ScrollArea>
         )}
         {ignored.length > 0 && (
           <p className="muted">
@@ -126,7 +127,7 @@ export default function AddVideosDialog() {
         </div>
           </>
         )}
-      </div>
+      </ScrollArea>
     </div>
   );
 }

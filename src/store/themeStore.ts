@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { invoke } from "@tauri-apps/api/core";
 import { tr } from "../translate";
 import { usePlaylistLibraryStore } from "./playlistLibraryStore";
-import { BUILTIN_THEMES, themeProblems, isBuiltin, makeThemeId, type ColorToken, type IconSlot, type Theme, type ThemeBase } from "../theme/themeEngine";
+import { BUILTIN_THEMES, themeProblems, isBuiltin, makeThemeId, type ColorToken, type IconSlot, type FrameStyle, type Theme, type ThemeBase } from "../theme/themeEngine";
 import type { LayoutKey } from "../theme/windowLayout";
 
 interface ThemeState {
@@ -23,7 +23,7 @@ interface ThemeState {
   setIcon: (id: string, slot: IconSlot, ref: string | null) => void;
   /** Regular window, or the floating (transparent, rounded) one. */
   setWindowStyle: (id: string, style: "regular" | "experimental") => void;
-  setFrame: (id: string, frame: "plain" | "detroit" | "rpg") => void;
+  setFrame: (id: string, frame: FrameStyle) => void;
   /** One window layout value; null puts it back to the default. */
   setLayout: (id: string, key: LayoutKey, value: number | boolean | null) => void;
   exportText: (id: string) => string | null;

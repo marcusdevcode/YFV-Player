@@ -68,7 +68,7 @@ export function applyWindowLayout(theme: Theme, playerBackground: string) {
   set("panel-blur", `${layout.panelBlur}px`);
   set("controls-gap", `${layout.controlsGap}px`);
   set("playlist-gap", `${layout.playlistGap}px`);
-  root.dataset.frame = floating && (theme.frame === "detroit" || theme.frame === "rpg") ? theme.frame : "plain";
+  root.dataset.frame = floating && theme.frame ? theme.frame : "plain";
   root.dataset.windowStyle = floating ? "experimental" : "regular";
   // Without the system title bar the window gets its own menu bar (CustomTopBar), so the native one is hidden
   // (macOS keeps its menu at the top of the screen: hiding does not apply there).

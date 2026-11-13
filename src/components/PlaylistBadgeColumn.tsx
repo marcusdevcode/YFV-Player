@@ -3,6 +3,7 @@ import { useT } from "../translate";
 import { openContextMenu } from "../store/contextMenuStore";
 import Icon from "./Icon";
 import { initials } from "../textFormatting";
+import ScrollArea from "./ScrollArea";
 
 /** The narrow column of round playlist badges ("Best movies collection" -> BMC). */
 export default function PlaylistBadgeColumn() {
@@ -14,7 +15,7 @@ export default function PlaylistBadgeColumn() {
   const { t } = useT();
 
   return (
-    <nav className="badges" aria-label={t("panel.aria")}>
+    <ScrollArea className="badges" role="navigation" aria-label={t("panel.aria")}>
       {playlists.map((p) => (
         <button
           key={p.id}
@@ -46,6 +47,6 @@ export default function PlaylistBadgeColumn() {
       <button className="badge tool" title={t("panel.manage")} onClick={() => setManagerOpen(true)}>
         <Icon slot="settings" />
       </button>
-    </nav>
+    </ScrollArea>
   );
 }

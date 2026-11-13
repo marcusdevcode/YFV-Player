@@ -534,3 +534,426 @@ html[data-frame="rpg"][data-window-style] .progress-slider::-webkit-slider-thumb
   width: 16px; height: 30px; margin-top: -6px; border-radius: 6px; border: 2px solid #5a4630; box-sizing: border-box;
   background: linear-gradient(180deg, #d9ccb0, #a99877); box-shadow: inset 0 1px 0 #fff8, 0 2px 4px rgba(0, 0, 0, .5);
 }
+
+/* ---- Terminal frame (theme "frame": "terminal", floating style only) ----
+   An amber CRT terminal: a thick border in the accent color around the whole window, a filled title bar with dark text
+   (the custom menu bar on Windows and Linux, a plain bar on macOS), panels cut by thin accent lines, square buttons that
+   fill with the accent color when chosen, and the playing track as a filled strip. */
+html[data-frame="terminal"][data-window-style] .app {
+  border: 3px solid var(--accent); border-radius: 0;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 45%, transparent), inset 0 0 26px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+/* The title bar: filled with the accent color */
+html[data-frame="terminal"][data-window-style] .custom-topbar { background: var(--accent); color: var(--accent-text); border-bottom: 2px solid var(--accent); height: 30px; }
+html[data-frame="terminal"][data-window-style] .custom-topbar button { color: var(--accent-text); border-radius: 0; text-shadow: none; }
+html[data-frame="terminal"][data-window-style] .custom-topbar .topbar-title:hover,
+html[data-frame="terminal"][data-window-style] .custom-topbar .topbar-title.open,
+html[data-frame="terminal"][data-window-style] .custom-topbar .topbar-entry:hover { background: var(--accent-text); color: var(--accent); }
+html[data-frame="terminal"][data-window-style] .topbar-dropdown { background: var(--accent-text); color: var(--accent); border: 2px solid var(--accent); border-radius: 0; box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 40%, transparent); }
+html[data-frame="terminal"][data-window-style] .topbar-dropdown .topbar-entry { color: var(--accent); }
+html[data-frame="terminal"][data-window-style] .topbar-separator { background: var(--accent); }
+html[data-frame="terminal"][data-window-style] .window-drag-strip { position: static; flex: none; height: 22px; background: var(--accent); }
+/* Panels and dialogs: square, bordered by thin lines */
+html[data-frame="terminal"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  border: 2px solid var(--accent); border-radius: 0; backdrop-filter: none; box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+html[data-frame="terminal"][data-window-style] .modal h2 { margin: -26px -26px 12px; padding: 4px 12px; background: var(--accent); color: var(--accent-text); font-size: 15px; text-shadow: none; }
+html[data-frame="terminal"][data-window-style] .edge-tab { border: 2px solid var(--accent); border-radius: 0; }
+/* Buttons and fields: black with an accent line; chosen items fill with the accent color */
+html[data-frame="terminal"][data-window-style] button { border: 2px solid var(--accent); border-radius: 0; background: transparent; color: var(--accent); box-shadow: none; }
+html[data-frame="terminal"][data-window-style] button:hover:not(:disabled) { background: var(--accent); color: var(--accent-text); text-shadow: none; }
+html[data-frame="terminal"][data-window-style] :is(button.primary, button.active:not(.play-button), .badge.active, .play-button) { background: var(--accent); color: var(--accent-text); text-shadow: none; box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent); }
+html[data-frame="terminal"][data-window-style] .play-button { border-radius: 0; }
+html[data-frame="terminal"][data-window-style] .badge { border-radius: 0; }
+html[data-frame="terminal"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button) { border: 0; background: transparent; }
+html[data-frame="terminal"][data-window-style] .track { border-radius: 0; }
+html[data-frame="terminal"][data-window-style] .track.current { background: var(--accent); }
+html[data-frame="terminal"][data-window-style] .track.current :is(.track-main, .track-title, .track-menu-btn) { color: var(--accent-text); text-shadow: none; }
+html[data-frame="terminal"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) { border: 2px solid var(--accent); border-radius: 0; background: #000; color: var(--accent); }
+/* Sliders: a plain filled bar and a square handle */
+html[data-frame="terminal"][data-window-style] .progress-slider::-webkit-slider-runnable-track { border-radius: 0; box-shadow: inset 0 0 0 2px var(--accent); }
+html[data-frame="terminal"][data-window-style] .progress-slider::-webkit-slider-thumb { border-radius: 0; background: var(--accent); border: 4px solid var(--accent-text); }
+
+/* ---- RE4 frame (theme "frame": "re4", floating style only) ----
+   A worn dark book: charcoal smoke, pale serif text, thin dividing lines between list entries, a lit top edge on the
+   panels, and a smudged light brush stroke (feathered at its edges) behind the chosen item. */
+html[data-frame="re4"] { font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif; --brush: linear-gradient(90deg, rgba(226, 223, 215, .08), rgba(226, 223, 215, .55) 8%, rgba(226, 223, 215, .62) 50%, rgba(226, 223, 215, .55) 92%, rgba(226, 223, 215, .08));
+  --brush-soft: linear-gradient(90deg, rgba(226, 223, 215, .04), rgba(226, 223, 215, .26) 9%, rgba(226, 223, 215, .32) 50%, rgba(226, 223, 215, .26) 91%, rgba(226, 223, 215, .04));
+  /* Dark feathering over the top and bottom edge, so a button's brush stroke fades out like the one in the game menu */
+  --brush-feather: linear-gradient(180deg, rgba(14, 14, 15, .7), transparent 26%, transparent 74%, rgba(14, 14, 15, .7)); }
+html[data-frame="re4"] :is(body, button, input, select) { font-family: inherit; }
+html[data-frame="re4"][data-window-style] .app {
+  background: radial-gradient(ellipse at 50% 30%, rgba(60, 58, 56, .55), transparent 70%), radial-gradient(ellipse at center, #17171a 30%, #050506 100%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .12), 0 18px 44px rgba(0, 0, 0, .55);
+}
+/* Panels: no frame, a lit top edge and a faint paper sheen, like the page of a book */
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  /* A worn light-gray edge, bright where the light hits and dark where it is rubbed away, like the book in the game menu */
+  border: 3px solid transparent; border-radius: 3px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
+    color-mix(in srgb, var(--panel) calc(var(--layout-panel-opacity) * 100%), transparent) padding-box,
+    linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .55) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .6) 78%, rgba(222, 219, 211, .75)) border-box;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .55), inset 0 0 40px rgba(0, 0, 0, .35), 0 10px 28px rgba(0, 0, 0, .5);
+}
+html[data-frame="re4"][data-window-style] .modal h2 { font-weight: 400; font-size: 22px; letter-spacing: .04em; text-align: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, .2); }
+/* Thin dividing lines between entries */
+html[data-frame="re4"] .track { border-radius: 0; border-bottom: 1px solid rgba(255, 255, 255, .14); }
+html[data-frame="re4"] .track-title { color: var(--muted); font-size: 15px; letter-spacing: .02em; }
+html[data-frame="re4"] .track.current .track-title, html[data-frame="re4"] .track-main:hover .track-title { color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
+/* The chosen entry: a smudged light brush stroke behind white text */
+html[data-frame="re4"][data-window-style] .track.current { background: var(--brush); -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); }
+html[data-frame="re4"][data-window-style] .track.current :is(.track-main, .track-menu-btn) { color: #fff; }
+/* Buttons: flat text with a thin line; the chosen one gets the brush stroke */
+html[data-frame="re4"][data-window-style] button { border: 0; border-radius: 0; background: var(--brush-feather), var(--brush-soft); color: #f0ede6; box-shadow: none; text-shadow: 0 1px 2px rgba(0, 0, 0, .7); }
+html[data-frame="re4"][data-window-style] button:hover:not(:disabled) { background: var(--brush-feather), var(--brush); color: #fff; }
+html[data-frame="re4"][data-window-style] :is(button.primary, button.active:not(.play-button), .badge.active) { background: var(--brush-feather), var(--brush); color: #fff; border-color: transparent; text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
+html[data-frame="re4"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button) { border: 0; background: transparent; text-shadow: none; }
+html[data-frame="re4"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button):hover:not(:disabled) { background: rgba(226, 223, 215, .14); }
+/* Control bar buttons: the same worn light edge as the panels, around the brush stroke */
+html[data-frame="re4"][data-window-style] .controls button {
+  border: 2px solid transparent; border-radius: 2px;
+  background: var(--brush-feather) padding-box, var(--brush-soft) padding-box,
+    linear-gradient(155deg, rgba(232, 229, 221, .85), rgba(90, 89, 84, .5) 30%, rgba(196, 193, 184, .6) 55%, rgba(62, 61, 58, .55) 80%, rgba(222, 219, 211, .7)) border-box;
+}
+html[data-frame="re4"][data-window-style] .controls button:hover:not(:disabled) {
+  background: var(--brush-feather) padding-box, var(--brush) padding-box,
+    linear-gradient(155deg, rgba(246, 243, 235, .95), rgba(120, 119, 113, .6) 30%, rgba(214, 211, 202, .7) 55%, rgba(80, 79, 75, .6) 80%, rgba(236, 233, 225, .85)) border-box;
+}
+html[data-frame="re4"][data-window-style] .badge { border-radius: 0; border: 1px solid rgba(255, 255, 255, .22); }
+html[data-frame="re4"][data-window-style] .play-button { border-radius: 0; color: #fff; }
+html[data-frame="re4"][data-window-style] .edge-tab { border: 2px solid rgba(200, 197, 188, .55); border-radius: 3px; background: rgba(20, 20, 21, .88); }
+html[data-frame="re4"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) { border: 0; border-bottom: 1px solid rgba(255, 255, 255, .3); border-radius: 0; background: rgba(255, 255, 255, .05); color: var(--text); }
+/* Sliders: a thin line with a small round handle */
+html[data-frame="re4"][data-window-style] .progress-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 0; box-shadow: none; }
+html[data-frame="re4"][data-window-style] .progress-slider::-webkit-slider-thumb { width: 14px; height: 14px; margin-top: -5px; border-radius: 50%; border: 0; background: #f1eee7; }
+
+/* ---- Requiem frame (theme "frame": "requiem", floating style only) ----
+   A dark tactical inventory: square cells on a faint grid, thin gray cell lines, a small notched corner on every panel,
+   thin white bars, and a red glowing gradient on the chosen item. */
+html[data-frame="requiem"] {
+  --cell-line: 1px solid rgba(255, 255, 255, .16);
+  --grid: repeating-linear-gradient(0deg, rgba(255, 255, 255, .06) 0 1px, transparent 1px 36px), repeating-linear-gradient(90deg, rgba(255, 255, 255, .06) 0 1px, transparent 1px 36px);
+  --red-select: linear-gradient(180deg, rgba(196, 52, 58, .35), rgba(196, 52, 58, .55) 60%, rgba(224, 70, 76, .8));
+}
+html[data-frame="requiem"][data-window-style] .app { background: linear-gradient(180deg, #151617, #0b0c0d); box-shadow: 0 0 0 1px rgba(255, 255, 255, .14), 0 18px 44px rgba(0, 0, 0, .55); }
+/* Panels: square cells on a grid, with a notch cut into the top-right corner */
+html[data-frame="requiem"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  border: var(--cell-line); border-radius: 0; backdrop-filter: blur(var(--layout-panel-blur));
+  background-image: var(--grid), linear-gradient(180deg, rgba(255, 255, 255, .04), transparent);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  box-shadow: none;
+}
+html[data-frame="requiem"][data-window-style] .modal h2 { font-size: 16px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+html[data-frame="requiem"][data-window-style] .modal h3 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+/* Every playlist entry is a cell */
+html[data-frame="requiem"] .track { border-radius: 0; border: var(--cell-line); margin: 2px 0; background: rgba(255, 255, 255, .03); }
+html[data-frame="requiem"] .track-title { font-size: 13px; }
+html[data-frame="requiem"] .track.current, html[data-frame="requiem"] .badge.active {
+  background: var(--red-select); border-color: #e8575e; box-shadow: inset 0 -14px 18px -10px rgba(255, 90, 96, .55), 0 0 12px rgba(196, 52, 58, .4);
+}
+html[data-frame="requiem"] .track.current :is(.track-main, .track-title, .track-menu-btn) { color: #fff; }
+/* Buttons: flat dark cells; the chosen one is red */
+html[data-frame="requiem"][data-window-style] button { border: var(--cell-line); border-radius: 0; background: rgba(255, 255, 255, .05); color: var(--text); box-shadow: none; }
+html[data-frame="requiem"][data-window-style] button:hover:not(:disabled) { background: rgba(255, 255, 255, .13); border-color: rgba(255, 255, 255, .4); }
+html[data-frame="requiem"][data-window-style] :is(button.primary, button.active:not(.play-button), .play-button) { background: var(--red-select); border-color: #e8575e; color: #fff; }
+html[data-frame="requiem"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button) { border: 0; background: transparent; }
+html[data-frame="requiem"][data-window-style] .badge { border-radius: 0; }
+html[data-frame="requiem"][data-window-style] .play-button { border-radius: 0; }
+html[data-frame="requiem"][data-window-style] .edge-tab { border: var(--cell-line); border-radius: 0; background: rgba(20, 21, 22, .9); }
+html[data-frame="requiem"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) { border: var(--cell-line); border-radius: 0; background: rgba(0, 0, 0, .4); color: var(--text); }
+/* Sliders: thin white bars like the stat bars, with a small square handle */
+html[data-frame="requiem"][data-window-style] .progress-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 0; box-shadow: none; }
+html[data-frame="requiem"][data-window-style] .progress-slider::-webkit-slider-thumb { width: 10px; height: 14px; margin-top: -5px; border-radius: 0; border: 0; background: #fff; }
+
+/* ---- The custom menu bar (Windows and Linux) in each frame style ----
+   The frame rules above style every `button`, so each frame restates the menu bar's titles, entries and window buttons. */
+/* Detroit: a navy strip with a light lower line, spaced capitals, a blue glow on the open menu */
+html[data-frame="detroit"][data-window-style] .custom-topbar { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 14%, var(--panel)), var(--panel)); border-bottom: 1px solid var(--line); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22); }
+html[data-frame="detroit"][data-window-style] .custom-topbar button { border: 0; border-radius: 0; background: transparent; color: var(--text); }
+html[data-frame="detroit"][data-window-style] .custom-topbar :is(.topbar-title:hover, .topbar-title.open, .topbar-entry:hover, .topbar-window-buttons button:hover) { background: var(--brackets), var(--selected-glow); color: #fff; text-shadow: 0 0 8px var(--accent); }
+html[data-frame="detroit"][data-window-style] .topbar-dropdown { border: 1px solid var(--line); border-radius: 0; outline: 1px solid var(--line-soft); outline-offset: -5px; background: color-mix(in srgb, var(--panel) 96%, transparent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 10px 30px rgba(0, 0, 0, .5), var(--glow-shadow); }
+/* RPG: a wood bar with cream lettering; the open menu turns gold; the drop-down is a parchment panel in a wood frame */
+html[data-frame="rpg"][data-window-style] .custom-topbar { height: 42px; background: var(--wood); border-bottom: 3px solid var(--rpg-edge); box-shadow: inset 0 -1px 0 #c79a5a, inset 0 1px 0 rgba(255, 235, 190, .25); color: #f5e6c4; }
+html[data-frame="rpg"][data-window-style] .custom-topbar .topbar-title { border: 2px solid transparent; border-radius: 9px; background: transparent; box-shadow: none; color: #f5e6c4; text-shadow: 0 1px 1px rgba(0, 0, 0, .6); }
+html[data-frame="rpg"][data-window-style] .custom-topbar .topbar-title:hover, html[data-frame="rpg"][data-window-style] .custom-topbar .topbar-title.open { background: var(--gold-button); border-color: var(--rpg-edge); color: #3a2410; text-shadow: 0 1px 0 rgba(255, 245, 210, .6); }
+html[data-frame="rpg"][data-window-style] .custom-topbar .topbar-window-buttons button { border: 2px solid var(--rpg-edge); border-radius: 8px; background: var(--wood-button); color: #f5e6c4; }
+html[data-frame="rpg"][data-window-style] .custom-topbar .topbar-window-buttons button:hover { background: var(--gold-button); color: #3a2410; }
+html[data-frame="rpg"][data-window-style] .custom-topbar .topbar-window-buttons .close:hover { background: linear-gradient(180deg, #d9604a, #a8402a); color: #fff; }
+html[data-frame="rpg"][data-window-style] .topbar-dropdown { color: #3a2410; border: 4px solid transparent; border-radius: 12px; background: var(--parchment) padding-box, var(--wood) border-box; box-shadow: 0 0 0 1px var(--rpg-edge), inset 0 0 12px rgba(120, 80, 30, .35), 0 10px 26px rgba(0, 0, 0, .45); }
+html[data-frame="rpg"][data-window-style] .topbar-dropdown .topbar-entry { background: transparent; border: 0; box-shadow: none; color: #3a2410; text-shadow: none; border-radius: 7px; }
+html[data-frame="rpg"][data-window-style] .topbar-dropdown .topbar-entry:hover { background: var(--gold-button); }
+html[data-frame="rpg"][data-window-style] .topbar-separator { background: #a98a5c; }
+/* RE4: a dark bar with the worn light edge underneath; titles get the brush stroke when open or hovered */
+html[data-frame="re4"][data-window-style] .custom-topbar { background: linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, 0)), rgba(14, 14, 15, .9); border-bottom: 2px solid transparent; border-image: linear-gradient(90deg, rgba(232, 229, 221, .85), rgba(90, 89, 84, .5) 30%, rgba(196, 193, 184, .6) 60%, rgba(222, 219, 211, .75)) 1; }
+html[data-frame="re4"][data-window-style] .custom-topbar button { border: 0; border-radius: 0; background: transparent; color: #e4e1da; text-shadow: 0 1px 2px rgba(0, 0, 0, .7); }
+html[data-frame="re4"][data-window-style] .custom-topbar :is(.topbar-title:hover, .topbar-title.open, .topbar-entry:hover, .topbar-window-buttons button:hover) { background: var(--brush-feather), var(--brush); color: #fff; }
+html[data-frame="re4"][data-window-style] .topbar-dropdown { border: 3px solid transparent; border-radius: 3px; background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box, rgb(20, 20, 21) padding-box, linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .55) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .6) 78%, rgba(222, 219, 211, .75)) border-box; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .55), 0 10px 28px rgba(0, 0, 0, .5); }
+html[data-frame="re4"][data-window-style] .topbar-separator { background: rgba(255, 255, 255, .16); }
+/* Requiem: a grid-lined dark cell strip; the open menu is the red selection; the drop-down is a notched cell */
+html[data-frame="requiem"][data-window-style] .custom-topbar { background-image: var(--grid), linear-gradient(180deg, rgba(255, 255, 255, .05), transparent); border-bottom: var(--cell-line); }
+html[data-frame="requiem"][data-window-style] .custom-topbar button { border: 0; border-radius: 0; background: transparent; color: var(--text); }
+html[data-frame="requiem"][data-window-style] .custom-topbar :is(.topbar-title:hover, .topbar-title.open, .topbar-entry:hover, .topbar-window-buttons button:hover) { background: var(--red-select); color: #fff; }
+html[data-frame="requiem"][data-window-style] .custom-topbar .topbar-window-buttons .close:hover { background: #c4343a; }
+html[data-frame="requiem"][data-window-style] .custom-topbar :is(.topbar-title, .topbar-entry) { text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+html[data-frame="requiem"][data-window-style] .topbar-dropdown { border: var(--cell-line); border-radius: 0; background-image: var(--grid); background-color: rgb(21, 22, 23); clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); box-shadow: none; }
+
+/* ---- Cyberpunk 2.0 frame (theme "frame": "cyberpunk2", floating style only) ----
+   Built from the images of the Cyberpunk UI asset pack (src/assets/cyberpunk-2, resized): the window and dialogs use a
+   chamfered neon frame, buttons and cells use the octagon button images (normal, hover, pressed, chosen), the sliders
+   use the progress bar images. The images are stretched with border-image, so the
+   corners keep their shape at any size. */
+html[data-frame="cyberpunk2"] {
+  --cp-panel: url("./assets/cyberpunk-2/panel-frame.png");
+  --cp-button: url("./assets/cyberpunk-2/button-normal.png");
+  --cp-button-hover: url("./assets/cyberpunk-2/button-hover.png");
+  --cp-button-pressed: url("./assets/cyberpunk-2/button-pressed.png");
+  --cp-chosen: url("./assets/cyberpunk-2/button-chosen.png");
+  --cp-chosen-hover: url("./assets/cyberpunk-2/button-chosen-hover.png");
+}
+html[data-frame="cyberpunk2"] :is(.modal h2, .modal h3, .side-title strong, .field > span, button, .topbar-title, .topbar-entry) { text-transform: uppercase; letter-spacing: .08em; }
+/* The window itself: the big neon frame (the image's corners are cut, so nothing is drawn behind them) */
+html[data-frame="cyberpunk2"][data-window-style] .app {
+  border: 34px solid transparent; border-image: var(--cp-panel) 40 fill / 34px stretch; background: transparent; box-shadow: none; border-radius: 0;
+}
+html[data-frame="cyberpunk2"][data-window-style][data-fullscreen="yes"] .app { border: 0; border-image: none; background: var(--window-fill); }
+/* Panels and dialogs inside it: the thinner octagon outline */
+html[data-frame="cyberpunk2"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  border: 9px solid transparent; border-image: var(--cp-button) 22 fill / 9px stretch; border-radius: 0; backdrop-filter: none; box-shadow: none; outline: 0;
+  background: transparent;
+}
+html[data-frame="cyberpunk2"][data-window-style] .player .controls { padding: 8px 18px; }
+html[data-frame="cyberpunk2"][data-window-style] .modal { padding: 22px; }
+html[data-frame="cyberpunk2"][data-window-style] .modal h2 { font-size: 18px; text-shadow: 0 0 8px var(--accent); }
+/* Buttons: the octagon images, with their hover and pressed states; chosen ones use the second design */
+html[data-frame="cyberpunk2"][data-window-style] button {
+  border: 9px solid transparent; border-image: var(--cp-button) 22 fill / 9px stretch; border-radius: 0; background: transparent; box-shadow: none;
+  padding: 0 10px; min-height: 36px; color: var(--text);
+}
+html[data-frame="cyberpunk2"][data-window-style] button:hover:not(:disabled) { border-image-source: var(--cp-button-hover); background: transparent; color: #fff; text-shadow: 0 0 8px var(--accent); }
+html[data-frame="cyberpunk2"][data-window-style] button:active:not(:disabled) { border-image-source: var(--cp-button-pressed); }
+html[data-frame="cyberpunk2"][data-window-style] :is(button.primary, button.active:not(.play-button), .badge.active) { border-image-source: var(--cp-chosen); color: #fff; }
+html[data-frame="cyberpunk2"][data-window-style] :is(button.primary, button.active:not(.play-button), .badge.active):hover:not(:disabled) { border-image-source: var(--cp-chosen-hover); }
+html[data-frame="cyberpunk2"][data-window-style] .play-button { width: 60px; height: 52px; padding: 0; border-radius: 0; border-image-source: var(--cp-chosen); box-shadow: none; }
+html[data-frame="cyberpunk2"][data-window-style] .play-button:hover { border-image-source: var(--cp-chosen-hover); }
+html[data-frame="cyberpunk2"][data-window-style] .badge { border-radius: 0; width: 46px; height: 46px; min-height: 0; padding: 0; }
+html[data-frame="cyberpunk2"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button) { border: 0; border-image: none; background: transparent; min-height: 0; padding: 4px 8px; text-shadow: none; }
+html[data-frame="cyberpunk2"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button):hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+html[data-frame="cyberpunk2"][data-window-style] .edge-tab { min-height: 0; padding: 0; }
+/* Playlist entries: the playing one sits in the chosen frame */
+html[data-frame="cyberpunk2"] .track { border: 6px solid transparent; border-radius: 0; }
+html[data-frame="cyberpunk2"][data-window-style] .track.current { border-image: var(--cp-chosen) 22 fill / 6px stretch; background: transparent; }
+html[data-frame="cyberpunk2"] .track-title { font-size: 13px; }
+html[data-frame="cyberpunk2"] .track.current .track-title { color: #fff; text-shadow: 0 0 8px var(--accent); }
+/* Fields: dark cells with a cyan line and cut corners */
+html[data-frame="cyberpunk2"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) {
+  border: 1px solid var(--border); border-radius: 0; background: rgba(8, 18, 32, .9); color: var(--text);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+}
+/* Sliders: the progress bar images (empty track, and the filled share on top of it) */
+html[data-frame="cyberpunk2"][data-window-style] .progress-slider::-webkit-slider-runnable-track {
+  height: 20px; border-radius: 0; box-shadow: none;
+  background: url("./assets/cyberpunk-2/progress-fill.png") left center / var(--fill) 100% no-repeat, url("./assets/cyberpunk-2/progress-track.png") center / 100% 100% no-repeat;
+  filter: drop-shadow(0 0 var(--layout-progress-glow, 0px) color-mix(in srgb, var(--progress-bar-end) 70%, transparent));
+}
+html[data-frame="cyberpunk2"][data-window-style] .progress-slider::-webkit-slider-thumb { width: 8px; height: 26px; margin-top: -3px; border-radius: 0; border: 0; background: #fff; box-shadow: 0 0 10px var(--accent); }
+/* The custom menu bar (Windows and Linux) */
+html[data-frame="cyberpunk2"][data-window-style] .custom-topbar { background: rgba(6, 14, 24, .85); border-bottom: 2px solid var(--border); box-shadow: 0 2px 12px color-mix(in srgb, var(--accent) 35%, transparent); }
+html[data-frame="cyberpunk2"][data-window-style] .custom-topbar button { border: 0; border-image: none; min-height: 28px; padding: 0 12px; background: transparent; }
+html[data-frame="cyberpunk2"][data-window-style] .custom-topbar :is(.topbar-title:hover, .topbar-title.open, .topbar-entry:hover, .topbar-window-buttons button:hover) { background: color-mix(in srgb, var(--accent) 24%, transparent); color: #fff; text-shadow: 0 0 8px var(--accent); }
+html[data-frame="cyberpunk2"][data-window-style] .custom-topbar .topbar-window-buttons .close:hover { background: #d4204e; }
+html[data-frame="cyberpunk2"][data-window-style] .topbar-dropdown { border: 9px solid transparent; border-image: var(--cp-button) 22 fill / 9px stretch; border-radius: 0; background: transparent; box-shadow: none; }
+
+/* ---- Scrollbars: the same look as the player's progress bar, in every theme ----
+   The track is the "Progress track" color, the thumb is the "Progress bar" gradient, with the same corner shape and glow. */
+::-webkit-scrollbar { width: 12px; height: 12px; background: transparent; }
+::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-track { border-radius: 6px; background: var(--progress-track); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .35); }
+::-webkit-scrollbar-thumb {
+  border-radius: 6px; min-height: 36px; min-width: 36px;
+  background: linear-gradient(to right, var(--progress-bar), var(--progress-bar-end));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, white calc(var(--layout-progress-gloss, 0) * 50% + 8%), transparent), 0 0 var(--layout-progress-glow, 0px) color-mix(in srgb, var(--progress-bar-end) 60%, transparent);
+}
+::-webkit-scrollbar-thumb:horizontal { background: linear-gradient(to bottom, var(--progress-bar), var(--progress-bar-end)); }
+::-webkit-scrollbar-thumb:hover { filter: brightness(1.15); }
+html[data-window-style="experimental"] ::-webkit-scrollbar-track, html[data-window-style="experimental"] ::-webkit-scrollbar-thumb { border-radius: var(--layout-bar-radius); }
+html[data-frame="detroit"] ::-webkit-scrollbar-track, html[data-frame="detroit"] ::-webkit-scrollbar-thumb,
+html[data-frame="terminal"] ::-webkit-scrollbar-track, html[data-frame="terminal"] ::-webkit-scrollbar-thumb,
+html[data-frame="requiem"] ::-webkit-scrollbar-track, html[data-frame="requiem"] ::-webkit-scrollbar-thumb { border-radius: 0; }
+/* Terminal: a bordered black track and a filled accent thumb, like its slider */
+html[data-frame="terminal"] ::-webkit-scrollbar-track { background: #000; box-shadow: inset 0 0 0 2px var(--accent); }
+html[data-frame="terminal"] ::-webkit-scrollbar-thumb { background: var(--accent); box-shadow: inset 0 0 0 3px #000; }
+/* RPG: a gray track in a dark edge and a gold thumb with a dark outline, like its slider */
+html[data-frame="rpg"] ::-webkit-scrollbar-track { border-radius: 8px; box-shadow: inset 0 0 0 2px #4d3118, inset 0 3px 5px rgba(0, 0, 0, .4); }
+html[data-frame="rpg"] ::-webkit-scrollbar-thumb { border-radius: 8px; background: linear-gradient(90deg, #efc66e, #b98a3a); box-shadow: inset 0 0 0 2px #4d3118, inset 0 1px 0 rgba(255, 244, 207, .6); }
+/* RE4 and Requiem: thin, like their sliders */
+html[data-frame="re4"] ::-webkit-scrollbar, html[data-frame="requiem"] ::-webkit-scrollbar { width: 8px; height: 8px; }
+html[data-frame="re4"] ::-webkit-scrollbar-track { border-radius: 4px; box-shadow: none; }
+html[data-frame="re4"] ::-webkit-scrollbar-thumb { border-radius: 4px; background: #f1eee7; box-shadow: none; }
+html[data-frame="requiem"] ::-webkit-scrollbar-track { box-shadow: none; }
+html[data-frame="requiem"] ::-webkit-scrollbar-thumb { background: #fff; box-shadow: none; }
+/* Cyberpunk 2.0: the pack's progress bar images (caps and a stretched middle), as in its slider */
+html[data-frame="cyberpunk2"] ::-webkit-scrollbar { width: 18px; height: 18px; }
+html[data-frame="cyberpunk2"] ::-webkit-scrollbar-track:vertical {
+  border-radius: 0; box-shadow: none;
+  background: url("./assets/cyberpunk-2/scrollbar-track-top.png") top / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-track-bottom.png") bottom / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-track-middle.png") center / 100% 100% no-repeat;
+}
+html[data-frame="cyberpunk2"] ::-webkit-scrollbar-thumb:vertical {
+  border-radius: 0; box-shadow: none; filter: drop-shadow(0 0 var(--layout-progress-glow, 0px) color-mix(in srgb, var(--progress-bar-end) 70%, transparent));
+  background: url("./assets/cyberpunk-2/scrollbar-thumb-top.png") top / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-thumb-bottom.png") bottom / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-thumb-middle.png") center / 100% 100% no-repeat;
+}
+html[data-frame="cyberpunk2"] ::-webkit-scrollbar-track:horizontal { border-radius: 0; background: var(--progress-track); box-shadow: inset 0 0 0 2px var(--border); }
+html[data-frame="cyberpunk2"] ::-webkit-scrollbar-thumb:horizontal { border-radius: 0; box-shadow: none; background: var(--progress-bar); }
+
+/* ---- Scroll areas (OverlayScrollbars, see src/components/ScrollArea.tsx) ----
+   The library wraps the children in an inner "viewport" that scrolls, so the layout rules for the children live there. */
+.modal > [data-overlayscrollbars-viewport] { display: flex; flex-direction: column; gap: 12px; }
+.manager-list > [data-overlayscrollbars-viewport] { display: flex; flex-direction: column; gap: 8px; }
+.staged > [data-overlayscrollbars-viewport] { display: flex; flex-direction: column; }
+.staged.youtube-grid > [data-overlayscrollbars-viewport] { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; padding: 8px; }
+.theme-scroll > [data-overlayscrollbars-viewport] { display: flex; flex-direction: column; gap: 6px; }
+.icon-grid > [data-overlayscrollbars-viewport] { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; align-content: start; }
+.download-list > [data-overlayscrollbars-viewport], .download-list .scroll-rows { display: flex; flex-direction: column; gap: 4px; }
+.badges > [data-overlayscrollbars-viewport] { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.modal.downloads-manager > [data-overlayscrollbars-viewport] > .download-list { flex: 1; min-height: 160px; }
+
+/* The scrollbar itself looks like the player's progress bar: the "Progress track" color for the track, the "Progress bar"
+   gradient for the handle, the same glow, and the bar shape of the theme. */
+.os-theme-app {
+  --os-size: 14px; --os-padding-perpendicular: 2px; --os-padding-axis: 2px;
+  --os-track-bg: var(--progress-track); --os-track-bg-hover: var(--progress-track); --os-track-bg-active: var(--progress-track);
+  --os-track-border-radius: 6px; --os-handle-border-radius: 6px;
+  --os-handle-min-size: 36px; --os-handle-interactive-area-offset: 4px;
+  --os-handle-bg: linear-gradient(to right, var(--progress-bar), var(--progress-bar-end));
+  --os-handle-bg-hover: linear-gradient(to right, var(--progress-bar-end), var(--progress-bar-end));
+  --os-handle-bg-active: linear-gradient(to right, var(--progress-bar-end), var(--progress-bar-end));
+}
+html[data-window-style="experimental"] .os-theme-app { --os-track-border-radius: var(--layout-bar-radius); --os-handle-border-radius: var(--layout-bar-radius); }
+.os-theme-app .os-scrollbar-track { box-shadow: inset 0 1px 3px rgba(0, 0, 0, .35); }
+.os-theme-app .os-scrollbar-handle { box-shadow: inset 0 0 0 1px color-mix(in srgb, white calc(var(--layout-progress-gloss, 0) * 50% + 8%), transparent), 0 0 var(--layout-progress-glow, 0px) color-mix(in srgb, var(--progress-bar-end) 60%, transparent); }
+.os-theme-app.os-scrollbar-horizontal .os-scrollbar-handle { background: linear-gradient(to bottom, var(--progress-bar), var(--progress-bar-end)); }
+/* Terminal */
+html[data-frame="terminal"] .os-theme-app { --os-track-border-radius: 0; --os-handle-border-radius: 0; --os-track-bg: #000; --os-handle-bg: var(--accent); --os-handle-bg-hover: var(--accent); --os-handle-bg-active: var(--accent); }
+html[data-frame="terminal"] .os-theme-app .os-scrollbar-track { box-shadow: inset 0 0 0 2px var(--accent); }
+html[data-frame="terminal"] .os-theme-app .os-scrollbar-handle { box-shadow: inset 0 0 0 3px #000; }
+/* Detroit and Requiem: square */
+html[data-frame="detroit"] .os-theme-app, html[data-frame="requiem"] .os-theme-app { --os-track-border-radius: 0; --os-handle-border-radius: 0; }
+html[data-frame="requiem"] .os-theme-app { --os-size: 8px; --os-padding-perpendicular: 0px; --os-handle-bg: #fff; --os-handle-bg-hover: #fff; --os-handle-bg-active: #fff; }
+html[data-frame="requiem"] .os-theme-app .os-scrollbar-track, html[data-frame="requiem"] .os-theme-app .os-scrollbar-handle { box-shadow: none; }
+/* RPG: a gray track in a dark edge, a gold handle with a dark outline */
+html[data-frame="rpg"] .os-theme-app { --os-size: 16px; --os-track-border-radius: 8px; --os-handle-border-radius: 8px; --os-handle-bg: linear-gradient(90deg, #efc66e, #b98a3a); --os-handle-bg-hover: linear-gradient(90deg, #f6d68a, #c99a4a); --os-handle-bg-active: linear-gradient(90deg, #f6d68a, #c99a4a); }
+html[data-frame="rpg"] .os-theme-app .os-scrollbar-track { box-shadow: inset 0 0 0 2px #4d3118, inset 0 3px 5px rgba(0, 0, 0, .4); }
+html[data-frame="rpg"] .os-theme-app .os-scrollbar-handle { box-shadow: inset 0 0 0 2px #4d3118, inset 0 1px 0 rgba(255, 244, 207, .6); }
+/* RE4: thin with a pale handle */
+html[data-frame="re4"] .os-theme-app { --os-size: 8px; --os-padding-perpendicular: 0px; --os-track-border-radius: 4px; --os-handle-border-radius: 4px; --os-handle-bg: #f1eee7; --os-handle-bg-hover: #fff; --os-handle-bg-active: #fff; }
+html[data-frame="re4"] .os-theme-app .os-scrollbar-track, html[data-frame="re4"] .os-theme-app .os-scrollbar-handle { box-shadow: none; }
+/* Cyberpunk 2.0: the progress bar images (caps and a stretched middle) */
+html[data-frame="cyberpunk2"] .os-theme-app { --os-size: 20px; --os-padding-perpendicular: 0px; --os-padding-axis: 0px; --os-track-border-radius: 0; --os-handle-border-radius: 0; --os-track-bg: transparent; --os-handle-bg: transparent; --os-handle-bg-hover: transparent; --os-handle-bg-active: transparent; }
+html[data-frame="cyberpunk2"] .os-theme-app .os-scrollbar-track, html[data-frame="cyberpunk2"] .os-theme-app .os-scrollbar-handle { box-shadow: none; }
+html[data-frame="cyberpunk2"] .os-theme-app.os-scrollbar-vertical .os-scrollbar-track {
+  background: url("./assets/cyberpunk-2/scrollbar-track-top.png") top / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-track-bottom.png") bottom / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-track-middle.png") center / 100% 100% no-repeat;
+}
+html[data-frame="cyberpunk2"] .os-theme-app.os-scrollbar-vertical .os-scrollbar-handle {
+  background: url("./assets/cyberpunk-2/scrollbar-thumb-top.png") top / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-thumb-bottom.png") bottom / 100% auto no-repeat, url("./assets/cyberpunk-2/scrollbar-thumb-middle.png") center / 100% 100% no-repeat;
+  filter: drop-shadow(0 0 var(--layout-progress-glow, 0px) color-mix(in srgb, var(--progress-bar-end) 70%, transparent));
+}
+html[data-frame="cyberpunk2"] .os-theme-app.os-scrollbar-horizontal .os-scrollbar-track { background: var(--progress-track); box-shadow: inset 0 0 0 2px var(--border); }
+html[data-frame="cyberpunk2"] .os-theme-app.os-scrollbar-horizontal .os-scrollbar-handle { background: var(--progress-bar); }
+
+/* ---- RE4 buttons, one look for all of them ----
+   Resting: transparent with the worn light edge. Hovered or chosen: the brush stroke behind the text, and the edge
+   brightens and travels along the button while the pointer is over it (a CSS animation, no script timers). */
+html[data-frame="re4"] {
+  --re4-edge: linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .5) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .55) 78%, rgba(222, 219, 211, .8));
+  --re4-edge-bright: linear-gradient(155deg, rgba(250, 248, 242, 1), rgba(120, 119, 113, .6) 28%, rgba(226, 223, 214, .9) 52%, rgba(80, 79, 75, .6) 78%, rgba(244, 241, 233, 1));
+}
+@keyframes re4-edge-travel { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 100% 0; } }
+@keyframes re4-edge-travel-filled { from { background-position: 0 0, 0 0, 0 0; } to { background-position: 0 0, 0 0, 100% 0; } }
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab),
+html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab) {
+  border: 2px solid transparent; border-radius: 2px; box-shadow: none; color: #f0ede6; text-shadow: 0 1px 2px rgba(0, 0, 0, .7);
+  background: linear-gradient(transparent, transparent) padding-box, var(--re4-edge) border-box;
+  background-size: 100% 100%, 300% 100%; background-repeat: no-repeat; background-position: 0 0, 0 0;
+}
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled),
+html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled),
+html[data-frame="re4"][data-window-style] :is(button.primary, button.active, .badge.active):not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab),
+html[data-frame="re4"][data-window-style] .controls :is(button.primary, button.active):not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab) {
+  color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+  background: var(--brush-feather) padding-box, var(--brush) padding-box, var(--re4-edge-bright) border-box;
+  background-size: 100% 100%, 100% 100%, 300% 100%; background-repeat: no-repeat; background-position: 0 0, 0 0, 0 0;
+}
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled),
+html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled) { animation: re4-edge-travel-filled 1.4s linear infinite; }
+html[data-frame="re4"][data-window-style] .play-button, html[data-frame="re4"][data-window-style] .badge { border-radius: 2px; }
+@media (prefers-reduced-motion: reduce) { html[data-frame="re4"][data-window-style] button { animation: none !important; } }
+
+/* RE4 buttons, corrected: no background at rest. The edge is a ring drawn by ::before (a mask cuts out the inside), so
+   nothing shows behind the text until the button is hovered or chosen. */
+@keyframes re4-ring-travel { from { background-position: 0 0; } to { background-position: 100% 0; } }
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab), html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab) { background: transparent; position: relative; border: 2px solid transparent; }
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled), html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled),
+html[data-frame="re4"][data-window-style] :is(button.primary, button.active, .badge.active):not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab), html[data-frame="re4"][data-window-style] .controls :is(button.primary, button.active):not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab) {
+  background: var(--brush-feather), var(--brush); animation: none;
+}
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab)::before, html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab)::before {
+  content: ""; position: absolute; inset: -2px; padding: 2px; border-radius: inherit; pointer-events: none;
+  background: var(--re4-edge) 0 0 / 300% 100% no-repeat;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled)::before, html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled)::before,
+html[data-frame="re4"][data-window-style] :is(button.primary, button.active, .badge.active):not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab)::before { background-image: var(--re4-edge-bright); }
+html[data-frame="re4"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled)::before, html[data-frame="re4"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab):hover:not(:disabled)::before { animation: re4-ring-travel 1.4s linear infinite; }
+@media (prefers-reduced-motion: reduce) { html[data-frame="re4"][data-window-style] button::before { animation: none !important; } }
+
+/* RE4 scrollbar, same style as its buttons: no background on the track, only the worn light edge; the handle gets the brush
+   stroke and a brighter edge, and the stroke travels along it while the pointer is over it. */
+html[data-frame="re4"] { --brush-vertical: linear-gradient(180deg, rgba(226, 223, 215, .08), rgba(226, 223, 215, .55) 8%, rgba(226, 223, 215, .62) 50%, rgba(226, 223, 215, .55) 92%, rgba(226, 223, 215, .08)); }
+@keyframes re4-handle-shimmer-vertical { from { background-position: 0 0; } to { background-position: 0 100%; } }
+@keyframes re4-handle-shimmer-horizontal { from { background-position: 0 0; } to { background-position: 100% 0; } }
+html[data-frame="re4"] .os-theme-app {
+  --os-size: 14px; --os-padding-perpendicular: 1px; --os-padding-axis: 1px; --os-track-border-radius: 2px; --os-handle-border-radius: 2px;
+  --os-track-bg: transparent; --os-track-bg-hover: transparent; --os-track-bg-active: transparent;
+  --os-handle-bg: var(--brush-vertical); --os-handle-bg-hover: var(--brush-vertical); --os-handle-bg-active: var(--brush-vertical);
+  --os-handle-border: 2px solid transparent; --os-handle-border-hover: 2px solid transparent; --os-handle-border-active: 2px solid transparent;
+}
+html[data-frame="re4"] .os-theme-app.os-scrollbar-horizontal { --os-handle-bg: var(--brush); --os-handle-bg-hover: var(--brush); --os-handle-bg-active: var(--brush); }
+html[data-frame="re4"] .os-theme-app .os-scrollbar-track { border: 2px solid transparent; border-image: var(--re4-edge) 1; border-radius: 0; box-shadow: none; background: transparent; }
+html[data-frame="re4"] .os-theme-app .os-scrollbar-handle { border-image: var(--re4-edge) 1; border-radius: 0; box-shadow: none; background-size: 100% 100%; }
+html[data-frame="re4"] .os-theme-app .os-scrollbar-handle:hover { border-image: var(--re4-edge-bright) 1; background-size: 100% 300%; animation: re4-handle-shimmer-vertical 1.4s linear infinite; }
+html[data-frame="re4"] .os-theme-app.os-scrollbar-horizontal .os-scrollbar-handle:hover { background-size: 300% 100%; animation-name: re4-handle-shimmer-horizontal; }
+@media (prefers-reduced-motion: reduce) { html[data-frame="re4"] .os-theme-app .os-scrollbar-handle:hover { animation: none; } }
+
+/* RE4: the arrow tab that shows or hides the playlist, same as the other buttons */
+html[data-frame="re4"][data-window-style] .edge-tab { background: transparent; border: 2px solid transparent; border-radius: 2px; box-shadow: none; color: #f0ede6; opacity: 1; }
+html[data-frame="re4"][data-window-style] .edge-tab::before {
+  content: ""; position: absolute; inset: -2px; padding: 2px; border-radius: inherit; pointer-events: none;
+  background: var(--re4-edge) 0 0 / 300% 100% no-repeat;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+html[data-frame="re4"][data-window-style] .edge-tab:hover { background: var(--brush-feather), var(--brush); color: #fff; }
+html[data-frame="re4"][data-window-style] .edge-tab:hover::before { background-image: var(--re4-edge-bright); animation: re4-ring-travel 1.4s linear infinite; }
+@media (prefers-reduced-motion: reduce) { html[data-frame="re4"][data-window-style] .edge-tab::before { animation: none !important; } }
+
+/* RE4: the control bar, the playlist and the badge column use the same solid panel background as the dialogs */
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .modal), html[data-frame="re4"][data-window-style] .player .controls {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
+    var(--panel) padding-box,
+    linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .55) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .6) 78%, rgba(222, 219, 211, .75)) border-box;
+  backdrop-filter: none;
+}
+
+/* RE4, corrected: dark and blurred (frosted), like the dialogs on their dimmed backdrop. The video shows through the blur. */
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls), html[data-frame="re4"][data-window-style] .player .controls {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
+    rgba(10, 10, 11, .72) padding-box,
+    linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .55) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .6) 78%, rgba(222, 219, 211, .75)) border-box;
+  -webkit-backdrop-filter: blur(22px) saturate(.8); backdrop-filter: blur(22px) saturate(.8);
+}
+html[data-frame="re4"][data-window-style] .modal { background:
+    linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
+    rgba(10, 10, 11, .88) padding-box,
+    linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .55) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .6) 78%, rgba(222, 219, 211, .75)) border-box;
+  -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); }

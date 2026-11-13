@@ -3,6 +3,7 @@ import { useT } from "../translate";
 import { youtubeLookup, type YouTubeEntry, type YouTubeFormat } from "../youtubeApi";
 import { useYouTubeDownloadStore } from "../store/youtubeDownloadStore";
 import { formatTime } from "../textFormatting";
+import ScrollArea from "./ScrollArea";
 
 type Found =
   | { kind: "video"; entries: YouTubeEntry[]; formats: YouTubeFormat[] }
@@ -240,7 +241,7 @@ export default function YouTubeSearchPanel() {
       {found && entries.length === 0 && !error && <p className="muted">{t("youtube.noResults")}</p>}
 
       {entries.length > 0 && (
-        <div className={`staged youtube-results${grid ? " youtube-grid" : ""}`}>
+        <ScrollArea className={`staged youtube-results${grid ? " youtube-grid" : ""}`}>
           {entries.map((e) =>
             e.kind === "channel" ? (
               <div key={e.id} className="staged-row youtube-box" onClick={() => !busy && void openChannel(e)} role="button">
@@ -264,7 +265,7 @@ export default function YouTubeSearchPanel() {
               </label>
             ),
           )}
-        </div>
+        </ScrollArea>
       )}
 
       {found?.kind === "list" && source && (page > 0 || hasMore) && (

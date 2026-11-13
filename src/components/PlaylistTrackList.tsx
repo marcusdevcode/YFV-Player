@@ -13,6 +13,7 @@ import { openContextMenu } from "../store/contextMenuStore";
 import ConfirmDialog from "./ConfirmDialog";
 import Icon from "./Icon";
 import ThumbnailImage from "./ThumbnailImage";
+import ScrollArea from "./ScrollArea";
 
 /** The track list of the active playlist: play, reorder, preview, remove. */
 export default function PlaylistTrackList() {
@@ -116,7 +117,8 @@ export default function PlaylistTrackList() {
         </button>
       </header>
 
-      <div className="track-list" ref={listRef}>
+      <ScrollArea className="track-list">
+<div className="scroll-rows" ref={listRef}>
         {playlist.tracks.length === 0 && <p className="muted pad">{tl("side.empty")}</p>}
         {playlist.tracks.map((t, i) => {
           const cls = [
@@ -222,6 +224,7 @@ export default function PlaylistTrackList() {
           );
         })}
       </div>
+</ScrollArea>
 
       {pendingDelete && (
         <ConfirmDialog

@@ -452,6 +452,14 @@
     "appearance.frameDetroit": "דטרויט (קווים כפולים, סוגריים בפינות, מסגרות כפתורים נעות)",
     "appearance.builtin.detroit": "דטרויט",
     "appearance.frameRpg": "RPG (מסגרות עץ, עיטורי פינה מוזהבים)",
-    "appearance.builtin.rpg": "סגנון RPG"
+    "appearance.builtin.rpg": "סגנון RPG",
+    "appearance.frameTerminal": "מסוף (מסגרת חלון עבה, שורת כותרת מלאה)",
+    "appearance.builtin.orange-terminal": "מסוף כתום",
+    "appearance.frameRe4": "RE4 (ספר כהה בלוי, הדגשת מברשת מרוחה)",
+    "appearance.builtin.re4": "RE4",
+    "appearance.frameRequiem": "Requiem (תאי רשת, פינות חתוכות, בחירה אדומה)",
+    "appearance.builtin.re-requiem": "RE Requiem",
+    "appearance.frameCyberpunk2": "Cyberpunk 2.0 (מסגרות ניאון מתמונות, כפתורי תמונה)",
+    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0"
   }
 }

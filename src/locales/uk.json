@@ -460,6 +460,14 @@
     "appearance.frameDetroit": "Детройт (подвійні лінії, кутові дужки, рухомі межі кнопок)",
     "appearance.builtin.detroit": "Детройт",
     "appearance.frameRpg": "RPG (дерев’яні рамки, золоті кутові прикраси)",
-    "appearance.builtin.rpg": "Стиль RPG"
+    "appearance.builtin.rpg": "Стиль RPG",
+    "appearance.frameTerminal": "Термінал (товста рамка вікна, заповнений заголовок)",
+    "appearance.builtin.orange-terminal": "Помаранчевий термінал",
+    "appearance.frameRe4": "RE4 (потертий темний щоденник, розмите виділення пензлем)",
+    "appearance.builtin.re4": "RE4",
+    "appearance.frameRequiem": "Requiem (клітинки сітки, зрізані кути, червоне виділення)",
+    "appearance.builtin.re-requiem": "RE Requiem",
+    "appearance.frameCyberpunk2": "Cyberpunk 2.0 (неонові рамки із зображень, кнопки із зображень)",
+    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0"
   }
 }

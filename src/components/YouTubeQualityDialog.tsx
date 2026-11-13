@@ -13,6 +13,7 @@ import {
 import { enqueueDownloads, resolveDownloadFolder, youtubeLookup, type ChosenFormats, type YouTubeFormat } from "../youtubeApi";
 import { formatBytes } from "../textFormatting";
 import { newId } from "../uniqueIds";
+import ScrollArea from "./ScrollArea";
 
 function formatLabel(f: YouTubeFormat): string {
   const parts = [
@@ -125,7 +126,7 @@ function QualityForm() {
 
   return (
     <div className="modal-backdrop" onClick={close}>
-      <div className="modal wide" role="dialog" aria-label={t("quality.title")} onClick={(e) => e.stopPropagation()}>
+      <ScrollArea className="modal wide" role="dialog" aria-label={t("quality.title")} onClick={(e) => e.stopPropagation()}>
         <h2>{t("quality.title")}</h2>
         <p className="modal-sub">{single ? single.title : tn("quality.count", request.entries.length)}</p>
 
@@ -225,7 +226,7 @@ function QualityForm() {
             {t("quality.start")}
           </button>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

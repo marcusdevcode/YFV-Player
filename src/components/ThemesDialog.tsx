@@ -17,11 +17,13 @@ import {
   iconRefOf,
   isBuiltin,
   type ColorToken,
+  type FrameStyle,
   type IconSlot,
   type ThemeBase,
 } from "../theme/themeEngine";
 import { LAYOUT_FIELDS, layoutOf, type LayoutField } from "../theme/windowLayout";
 import { IconByRef } from "./Icon";
+import ScrollArea from "./ScrollArea";
 
 /** The layout settings of the progress bars: they work in every theme, not only the floating ones. */
 const PROGRESS_FIELDS = ["progressGlow", "progressGloss"];
@@ -151,7 +153,7 @@ export default function ThemesDialog() {
   return (
     <>
     <div className="modal-backdrop" onClick={close}>
-      <div className="modal themes" role="dialog" aria-label={t("themes.title")} onClick={(e) => e.stopPropagation()}>
+      <ScrollArea className="modal themes" role="dialog" aria-label={t("themes.title")} onClick={(e) => e.stopPropagation()}>
         <h2>{t("themes.title")}</h2>
 
         <div className="row">
@@ -248,7 +250,7 @@ export default function ThemesDialog() {
           </div>
         )}
 
-        <div className="theme-scroll">
+        <ScrollArea className="theme-scroll">
           <h3>{t("appearance.window")}</h3>
           <section className="theme-group">
             <div className="color-row">
@@ -264,10 +266,14 @@ export default function ThemesDialog() {
             {theme.windowStyle === "experimental" && (
               <div className="color-row">
                 <span className="color-label">{t("appearance.frame")}</span>
-                <select value={theme.frame ?? "plain"} onChange={(e) => store.setFrame(ensureEditable(), e.target.value as "plain" | "detroit" | "rpg")}>
+                <select value={theme.frame ?? "plain"} onChange={(e) => store.setFrame(ensureEditable(), e.target.value as FrameStyle)}>
                   <option value="plain">{t("appearance.framePlain")}</option>
                   <option value="detroit">{t("appearance.frameDetroit")}</option>
                   <option value="rpg">{t("appearance.frameRpg")}</option>
+                  <option value="terminal">{t("appearance.frameTerminal")}</option>
+                  <option value="re4">{t("appearance.frameRe4")}</option>
+                  <option value="requiem">{t("appearance.frameRequiem")}</option>
+                  <option value="cyberpunk2">{t("appearance.frameCyberpunk2")}</option>
                 </select>
               </div>
             )}
@@ -360,7 +366,7 @@ export default function ThemesDialog() {
               );
             })}
           </section>
-        </div>
+        </ScrollArea>
 
         <div className="modal-actions">
           <button className="primary" onClick={close}>
@@ -368,11 +374,11 @@ export default function ThemesDialog() {
           </button>
         </div>
 
-      </div>
+      </ScrollArea>
     </div>
     {pickerSlot && (
       <div className="modal-backdrop picker-backdrop" onClick={() => setPickerSlot(null)}>
-        <div className="modal picker" role="dialog" aria-label={t("appearance.pickIcon")} onClick={(e) => e.stopPropagation()}>
+        <ScrollArea className="modal picker" role="dialog" aria-label={t("appearance.pickIcon")} onClick={(e) => e.stopPropagation()}>
           <h2>
             {t("appearance.pickIcon")}: {td(`theme.icon.${pickerSlot}`, ICON_SLOTS.find((x) => x.id === pickerSlot)?.title ?? "")}
           </h2>
@@ -383,7 +389,7 @@ export default function ThemesDialog() {
             autoFocus
             onKeyDown={(e) => e.stopPropagation()}
           />
-          <div className="icon-grid">
+          <ScrollArea className="icon-grid">
             <button
               className={`icon-tile${editing?.icons?.[pickerSlot] === undefined ? " active" : ""}`}
               title={`${t("appearance.defaultIcon")} (${defaultIconRef(pickerSlot)})`}
@@ -411,12 +417,12 @@ export default function ThemesDialog() {
                 <span>{ref.split(":")[1]}</span>
               </button>
             ))}
-          </div>
+          </ScrollArea>
           {icons.length === 0 && <p className="muted">{t("appearance.noIcons")}</p>}
           <div className="modal-actions">
             <button onClick={() => setPickerSlot(null)}>{t("common.cancel")}</button>
           </div>
-        </div>
+        </ScrollArea>
       </div>
     )}
     </>

@@ -18,6 +18,7 @@ import {
 import { formatBytes } from "../textFormatting";
 import DownloadPartBars from "./DownloadPartBars";
 import { useStatusLabel } from "./DownloadProgressPopup";
+import ScrollArea from "./ScrollArea";
 
 type Tab = "queue" | "history";
 
@@ -70,7 +71,7 @@ export default function DownloadManagerDialog() {
 
   return (
     <div className="modal-backdrop" onClick={close}>
-      <div className="modal wide downloads-manager" role="dialog" aria-label={t("downloads.title")} onClick={(e) => e.stopPropagation()}>
+      <ScrollArea className="modal wide downloads-manager" role="dialog" aria-label={t("downloads.title")} onClick={(e) => e.stopPropagation()}>
         <h2>{t("downloads.title")}</h2>
         <div className="tabs" role="tablist">
           <button role="tab" className={tab === "queue" ? "active" : ""} aria-selected={tab === "queue"} onClick={() => setTab("queue")}>
@@ -89,7 +90,8 @@ export default function DownloadManagerDialog() {
         </div>
 
         {tab === "queue" ? (
-          <div className="download-list" ref={listRef}>
+          <ScrollArea className="download-list">
+<div className="scroll-rows" ref={listRef}>
             {queue.length === 0 && <p className="muted pad">{t("downloads.empty")}</p>}
             {queue.map((job, i) => (
               <div
@@ -139,8 +141,9 @@ export default function DownloadManagerDialog() {
               </div>
             ))}
           </div>
+</ScrollArea>
         ) : (
-          <div className="download-list">
+          <ScrollArea className="download-list">
             {history.length === 0 && <p className="muted pad">{t("downloads.historyEmpty")}</p>}
             {history.map((job) => {
               const size = job.parts.reduce((sum, p) => sum + (p.total ?? p.downloaded), 0);
@@ -173,7 +176,7 @@ export default function DownloadManagerDialog() {
                 </div>
               );
             })}
-          </div>
+          </ScrollArea>
         )}
 
         <div className="modal-actions">
@@ -181,7 +184,7 @@ export default function DownloadManagerDialog() {
             {t("common.done")}
           </button>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

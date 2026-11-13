@@ -13,6 +13,7 @@ import {
 } from "../store/downloadSettingsStore";
 import { exportTranslation, importTranslation, removeImportedTranslation } from "../translationFiles";
 import { downloaderVersion, restoreDownloader, updateDownloader } from "../youtubeApi";
+import ScrollArea from "./ScrollArea";
 
 /** Settings: the language and where the playlist panel sits. */
 export default function SettingsDialog() {
@@ -43,7 +44,7 @@ export default function SettingsDialog() {
 
   return (
     <div className="modal-backdrop" onClick={close}>
-      <div className="modal" role="dialog" aria-label={t("settings.title")} onClick={(e) => e.stopPropagation()}>
+      <ScrollArea className="modal" role="dialog" aria-label={t("settings.title")} onClick={(e) => e.stopPropagation()}>
         <h2>{t("settings.title")}</h2>
 
         <label className="field">
@@ -202,7 +203,7 @@ export default function SettingsDialog() {
             {t("common.done")}
           </button>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

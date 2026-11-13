@@ -3,7 +3,7 @@
   "productName": "YFV Player",
   "description": "A cross-platform video player that plays video with a separate audio track and can merge them into one file.",
   "private": true,
-  "version": "0.1.8",
+  "version": "0.1.9",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "author": {
@@ -31,7 +31,8 @@
     "docker:linux": "npm run docker:linux-x64 && npm run docker:linux-arm64",
     "docker:win": "npm run docker:win-x64 && npm run docker:win-arm64",
     "docker:all": "npm run docker:linux && npm run docker:win",
-    "publish": "npm run build && npm run release:publish && npm run clean",
+    "build:publish": "npm run build && npm run release:publish && npm run clean",
+    "publish": "npm run release:publish && npm run clean",
     "release:publish": "node scripts/release-version.js",
     "clean": "cargo clean --manifest-path src-tauri/Cargo.toml",
     "schemas": "node scripts/generate-schemas.mjs",
@@ -42,6 +43,8 @@
     "@tauri-apps/plugin-dialog": "^2.8.4",
     "@tauri-apps/plugin-process": "^2.4.0",
     "@tauri-apps/plugin-updater": "^2.14.1",
+    "overlayscrollbars": "2.17.0",
+    "overlayscrollbars-react": "0.5.7",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "zustand": "^5.1.0"

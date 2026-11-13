@@ -366,6 +366,14 @@
     "appearance.frameDetroit": "Detroit (double lines, corner brackets, moving button borders)",
     "appearance.builtin.detroit": "Detroit",
     "appearance.frameRpg": "RPG (wood frames, gold corner ornaments)",
-    "appearance.builtin.rpg": "RPG style"
+    "appearance.builtin.rpg": "RPG style",
+    "appearance.frameTerminal": "Terminal (thick window border, filled title bar)",
+    "appearance.builtin.orange-terminal": "Orange terminal",
+    "appearance.frameRe4": "RE4 (worn dark book, smudged brush highlight)",
+    "appearance.builtin.re4": "RE4",
+    "appearance.frameRequiem": "Requiem (grid cells, notched corners, red selection)",
+    "appearance.builtin.re-requiem": "RE Requiem",
+    "appearance.frameCyberpunk2": "Cyberpunk 2.0 (neon image frames, image buttons)",
+    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0"
   }
 }

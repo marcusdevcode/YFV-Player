@@ -58,10 +58,14 @@
       "enum": [
         "plain",
         "detroit",
-        "rpg"
+        "rpg",
+        "terminal",
+        "re4",
+        "requiem",
+        "cyberpunk2"
       ],
       "title": "Frame style",
-      "description": "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, white corner brackets on the selected item and a light that travels around the border of every button. 'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons.",
+      "description": "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, white corner brackets on the selected item and a light that travels around the border of every button. 'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons. 'terminal' draws a thick border in the accent color around the whole window, a filled title bar, and panels separated by lines. 're4' draws a worn dark book: serif text, thin dividing lines, and a smudged light brush stroke behind the chosen item. 'requiem' draws a dark tactical inventory: grid-lined square cells with notched corners, thin white stat bars, and a red glowing selection. 'cyberpunk2' draws the neon window and button images of the Cyberpunk UI asset pack (cyan chamfered frames, image buttons and progress bar).",
       "default": "plain"
     },
     "layout": {

@@ -4095,6 +4095,86 @@
             "RPG style"
           ]
         },
+        "appearance.frameTerminal": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameTerminal",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Terminal (thick window border, filled title bar)",
+          "examples": [
+            "Terminal (thick window border, filled title bar)"
+          ]
+        },
+        "appearance.builtin.orange-terminal": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.orange-terminal",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Orange terminal",
+          "examples": [
+            "Orange terminal"
+          ]
+        },
+        "appearance.frameRe4": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameRe4",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "RE4 (worn dark book, smudged brush highlight)",
+          "examples": [
+            "RE4 (worn dark book, smudged brush highlight)"
+          ]
+        },
+        "appearance.builtin.re4": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.re4",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "RE4",
+          "examples": [
+            "RE4"
+          ]
+        },
+        "appearance.frameRequiem": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameRequiem",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Requiem (grid cells, notched corners, red selection)",
+          "examples": [
+            "Requiem (grid cells, notched corners, red selection)"
+          ]
+        },
+        "appearance.builtin.re-requiem": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.re-requiem",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "RE Requiem",
+          "examples": [
+            "RE Requiem"
+          ]
+        },
+        "appearance.frameCyberpunk2": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameCyberpunk2",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Cyberpunk 2.0 (neon image frames, image buttons)",
+          "examples": [
+            "Cyberpunk 2.0 (neon image frames, image buttons)"
+          ]
+        },
+        "appearance.builtin.cyberpunk-2": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.cyberpunk-2",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Cyberpunk 2.0",
+          "examples": [
+            "Cyberpunk 2.0"
+          ]
+        },
         "theme.color.background": {
           "type": "string",
           "minLength": 1,
