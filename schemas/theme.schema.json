@@ -62,10 +62,12 @@
         "terminal",
         "re4",
         "requiem",
-        "cyberpunk2"
+        "cyberpunk2",
+        "deusex",
+        "deusexmd"
       ],
       "title": "Frame style",
-      "description": "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, white corner brackets on the selected item and a light that travels around the border of every button. 'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons. 'terminal' draws a thick border in the accent color around the whole window, a filled title bar, and panels separated by lines. 're4' draws a worn dark book: serif text, thin dividing lines, and a smudged light brush stroke behind the chosen item. 'requiem' draws a dark tactical inventory: grid-lined square cells with notched corners, thin white stat bars, and a red glowing selection. 'cyberpunk2' draws the neon window and button images of the Cyberpunk UI asset pack (cyan chamfered frames, image buttons and progress bar).",
+      "description": "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, white corner brackets on the selected item and a light that travels around the border of every button. 'rpg' draws carved wood frames with gold scroll-work corners, parchment panels and gold and brown gradient buttons. 'terminal' draws a thick border in the accent color around the whole window, a filled title bar, and panels separated by lines. 're4' draws a worn dark book: serif text, thin dividing lines, and a smudged light brush stroke behind the chosen item. 'requiem' draws a dark tactical inventory: grid-lined square cells with notched corners, thin white stat bars, and a red glowing selection. 'cyberpunk2' draws the neon window and button images of the Cyberpunk UI asset pack (cyan chamfered frames, image buttons and progress bar). 'deusex' draws gray beveled metal plates, inset wells, grid cells and white selection outlines, like the 2000 sci-fi role-playing game's menus. 'deusexmd' draws black label boxes with white capitals, a white box for the chosen entry, gold titles and a dark faceted glass window, like the 2016 sequel's menus.",
       "default": "plain"
     },
     "layout": {
@@ -707,6 +709,26 @@
           "default": "builtin:play",
           "examples": [
             "builtin:play"
+          ]
+        },
+        "previousVideo": {
+          "type": "string",
+          "title": "Previous video",
+          "description": "Go to the previous video of the playlist (from the first one to the last). Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:skipPrevious",
+          "examples": [
+            "builtin:skipPrevious"
+          ]
+        },
+        "nextVideo": {
+          "type": "string",
+          "title": "Next video",
+          "description": "Go to the next video of the playlist (from the last one to the first). Value is \"<icon set>:<icon name>\"; sets are \"builtin\" and \"icomoon\".",
+          "pattern": "^(builtin|icomoon):[A-Za-z0-9_-]+$",
+          "default": "builtin:skipNext",
+          "examples": [
+            "builtin:skipNext"
           ]
         },
         "pause": {

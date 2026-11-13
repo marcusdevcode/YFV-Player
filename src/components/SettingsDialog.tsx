@@ -14,6 +14,7 @@ import {
 import { exportTranslation, importTranslation, removeImportedTranslation } from "../translationFiles";
 import { downloaderVersion, restoreDownloader, updateDownloader } from "../youtubeApi";
 import ScrollArea from "./ScrollArea";
+import DropdownSelect from "./DropdownSelect";
 
 /** Settings: the language and where the playlist panel sits. */
 export default function SettingsDialog() {
@@ -49,13 +50,13 @@ export default function SettingsDialog() {
 
         <label className="field">
           <span>{t("settings.language")}</span>
-          <select value={language} onChange={(e) => ui.setLanguage(e.target.value)}>
+          <DropdownSelect value={language} onChange={(e) => ui.setLanguage(e.target.value)}>
             {Object.entries(LOCALES).map(([code, locale]) => (
               <option key={code} value={code}>
                 {locale.name}
               </option>
             ))}
-          </select>
+          </DropdownSelect>
         </label>
 
         <div className="row">
@@ -70,10 +71,10 @@ export default function SettingsDialog() {
 
         <label className="field">
           <span>{t("settings.panel")}</span>
-          <select value={side} onChange={(e) => ui.setSidebarSide(e.target.value as SidebarSide)}>
+          <DropdownSelect value={side} onChange={(e) => ui.setSidebarSide(e.target.value as SidebarSide)}>
             <option value="left">{t("settings.left")}</option>
             <option value="right">{t("settings.right")}</option>
-          </select>
+          </DropdownSelect>
         </label>
         <label className="field check">
           <span>
@@ -91,31 +92,31 @@ export default function SettingsDialog() {
         <h3>{t("settings.downloads")}</h3>
         <label className="field">
           <span>{t("quality.how")}</span>
-          <select value={d.mode} onChange={(e) => d.change({ mode: e.target.value as DownloadMode })}>
+          <DropdownSelect value={d.mode} onChange={(e) => d.change({ mode: e.target.value as DownloadMode })}>
             <option value="separate">{t("quality.modeSeparate")}</option>
             <option value="together">{t("quality.modeTogether")}</option>
             <option value="audioOnly">{t("quality.modeAudio")}</option>
-          </select>
+          </DropdownSelect>
         </label>
         <label className="field">
           <span>{t("quality.video")}</span>
-          <select value={d.videoQuality} onChange={(e) => d.change({ videoQuality: e.target.value })}>
+          <DropdownSelect value={d.videoQuality} onChange={(e) => d.change({ videoQuality: e.target.value })}>
             {VIDEO_QUALITIES.map((q) => (
               <option key={q} value={q}>
                 {q === "best" ? t("quality.best") : `${q}p`}
               </option>
             ))}
-          </select>
+          </DropdownSelect>
         </label>
         <label className="field">
           <span>{t("quality.audio")}</span>
-          <select value={d.audioQuality} onChange={(e) => d.change({ audioQuality: e.target.value })}>
+          <DropdownSelect value={d.audioQuality} onChange={(e) => d.change({ audioQuality: e.target.value })}>
             {AUDIO_QUALITIES.map((q) => (
               <option key={q} value={q}>
                 {t(q === "best" ? "quality.audioBest" : q === "medium" ? "quality.audioMedium" : "quality.audioLow")}
               </option>
             ))}
-          </select>
+          </DropdownSelect>
         </label>
         <div className="row">
           <span className="muted">{t("quality.folder")}</span>
@@ -158,13 +159,13 @@ export default function SettingsDialog() {
             <br />
             <span className="muted">{t("settings.downloads.cookiesHint")}</span>
           </span>
-          <select value={d.cookiesBrowser} onChange={(e) => d.change({ cookiesBrowser: e.target.value })}>
+          <DropdownSelect value={d.cookiesBrowser} onChange={(e) => d.change({ cookiesBrowser: e.target.value })}>
             {COOKIE_BROWSERS.map((b) => (
               <option key={b} value={b}>
                 {b === "" ? t("settings.downloads.cookiesNone") : b}
               </option>
             ))}
-          </select>
+          </DropdownSelect>
         </label>
         <div className="row">
           <button

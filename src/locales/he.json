@@ -460,6 +460,14 @@
     "appearance.frameRequiem": "Requiem (תאי רשת, פינות חתוכות, בחירה אדומה)",
     "appearance.builtin.re-requiem": "RE Requiem",
     "appearance.frameCyberpunk2": "Cyberpunk 2.0 (מסגרות ניאון מתמונות, כפתורי תמונה)",
-    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0"
+    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0",
+    "appearance.frameDeusEx": "Deus Ex (לוחות מתכת משופעים, שקעים)",
+    "appearance.builtin.deus-ex-original": "Deus Ex Origins",
+    "appearance.frameDeusExMd": "Deus Ex MD (תוויות שחורות, תיבה לבנה לבחירה)",
+    "appearance.builtin.deus-ex-md": "Deus Ex MD",
+    "player.previousVideo": "הסרטון הקודם",
+    "player.nextVideo": "הסרטון הבא",
+    "theme.icon.previousVideo": "הסרטון הקודם",
+    "theme.icon.nextVideo": "הסרטון הבא"
   }
 }

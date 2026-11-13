@@ -9,6 +9,7 @@ import { fileName } from "../filePaths";
 import YouTubeSearchPanel from "./YouTubeSearchPanel";
 import { newId } from "../uniqueIds";
 import ScrollArea from "./ScrollArea";
+import DropdownSelect from "./DropdownSelect";
 
 /** "Add videos": a drop area, a list you tick, and a button that adds the ticked ones. */
 export default function AddVideosDialog() {
@@ -73,21 +74,21 @@ export default function AddVideosDialog() {
         <div className="row">
           <label>
             {t("add.addAs")}{" "}
-            <select value={mode} onChange={(e) => add.setMode(e.target.value as AddMode)}>
+            <DropdownSelect value={mode} onChange={(e) => add.setMode(e.target.value as AddMode)}>
               <option value="video">{t("add.modeVideo")}</option>
               <option value="pair">{t("add.modePair")}</option>
-            </select>
+            </DropdownSelect>
           </label>
           <label>
             {t("add.toPlaylist")}{" "}
-            <select value={target} onChange={(e) => add.setTarget(e.target.value)}>
+            <DropdownSelect value={target} onChange={(e) => add.setTarget(e.target.value)}>
               {playlists.length === 0 && <option value="">{t("add.newDefault", { name: t("add.defaultName") })}</option>}
               {playlists.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.title}
                 </option>
               ))}
-            </select>
+            </DropdownSelect>
           </label>
         </div>
 

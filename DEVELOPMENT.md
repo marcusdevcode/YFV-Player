@@ -169,3 +169,7 @@ macOS and Windows code signing (so the OS doesn't warn on first launch) needs se
 - **Where playlists are stored:** `library.json`, a `thumbnails/` folder and a `settings/` folder (panel open/closed and side, last video, volume, positions) in the app data folder (macOS: `~/Library/Application Support/<identifier>/`). Delete them to start fresh.
 - **A video won't play (error 4):** the file's codec isn't supported by the system's web view (typically VP9/AV1 or MKV/AVI). H.264/AAC MP4 works everywhere.
 - **Don't commit large media files.** Keep test videos outside the repository.
+
+## Inspecting the interface in development
+
+In `npm run dev` a right-click shows the system context menu with **Inspect Element** (the page's own context menus are off in development). Hold **Alt (Option)** while right-clicking to get the app's own menu instead. Built releases are not affected.

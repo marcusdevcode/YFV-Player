@@ -68,6 +68,8 @@ interface PlaylistLibraryState {
   setTrackThumbnail: (playlistId: string, trackId: string, path: string | null) => void;
 
   playTrack: (playlistId: string, trackId: string) => void;
+  /** Go to the next (1) or previous (-1) video of the playing track's playlist, wrapping round: after the last comes the first, before the first comes the last. */
+  skipTrack: (step: 1 | -1) => boolean;
   /** Play something that is not part of a playlist (File -> Open, drops, "Open with"). */
   playSource: (source: Source) => void;
   /** Start the next track of the current playlist. False when there is none (playback stops). */
@@ -226,6 +228,19 @@ export const usePlaylistLibraryStore = create<PlaylistLibraryState>()((set, get)
       const next = list.tracks.slice(at + 1).find(playable) ?? (loopPlaylist ? list.tracks.find(playable) : undefined);
       if (!next) return false;
       get().playTrack(list.id, next.id);
+      return true;
+    },
+
+    skipTrack: (step) => {
+      const { playlists, currentTrackId } = get();
+      const list = playlists.find((p) => p.tracks.some((t) => t.id === currentTrackId));
+      if (!list) return false;
+      // Videos that are still downloading are skipped.
+      const playable = list.tracks.filter((t) => !t.download || t.id === currentTrackId);
+      if (playable.length < 2) return false;
+      const at = playable.findIndex((t) => t.id === currentTrackId);
+      const target = playable[(at + step + playable.length) % playable.length];
+      get().playTrack(list.id, target.id);
       return true;
     },
 

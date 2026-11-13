@@ -4175,6 +4175,66 @@
             "Cyberpunk 2.0"
           ]
         },
+        "appearance.frameDeusEx": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameDeusEx",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Deus Ex (beveled metal plates, inset wells)",
+          "examples": [
+            "Deus Ex (beveled metal plates, inset wells)"
+          ]
+        },
+        "appearance.builtin.deus-ex-original": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.deus-ex-original",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Deus Ex Origins",
+          "examples": [
+            "Deus Ex Origins"
+          ]
+        },
+        "appearance.frameDeusExMd": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.frameDeusExMd",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Deus Ex MD (black label boxes, white chosen box)",
+          "examples": [
+            "Deus Ex MD (black label boxes, white chosen box)"
+          ]
+        },
+        "appearance.builtin.deus-ex-md": {
+          "type": "string",
+          "minLength": 1,
+          "title": "appearance.builtin.deus-ex-md",
+          "description": "The Appearance settings (themes, colors, icons).",
+          "default": "Deus Ex MD",
+          "examples": [
+            "Deus Ex MD"
+          ]
+        },
+        "player.previousVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.previousVideo",
+          "description": "The player and its control bar.",
+          "default": "Previous video",
+          "examples": [
+            "Previous video"
+          ]
+        },
+        "player.nextVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "player.nextVideo",
+          "description": "The player and its control bar.",
+          "default": "Next video",
+          "examples": [
+            "Next video"
+          ]
+        },
         "theme.color.background": {
           "type": "string",
           "minLength": 1,
@@ -4543,6 +4603,26 @@
           "default": "Play",
           "examples": [
             "Play"
+          ]
+        },
+        "theme.icon.previousVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.previousVideo",
+          "description": "Name of the icon slot \"Previous video\" in the theme editor.",
+          "default": "Previous video",
+          "examples": [
+            "Previous video"
+          ]
+        },
+        "theme.icon.nextVideo": {
+          "type": "string",
+          "minLength": 1,
+          "title": "theme.icon.nextVideo",
+          "description": "Name of the icon slot \"Next video\" in the theme editor.",
+          "default": "Next video",
+          "examples": [
+            "Next video"
           ]
         },
         "theme.icon.pause": {

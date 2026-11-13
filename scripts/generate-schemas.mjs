@@ -95,7 +95,7 @@ function themeSchema() {
         default: "regular",
       },
       frame: {
-        enum: ["plain", "detroit", "rpg", "terminal", "re4", "requiem", "cyberpunk2"],
+        enum: ["plain", "detroit", "rpg", "terminal", "re4", "requiem", "cyberpunk2", "deusex", "deusexmd"],
         title: "Frame style",
         description:
           "Floating window style only. 'plain' uses simple borders. 'detroit' draws thin double-line borders, square panels, " +
@@ -104,7 +104,9 @@ function themeSchema() {
           "'terminal' draws a thick border in the accent color around the whole window, a filled title bar, and panels separated by lines. " +
           "'re4' draws a worn dark book: serif text, thin dividing lines, and a smudged light brush stroke behind the chosen item. " +
           "'requiem' draws a dark tactical inventory: grid-lined square cells with notched corners, thin white stat bars, and a red glowing selection. " +
-          "'cyberpunk2' draws the neon window and button images of the Cyberpunk UI asset pack (cyan chamfered frames, image buttons and progress bar).",
+          "'cyberpunk2' draws the neon window and button images of the Cyberpunk UI asset pack (cyan chamfered frames, image buttons and progress bar). " +
+          "'deusex' draws gray beveled metal plates, inset wells, grid cells and white selection outlines, like the 2000 sci-fi role-playing game's menus. " +
+          "'deusexmd' draws black label boxes with white capitals, a white box for the chosen entry, gold titles and a dark faceted glass window, like the 2016 sequel's menus.",
         default: "plain",
       },
       layout: {
@@ -597,6 +599,30 @@ const FLOATING_DESIGNS = [
       errorText: "#ff6f8a", warningText: "#ffd45a", dangerBackground: "#8a1f4a", dangerBorder: "#ff4d8d",
     },
     layout: { cornerRadius: 0, panelRadius: 0, shadowSize: 0, windowOpacity: 1, panelOpacity: 1, panelBlur: 0, panelBorder: 0, panelGlow: 0, progressGlow: 8, progressGloss: 0, textGlow: 3, controlsGap: 10, playlistGap: 10 },
+  },
+  {
+    id: "deus-ex-original", name: "Deus Ex Origins", base: "dark", frame: "deusex", description: "Gray beveled metal plates with dark inset wells, thin grid cells and white selection outlines, in the style of the 2000 sci-fi role-playing game's menus.",
+    colors: {
+      background: "#111213", text: "#ececec", textMuted: "#9a9da1", border: "#5d6064", accent: "#ffffff", accentBorder: "#ffffff", accentText: "#101112",
+      buttonBackground: "#3b3d40", buttonHover: "#4b4e52", buttonText: "#f2f2f2", panel: "#2c2e31", panelRaised: "#3a3c40",
+      badgesBackground: "#242527", badgeText: "#f2f2f2", badgeActiveBorder: "#ffffff", playerBackground: "#050505",
+      controlsBackground: "#2c2e31", controlsText: "#f2f2f2", progressTrack: "#17181a", progressBar: "#c9ccd1", progressBarEnd: "#f2f4f7",
+      trackCurrent: "#ffffff26", trackHover: "#ffffff14", rowStripe: "#ffffff07", rowSelected: "#ffffff2e", backdrop: "#000000b3",
+      errorText: "#ff7b6b", warningText: "#e8c24f", dangerBackground: "#7d2a24", dangerBorder: "#d9574b",
+    },
+    layout: { cornerRadius: 10, panelRadius: 10, shadowSize: 20, windowOpacity: 0.86, panelOpacity: 0.7, panelBlur: 0, panelBorder: 2, panelGlow: 0, progressGlow: 0, progressGloss: 0, textGlow: 0, controlsGap: 14, playlistGap: 14 },
+  },
+  {
+    id: "deus-ex-md", name: "Deus Ex MD", base: "dark", frame: "deusexmd", description: "Dark faceted glass with black label boxes in white capitals, a white box with black text for the chosen entry, gold titles and thin white lines, in the style of the 2016 sci-fi role-playing sequel's menus.",
+    colors: {
+      background: "#0b0c0e", text: "#e6e6e6", textMuted: "#8a8d92", border: "#3a3c40", accent: "#ffffff", accentBorder: "#ffffff", accentText: "#000000",
+      buttonBackground: "#000000", buttonHover: "#ffffff", buttonText: "#ffffff", panel: "#08090a", panelRaised: "#15161a",
+      badgesBackground: "#050506", badgeText: "#ffffff", badgeActiveBorder: "#ffffff", playerBackground: "#000000",
+      controlsBackground: "#050506", controlsText: "#ffffff", progressTrack: "#2a2c30", progressBar: "#ffffff", progressBarEnd: "#ffffff",
+      trackCurrent: "#ffffff", trackHover: "#ffffff1f", rowStripe: "#ffffff08", rowSelected: "#ffffff33", backdrop: "#000000b8",
+      errorText: "#ff7b6b", warningText: "#e8c24f", dangerBackground: "#7d2a24", dangerBorder: "#d9574b",
+    },
+    layout: { cornerRadius: 0, panelRadius: 0, shadowSize: 18, windowOpacity: 0.96, panelOpacity: 0.8, panelBlur: 12, panelBorder: 1, panelGlow: 0, progressGlow: 0, progressGloss: 0, textGlow: 0, controlsGap: 14, playlistGap: 14 },
   },
   {
     id: "rosegold", name: "Rose gold", base: "dark", description: "Graphite floating design with rose-gold highlights and a glowing gradient progress bar.",

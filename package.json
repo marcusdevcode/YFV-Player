@@ -3,7 +3,7 @@
   "productName": "YFV Player",
   "description": "A cross-platform video player that plays video with a separate audio track and can merge them into one file.",
   "private": true,
-  "version": "0.1.9",
+  "version": "0.2.0",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "author": {

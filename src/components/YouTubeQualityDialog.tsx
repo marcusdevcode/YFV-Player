@@ -14,6 +14,7 @@ import { enqueueDownloads, resolveDownloadFolder, youtubeLookup, type ChosenForm
 import { formatBytes } from "../textFormatting";
 import { newId } from "../uniqueIds";
 import ScrollArea from "./ScrollArea";
+import DropdownSelect from "./DropdownSelect";
 
 function formatLabel(f: YouTubeFormat): string {
   const parts = [
@@ -132,33 +133,33 @@ function QualityForm() {
 
         <label className="field">
           <span>{t("quality.how")}</span>
-          <select value={mode} onChange={(e) => setMode(e.target.value as DownloadMode)}>
+          <DropdownSelect value={mode} onChange={(e) => setMode(e.target.value as DownloadMode)}>
             <option value="separate">{t("quality.modeSeparate")}</option>
             <option value="together">{t("quality.modeTogether")}</option>
             <option value="audioOnly">{t("quality.modeAudio")}</option>
-          </select>
+          </DropdownSelect>
         </label>
 
         <label className="field">
           <span>{t("quality.video")}</span>
-          <select value={videoQuality} disabled={mode === "audioOnly"} onChange={(e) => setVideoQuality(e.target.value)}>
+          <DropdownSelect value={videoQuality} disabled={mode === "audioOnly"} onChange={(e) => setVideoQuality(e.target.value)}>
             {VIDEO_QUALITIES.map((q) => (
               <option key={q} value={q}>
                 {q === "best" ? t("quality.best") : `${q}p`}
               </option>
             ))}
-          </select>
+          </DropdownSelect>
         </label>
 
         <label className="field">
           <span>{t("quality.audio")}</span>
-          <select value={audioQuality} disabled={mode === "together"} onChange={(e) => setAudioQuality(e.target.value)}>
+          <DropdownSelect value={audioQuality} disabled={mode === "together"} onChange={(e) => setAudioQuality(e.target.value)}>
             {AUDIO_QUALITIES.map((q) => (
               <option key={q} value={q}>
                 {t(q === "best" ? "quality.audioBest" : q === "medium" ? "quality.audioMedium" : "quality.audioLow")}
               </option>
             ))}
-          </select>
+          </DropdownSelect>
         </label>
         {!single && <p className="muted">{t("quality.ruleNote")}</p>}
 
@@ -168,7 +169,7 @@ function QualityForm() {
             {mode !== "audioOnly" && (
               <label className="field">
                 <span>{mode === "together" ? t("quality.formatTogether") : t("quality.formatVideo")}</span>
-                <select
+                <DropdownSelect
                   value={(mode === "together" ? exact.together : exact.video) ?? ""}
                   onChange={(e) => setExact({ ...exact, [mode === "together" ? "together" : "video"]: e.target.value || undefined })}
                 >
@@ -178,20 +179,20 @@ function QualityForm() {
                       {formatLabel(f)}
                     </option>
                   ))}
-                </select>
+                </DropdownSelect>
               </label>
             )}
             {mode !== "together" && (
               <label className="field">
                 <span>{t("quality.formatAudio")}</span>
-                <select value={exact.audio ?? ""} onChange={(e) => setExact({ ...exact, audio: e.target.value || undefined })}>
+                <DropdownSelect value={exact.audio ?? ""} onChange={(e) => setExact({ ...exact, audio: e.target.value || undefined })}>
                   <option value="">{t("quality.auto")}</option>
                   {audioFormats.map((f) => (
                     <option key={f.id} value={f.id}>
                       {formatLabel(f)}
                     </option>
                   ))}
-                </select>
+                </DropdownSelect>
               </label>
             )}
           </>
@@ -199,14 +200,14 @@ function QualityForm() {
 
         <label className="field">
           <span>{t("quality.playlist")}</span>
-          <select value={target} onChange={(e) => setTarget(e.target.value)}>
+          <DropdownSelect value={target} onChange={(e) => setTarget(e.target.value)}>
             <option value="new">{t("quality.newPlaylist", { name: newTitle ?? t("youtube.defaultPlaylist") })}</option>
             {playlists.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.title}
               </option>
             ))}
-          </select>
+          </DropdownSelect>
         </label>
 
         <div className="row">

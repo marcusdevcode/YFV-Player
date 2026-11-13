@@ -136,6 +136,39 @@ export default function Player() {
 
   const [scrubValue, setScrubValue] = useState(0);
   const [hidden, setHidden] = useState(false);
+  const [volumeOpen, setVolumeOpen] = useState(false); // the volume slider is open (it opens and closes with a click on the speaker)
+  const volumeBox = useRef<HTMLDivElement>(null);
+  const volumeAnchor = useRef<HTMLDivElement>(null);
+  // While the volume group is open it floats over the bar (position absolute), so nothing around it moves; the place it leaves is kept at its size.
+  const [volumeHole, setVolumeHole] = useState<{ width: number; height: number } | null>(null);
+  const toggleVolumeOpen = () => {
+    if (volumeOpen) {
+      setVolumeOpen(false);
+      setVolumeHole(null);
+    } else {
+      const r = volumeAnchor.current?.getBoundingClientRect();
+      setVolumeHole(r ? { width: r.width, height: r.height } : null);
+      setVolumeOpen(true);
+    }
+  };
+  // A click anywhere else, or Escape, closes the volume slider.
+  useEffect(() => {
+    if (!volumeOpen) return;
+    const close = () => {
+      setVolumeOpen(false);
+      setVolumeHole(null);
+    };
+    const away = (e: PointerEvent) => {
+      if (!volumeBox.current?.contains(e.target as Node)) close();
+    };
+    const key = (e: KeyboardEvent) => e.key === "Escape" && close();
+    document.addEventListener("pointerdown", away, true);
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("pointerdown", away, true);
+      document.removeEventListener("keydown", key);
+    };
+  }, [volumeOpen]);
   const { t } = useT();
   const fullscreen = usePlayerStore((s) => s.fullscreen);
   const setFullscreen = usePlayerStore((s) => s.setFullscreen);
@@ -160,6 +193,11 @@ export default function Player() {
 
   // The playing track's preview becomes the frame on screen now.
   const currentTrackId = usePlaylistLibraryStore((s) => s.currentTrackId);
+  // Previous / next video buttons show only when the playing track's playlist has more than one video to go between.
+  const hasOtherVideos = usePlaylistLibraryStore((s) => {
+    const list = s.playlists.find((p) => p.tracks.some((t) => t.id === s.currentTrackId));
+    return !!list && list.tracks.filter((t) => !t.download || t.id === s.currentTrackId).length > 1;
+  });
   const captureFrameAsPreview = useCallback(async () => {
     const found = locateTrack(usePlaylistLibraryStore.getState().currentTrackId);
     const v = videoRef.current;
@@ -862,6 +900,33 @@ export default function Player() {
           <button className="play-button" onClick={togglePlay} title={playing ? t("player.pause") : t("player.play")}>
             <Icon slot={playing ? "pause" : "play"} />
           </button>
+          {/* The volume: a speaker button that opens the slider (it also opens while the pointer is over it); the mute switch is
+              its own button beside the slider. */}
+          <div ref={volumeAnchor} className="volume-anchor" style={volumeHole ? volumeHole : undefined}>
+          <div ref={volumeBox} className={`volume${volumeOpen ? " open" : ""}`}>
+            <button className={volumeOpen ? "active" : ""} onClick={toggleVolumeOpen} title={t("player.volume")} aria-label={t("player.volume")} aria-expanded={volumeOpen}>
+              <Icon slot={muted || volume === 0 ? "volumeOff" : volume < 0.5 ? "volumeDown" : "volumeUp"} />
+            </button>
+            <div className="volume-slider">
+              <input
+                type="range"
+                className="progress-slider"
+                style={{ "--fill": `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
+                min={0}
+                max={1}
+                step={0.01}
+                value={muted ? 0 : volume}
+                aria-label={t("player.volume")}
+                onChange={(e) => setVolume(Number(e.target.value))}
+                onPointerUp={(e) => e.currentTarget.blur()}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <button className={muted ? "active" : ""} onClick={toggleMute} title={muted ? t("player.unmute") : t("player.mute")} aria-label={muted ? t("player.unmute") : t("player.mute")} aria-pressed={muted}>
+                <Icon slot="volumeOff" />
+              </button>
+            </div>
+          </div>
+          </div>
           <button onClick={() => void seekBy(-10)} title={t("player.back10")}>
             <Icon slot="rewind" />
           </button>
@@ -897,24 +962,16 @@ export default function Player() {
         </div>
 
         <div className="button-group">
-          <div className="volume">
-            <button onClick={toggleMute} title={muted || volume === 0 ? t("player.unmute") : t("player.mute")}>
-              <Icon slot={muted || volume === 0 ? "volumeOff" : volume < 0.5 ? "volumeDown" : "volumeUp"} />
-            </button>
-            <input
-              type="range"
-              className="progress-slider"
-              style={{ "--fill": `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
-              min={0}
-              max={1}
-              step={0.01}
-              value={muted ? 0 : volume}
-              aria-label={t("player.volume")}
-              onChange={(e) => setVolume(Number(e.target.value))}
-              onPointerUp={(e) => e.currentTarget.blur()}
-              onKeyDown={(e) => e.stopPropagation()}
-            />
-          </div>
+          {hasOtherVideos && (
+            <>
+              <button onClick={() => usePlaylistLibraryStore.getState().skipTrack(-1)} title={t("player.previousVideo")} aria-label={t("player.previousVideo")}>
+                <Icon slot="previousVideo" />
+              </button>
+              <button onClick={() => usePlaylistLibraryStore.getState().skipTrack(1)} title={t("player.nextVideo")} aria-label={t("player.nextVideo")}>
+                <Icon slot="nextVideo" />
+              </button>
+            </>
+          )}
           <button className={videoLoop ? "active" : ""} onClick={toggleVideoLoop} title={t("player.loopVideo")}>
             <Icon slot="loopVideo" />
           </button>

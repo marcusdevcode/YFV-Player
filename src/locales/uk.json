@@ -468,6 +468,14 @@
     "appearance.frameRequiem": "Requiem (клітинки сітки, зрізані кути, червоне виділення)",
     "appearance.builtin.re-requiem": "RE Requiem",
     "appearance.frameCyberpunk2": "Cyberpunk 2.0 (неонові рамки із зображень, кнопки із зображень)",
-    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0"
+    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0",
+    "appearance.frameDeusEx": "Deus Ex (скошені металеві плити, вдавлені поля)",
+    "appearance.builtin.deus-ex-original": "Deus Ex Origins",
+    "appearance.frameDeusExMd": "Deus Ex MD (чорні мітки, біла рамка вибору)",
+    "appearance.builtin.deus-ex-md": "Deus Ex MD",
+    "player.previousVideo": "Попереднє відео",
+    "player.nextVideo": "Наступне відео",
+    "theme.icon.previousVideo": "Попереднє відео",
+    "theme.icon.nextVideo": "Наступне відео"
   }
 }

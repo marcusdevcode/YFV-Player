@@ -327,6 +327,16 @@
    "description": "Start playback.",
    "default": "builtin:play"
   },
+  "previousVideo": {
+   "title": "Previous video",
+   "description": "Go to the previous video of the playlist (from the first one to the last).",
+   "default": "builtin:skipPrevious"
+  },
+  "nextVideo": {
+   "title": "Next video",
+   "description": "Go to the next video of the playlist (from the last one to the first).",
+   "default": "builtin:skipNext"
+  },
   "pause": {
    "title": "Pause",
    "description": "Pause playback.",

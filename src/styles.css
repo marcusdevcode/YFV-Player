@@ -163,7 +163,7 @@ html[dir="rtl"] .progress-slider::-webkit-slider-runnable-track {
 .modal-actions { display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .row input[type="text"], .row input:not([type]), input.name { flex: 1; min-width: 0; }
-input:not([type]), input[type="text"], select { padding: 7px 10px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+input:not([type]), input[type="text"], select, .dropdown-select-trigger { padding: 7px 10px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
 button.danger { background: var(--danger-bg); border-color: var(--danger-border); color: var(--accent-text); }
 .file-list { margin: 6px 0 0; padding-left: 18px; }
 .manager-list { display: flex; flex-direction: column; gap: 8px; max-height: 46vh; overflow-y: auto; }
@@ -180,7 +180,7 @@ button.danger { background: var(--danger-bg); border-color: var(--danger-border)
 .notice { position: absolute; top: 12px; right: 12px; z-index: 120; display: flex; gap: 12px; align-items: center; padding: 10px 14px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; max-width: 70vw; }
 label { cursor: pointer; }
 .field { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.field select { min-width: 200px; }
+.field select, .field .dropdown-select-trigger { min-width: 200px; }
 /* Titles in any script read in their own direction, whatever side the panel is on. */
 .track-title, .side-title strong, .staged-title { unicode-bidi: plaintext; }
 
@@ -365,7 +365,7 @@ html[data-window-style="experimental"] .modal { border: var(--panel-line); borde
 html[data-window-style="experimental"] .staged,
 html[data-window-style="experimental"] input:not([type]),
 html[data-window-style="experimental"] input[type="text"],
-html[data-window-style="experimental"] select { border-radius: var(--layout-input-radius); }
+html[data-window-style="experimental"] select, html[data-window-style="experimental"] .dropdown-select-trigger { border-radius: var(--layout-input-radius); }
 /* Buttons: pills, the main one with the same gradient as the play button */
 html[data-window-style="experimental"] button { border-radius: var(--layout-button-radius); padding-inline: 16px; }
 html[data-window-style="experimental"] button.primary,
@@ -422,7 +422,7 @@ html[data-frame="detroit"] {
   --selected-glow: radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--accent) 55%, transparent), color-mix(in srgb, var(--accent) 14%, transparent) 70%);
 }
 /* Panels: square, thin outer line, a second line inside, a light top edge, a faint blue sheen */
-html[data-frame="detroit"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice, .edge-tab) {
+html[data-frame="detroit"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice, .edge-tab) {
   border: 1px solid var(--line); border-radius: 0;
   outline: 1px solid var(--line-soft); outline-offset: -5px;
   background-image: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 55%);
@@ -445,7 +445,7 @@ html[data-frame="detroit"] .badge { border-radius: 0; border: 1px solid var(--li
 html[data-frame="detroit"] .badge.active { border-color: transparent; background: var(--brackets), var(--selected-glow); }
 html[data-frame="detroit"] button.primary,
 html[data-frame="detroit"] button.active:not(.play-button) { background: var(--brackets), var(--selected-glow); color: #fff; border-color: var(--line); text-shadow: 0 0 8px var(--accent); }
-html[data-frame="detroit"] :is(.staged, input:not([type]), input[type="text"], select) { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: color-mix(in srgb, var(--accent) 10%, var(--panel-2)); text-transform: uppercase; letter-spacing: .06em; }
+html[data-frame="detroit"] :is(.staged, input:not([type]), input[type="text"], select, .dropdown-select-trigger) { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: color-mix(in srgb, var(--accent) 10%, var(--panel-2)); text-transform: uppercase; letter-spacing: .06em; }
 html[data-frame="detroit"] ::placeholder { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
 html[data-frame="detroit"] .play-button { border-radius: 0; background: var(--brackets), var(--selected-glow); box-shadow: inset 0 0 0 1px var(--line); color: #fff; }
 /* Every button: a thin line, and a light that travels around it */
@@ -493,7 +493,7 @@ html[data-frame="rpg"][data-window-style] :is(.badges, .sidebar, .modal, .contex
   box-shadow: 0 0 0 1px var(--rpg-edge), inset 0 0 0 1px #c79a5a, inset 0 0 14px rgba(120, 80, 30, .35), 0 10px 26px rgba(0, 0, 0, .4);
 }
 html[data-frame="rpg"][data-window-style] .badges { background: var(--rpg-corners), linear-gradient(180deg, #ead9ae, #d9c28d) padding-box, var(--wood) border-box; }
-html[data-frame="rpg"][data-window-style] .player .controls {
+html[data-frame="rpg"][data-window-style] .player .controls, html[data-frame="rpg"][data-window-style] .volume.open {
   border: 5px solid transparent; border-radius: 16px; outline: 0; backdrop-filter: none; color: #f5e6c4;
   background: var(--rpg-corners), linear-gradient(180deg, #6e4826, #4d3018) padding-box, var(--wood) border-box;
   box-shadow: 0 0 0 1px var(--rpg-edge), inset 0 0 0 1px #c79a5a, inset 0 6px 14px rgba(0, 0, 0, .3), 0 12px 30px rgba(0, 0, 0, .45);
@@ -521,7 +521,7 @@ html[data-frame="rpg"][data-window-style] :is(.track-main, .track-menu-btn, .row
 html[data-frame="rpg"][data-window-style] .controls button:not(.play-button) { border-radius: 10px; }
 html[data-frame="rpg"][data-window-style] .track.current .track-main { color: #3a2410; }
 /* Fields: inset parchment */
-html[data-frame="rpg"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) {
+html[data-frame="rpg"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select, .dropdown-select-trigger) {
   border: 2px solid #7a4e24; border-radius: 9px; color: #3a2410; background: linear-gradient(180deg, #efe0b8, #f8eed2); box-shadow: inset 0 2px 4px rgba(90, 55, 20, .35);
 }
 html[data-frame="rpg"] ::placeholder { color: #8a6a44; text-transform: uppercase; letter-spacing: .05em; }
@@ -554,7 +554,7 @@ html[data-frame="terminal"][data-window-style] .topbar-dropdown .topbar-entry { 
 html[data-frame="terminal"][data-window-style] .topbar-separator { background: var(--accent); }
 html[data-frame="terminal"][data-window-style] .window-drag-strip { position: static; flex: none; height: 22px; background: var(--accent); }
 /* Panels and dialogs: square, bordered by thin lines */
-html[data-frame="terminal"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="terminal"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: 2px solid var(--accent); border-radius: 0; backdrop-filter: none; box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 html[data-frame="terminal"][data-window-style] .modal h2 { margin: -26px -26px 12px; padding: 4px 12px; background: var(--accent); color: var(--accent-text); font-size: 15px; text-shadow: none; }
@@ -569,7 +569,7 @@ html[data-frame="terminal"][data-window-style] :is(.track-main, .track-menu-btn,
 html[data-frame="terminal"][data-window-style] .track { border-radius: 0; }
 html[data-frame="terminal"][data-window-style] .track.current { background: var(--accent); }
 html[data-frame="terminal"][data-window-style] .track.current :is(.track-main, .track-title, .track-menu-btn) { color: var(--accent-text); text-shadow: none; }
-html[data-frame="terminal"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) { border: 2px solid var(--accent); border-radius: 0; background: #000; color: var(--accent); }
+html[data-frame="terminal"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select, .dropdown-select-trigger) { border: 2px solid var(--accent); border-radius: 0; background: #000; color: var(--accent); }
 /* Sliders: a plain filled bar and a square handle */
 html[data-frame="terminal"][data-window-style] .progress-slider::-webkit-slider-runnable-track { border-radius: 0; box-shadow: inset 0 0 0 2px var(--accent); }
 html[data-frame="terminal"][data-window-style] .progress-slider::-webkit-slider-thumb { border-radius: 0; background: var(--accent); border: 4px solid var(--accent-text); }
@@ -587,7 +587,7 @@ html[data-frame="re4"][data-window-style] .app {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .12), 0 18px 44px rgba(0, 0, 0, .55);
 }
 /* Panels: no frame, a lit top edge and a faint paper sheen, like the page of a book */
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   /* A worn light-gray edge, bright where the light hits and dark where it is rubbed away, like the book in the game menu */
   border: 3px solid transparent; border-radius: 3px;
   background:
@@ -623,7 +623,7 @@ html[data-frame="re4"][data-window-style] .controls button:hover:not(:disabled) 
 html[data-frame="re4"][data-window-style] .badge { border-radius: 0; border: 1px solid rgba(255, 255, 255, .22); }
 html[data-frame="re4"][data-window-style] .play-button { border-radius: 0; color: #fff; }
 html[data-frame="re4"][data-window-style] .edge-tab { border: 2px solid rgba(200, 197, 188, .55); border-radius: 3px; background: rgba(20, 20, 21, .88); }
-html[data-frame="re4"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) { border: 0; border-bottom: 1px solid rgba(255, 255, 255, .3); border-radius: 0; background: rgba(255, 255, 255, .05); color: var(--text); }
+html[data-frame="re4"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select, .dropdown-select-trigger) { border: 0; border-bottom: 1px solid rgba(255, 255, 255, .3); border-radius: 0; background: rgba(255, 255, 255, .05); color: var(--text); }
 /* Sliders: a thin line with a small round handle */
 html[data-frame="re4"][data-window-style] .progress-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 0; box-shadow: none; }
 html[data-frame="re4"][data-window-style] .progress-slider::-webkit-slider-thumb { width: 14px; height: 14px; margin-top: -5px; border-radius: 50%; border: 0; background: #f1eee7; }
@@ -638,7 +638,7 @@ html[data-frame="requiem"] {
 }
 html[data-frame="requiem"][data-window-style] .app { background: linear-gradient(180deg, #151617, #0b0c0d); box-shadow: 0 0 0 1px rgba(255, 255, 255, .14), 0 18px 44px rgba(0, 0, 0, .55); }
 /* Panels: square cells on a grid, with a notch cut into the top-right corner */
-html[data-frame="requiem"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="requiem"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: var(--cell-line); border-radius: 0; backdrop-filter: blur(var(--layout-panel-blur));
   background-image: var(--grid), linear-gradient(180deg, rgba(255, 255, 255, .04), transparent);
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
@@ -661,7 +661,7 @@ html[data-frame="requiem"][data-window-style] :is(.track-main, .track-menu-btn, 
 html[data-frame="requiem"][data-window-style] .badge { border-radius: 0; }
 html[data-frame="requiem"][data-window-style] .play-button { border-radius: 0; }
 html[data-frame="requiem"][data-window-style] .edge-tab { border: var(--cell-line); border-radius: 0; background: rgba(20, 21, 22, .9); }
-html[data-frame="requiem"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) { border: var(--cell-line); border-radius: 0; background: rgba(0, 0, 0, .4); color: var(--text); }
+html[data-frame="requiem"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select, .dropdown-select-trigger) { border: var(--cell-line); border-radius: 0; background: rgba(0, 0, 0, .4); color: var(--text); }
 /* Sliders: thin white bars like the stat bars, with a small square handle */
 html[data-frame="requiem"][data-window-style] .progress-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 0; box-shadow: none; }
 html[data-frame="requiem"][data-window-style] .progress-slider::-webkit-slider-thumb { width: 10px; height: 14px; margin-top: -5px; border-radius: 0; border: 0; background: #fff; }
@@ -718,7 +718,7 @@ html[data-frame="cyberpunk2"][data-window-style] .app {
 }
 html[data-frame="cyberpunk2"][data-window-style][data-fullscreen="yes"] .app { border: 0; border-image: none; background: var(--window-fill); }
 /* Panels and dialogs inside it: the thinner octagon outline */
-html[data-frame="cyberpunk2"][data-window-style] :is(.badges, .sidebar, .controls, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="cyberpunk2"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: 9px solid transparent; border-image: var(--cp-button) 22 fill / 9px stretch; border-radius: 0; backdrop-filter: none; box-shadow: none; outline: 0;
   background: transparent;
 }
@@ -746,7 +746,7 @@ html[data-frame="cyberpunk2"][data-window-style] .track.current { border-image: 
 html[data-frame="cyberpunk2"] .track-title { font-size: 13px; }
 html[data-frame="cyberpunk2"] .track.current .track-title { color: #fff; text-shadow: 0 0 8px var(--accent); }
 /* Fields: dark cells with a cyan line and cut corners */
-html[data-frame="cyberpunk2"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select) {
+html[data-frame="cyberpunk2"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select, .dropdown-select-trigger) {
   border: 1px solid var(--border); border-radius: 0; background: rgba(8, 18, 32, .9); color: var(--text);
   clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
 }
@@ -936,7 +936,7 @@ html[data-frame="re4"][data-window-style] .edge-tab:hover::before { background-i
 @media (prefers-reduced-motion: reduce) { html[data-frame="re4"][data-window-style] .edge-tab::before { animation: none !important; } }
 
 /* RE4: the control bar, the playlist and the badge column use the same solid panel background as the dialogs */
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .modal), html[data-frame="re4"][data-window-style] .player .controls {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal), html[data-frame="re4"][data-window-style] .player .controls {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
     var(--panel) padding-box,
@@ -945,7 +945,7 @@ html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .mod
 }
 
 /* RE4, corrected: dark and blurred (frosted), like the dialogs on their dimmed backdrop. The video shows through the blur. */
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls), html[data-frame="re4"][data-window-style] .player .controls {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open), html[data-frame="re4"][data-window-style] .player .controls {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
     rgba(10, 10, 11, .72) padding-box,
@@ -957,3 +957,514 @@ html[data-frame="re4"][data-window-style] .modal { background:
     rgba(10, 10, 11, .88) padding-box,
     linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .55) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .6) 78%, rgba(222, 219, 211, .75)) border-box;
   -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); }
+
+/* ---- Deus Ex frame (theme "frame": "deusex", floating style only) ----
+   Gray beveled metal plates with rounded outer corners, dark inset wells for lists and fields, thin grid lines between
+   entries, white selection outlines, and beveled buttons that sink when pressed. */
+html[data-frame="deusex"] {
+  font-family: "Eurostile", "Bank Gothic", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --plate: linear-gradient(180deg, #3a3c40, #2a2c2f);
+  --plate-light: linear-gradient(180deg, #4c4f53, #383a3e);
+  --well: linear-gradient(180deg, #131415, #1b1c1e);
+  --bevel-out: #74777c #26272a #1a1b1d #5a5d61;
+  --bevel-in: #1a1b1d #5a5d61 #74777c #26272a;
+}
+html[data-frame="deusex"] :is(body, button, input, select) { font-family: inherit; letter-spacing: .03em; }
+html[data-frame="deusex"][data-window-style] .app { background: radial-gradient(ellipse at 50% 0%, #1f2022, #0c0d0e 80%); box-shadow: 0 0 0 1px #000, 0 0 0 3px #3b3d40, 0 20px 40px rgba(0, 0, 0, .6); }
+/* Plates: a beveled edge (light on top and left, dark on the bottom and right) around a metal gradient */
+html[data-frame="deusex"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  border: 3px solid; border-color: var(--bevel-out); border-radius: 12px; background: var(--plate); backdrop-filter: none; outline: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08), 0 8px 20px rgba(0, 0, 0, .55);
+}
+html[data-frame="deusex"][data-window-style] .modal h2 { margin: 0 0 6px; padding: 5px 12px; font-size: 16px; font-weight: 600; background: var(--well); border: 2px solid; border-color: var(--bevel-in); border-radius: 3px; }
+html[data-frame="deusex"][data-window-style] .modal h3 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+/* Wells: lists and fields sink into the plate */
+html[data-frame="deusex"][data-window-style] :is(.staged, .manager-list, .download-list, .icon-grid, input:not([type]), input[type="text"], select, .dropdown-select-trigger) {
+  border: 2px solid; border-color: var(--bevel-in); border-radius: 3px; background: var(--well); color: var(--text);
+}
+/* Playlist: grid cells with thin lines; the playing one gets the white selection outline */
+html[data-frame="deusex"] .track-list { background: var(--well); border: 2px solid; border-color: var(--bevel-in); border-radius: 3px; margin: 6px; padding: 0; }
+html[data-frame="deusex"] .track { border: 1px solid #3a3c40; border-radius: 0; margin: 0; }
+html[data-frame="deusex"] .track-title { font-size: 13px; color: #cfd1d4; }
+html[data-frame="deusex"][data-window-style] .track.current { outline: 2px solid #fff; outline-offset: -2px; background: rgba(255, 255, 255, .1); }
+html[data-frame="deusex"] .track.current .track-title { color: #fff; }
+/* Buttons: beveled, they sink when pressed; the chosen ones get the white outline */
+html[data-frame="deusex"][data-window-style] button { border: 2px solid; border-color: var(--bevel-out); border-radius: 4px; background: var(--plate-light); color: #f2f2f2; box-shadow: none; text-shadow: 0 1px 0 rgba(0, 0, 0, .6); }
+html[data-frame="deusex"][data-window-style] button:hover:not(:disabled) { background: linear-gradient(180deg, #5a5d62, #44464a); }
+html[data-frame="deusex"][data-window-style] button:active:not(:disabled) { border-color: var(--bevel-in); background: var(--well); }
+html[data-frame="deusex"][data-window-style] button:disabled { color: #6c6f73; }
+html[data-frame="deusex"][data-window-style] :is(button.primary, button.active:not(.play-button), .badge.active, .play-button) { outline: 2px solid #fff; outline-offset: -4px; }
+html[data-frame="deusex"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button) { border: 0; background: transparent; outline: 0; text-shadow: none; border-radius: 0; }
+html[data-frame="deusex"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button):hover:not(:disabled) { background: rgba(255, 255, 255, .12); }
+html[data-frame="deusex"][data-window-style] .badge { border-radius: 4px; }
+html[data-frame="deusex"][data-window-style] .play-button { border-radius: 6px; }
+html[data-frame="deusex"][data-window-style] .edge-tab { border-radius: 4px; }
+/* Sliders: a dark inset track, a light fill and a square handle */
+html[data-frame="deusex"][data-window-style] .progress-slider::-webkit-slider-runnable-track { height: 12px; border-radius: 2px; box-shadow: inset 0 0 0 2px #0a0a0b, inset 0 2px 3px rgba(0, 0, 0, .7); }
+html[data-frame="deusex"][data-window-style] .progress-slider::-webkit-slider-thumb { width: 14px; height: 22px; margin-top: -5px; border-radius: 2px; border: 2px solid; border-color: var(--bevel-out); background: linear-gradient(180deg, #8a8d92, #55585c); box-shadow: none; }
+/* Scrollbar */
+html[data-frame="deusex"] .os-theme-app { --os-size: 16px; --os-padding-perpendicular: 2px; --os-padding-axis: 2px; --os-track-border-radius: 2px; --os-handle-border-radius: 2px; --os-track-bg: #131415; --os-handle-bg: linear-gradient(90deg, #8a8d92, #5a5d61); --os-handle-bg-hover: linear-gradient(90deg, #a1a4a9, #70737a); --os-handle-bg-active: linear-gradient(90deg, #a1a4a9, #70737a); }
+html[data-frame="deusex"] .os-theme-app .os-scrollbar-track { box-shadow: inset 0 0 0 2px #0a0a0b; }
+html[data-frame="deusex"] .os-theme-app .os-scrollbar-handle { box-shadow: inset 0 0 0 1px #c3c6ca, inset 0 -1px 0 #2a2b2d; }
+/* The custom menu bar (Windows and Linux): a dark plate with beveled title buttons, like the game's top menu */
+html[data-frame="deusex"][data-window-style] .custom-topbar { background: var(--plate); border-bottom: 2px solid #0e0e0f; box-shadow: inset 0 1px 0 #74777c; }
+html[data-frame="deusex"][data-window-style] .custom-topbar button { border: 2px solid transparent; border-radius: 4px; background: transparent; text-shadow: none; outline: 0; }
+html[data-frame="deusex"][data-window-style] .custom-topbar :is(.topbar-title:hover, .topbar-title.open, .topbar-entry:hover, .topbar-window-buttons button:hover) { border-color: var(--bevel-out); background: var(--plate-light); }
+html[data-frame="deusex"][data-window-style] .topbar-dropdown { border: 3px solid; border-color: var(--bevel-out); border-radius: 6px; background: var(--plate); box-shadow: 0 8px 20px rgba(0, 0, 0, .55); }
+
+/* Deus Ex Original, fix: chosen buttons (loop, playlist loop, primary, active badge) keep the dark plate with white icon and
+   text; the white outline marks them. (The general "chosen" rule made them white, so the white icon vanished.) */
+html[data-frame="deusex"][data-window-style] button:is(.primary, .active, .play-button):not(#x), html[data-frame="deusex"][data-window-style] .controls button:is(.primary, .active, .play-button):not(#x), html[data-frame="deusex"][data-window-style] .badge.active:not(#x) {
+  background: linear-gradient(180deg, #5a5d62, #44464a); color: #fff; border-color: var(--bevel-in); outline: 2px solid #fff; outline-offset: -4px; text-shadow: none;
+}
+
+/* ---- Deus Ex MD frame (theme "frame": "deusexmd", floating style only) ----
+   A dark faceted-glass window; every button and list entry is a black label box with white capitals, the chosen one is a
+   white box with black text, disabled ones are dim; titles are gold; thin white lines and a thin white scroll line. */
+html[data-frame="deusexmd"] { --md-gold: #d9c27a; font-family: "Helvetica Neue", "Neue Haas Grotesk", "Segoe UI", Arial, sans-serif; }
+html[data-frame="deusexmd"] :is(body, button, input, select) { font-family: inherit; }
+html[data-frame="deusexmd"][data-window-style] .app {
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, .04) 0 28%, transparent 28%),
+    linear-gradient(205deg, rgba(255, 255, 255, .03) 0 38%, transparent 38%),
+    linear-gradient(32deg, rgba(0, 0, 0, .32) 0 34%, transparent 34%),
+    linear-gradient(160deg, rgba(255, 255, 255, .025) 0 22%, transparent 22%),
+    #0a0b0d;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .1), 0 18px 44px rgba(0, 0, 0, .6);
+}
+html[data-frame="deusexmd"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  border: 1px solid rgba(255, 255, 255, .1); border-radius: 0; outline: 0; box-shadow: none;
+  background: rgba(0, 0, 0, .74); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+html[data-frame="deusexmd"][data-window-style] .modal h2 { color: var(--md-gold); font-size: 24px; font-weight: 400; margin: 0 0 4px; text-transform: none; letter-spacing: 0; }
+html[data-frame="deusexmd"][data-window-style] .modal h3 { color: var(--md-gold); font-weight: 400; font-size: 16px; }
+/* Label boxes: black with white capitals; the chosen or hovered one is white with black text */
+html[data-frame="deusexmd"][data-window-style] button:not(#x) {
+  border: 0; border-radius: 0; background: #000; color: #fff; box-shadow: none; outline: 0; text-shadow: none;
+  text-transform: uppercase; letter-spacing: .03em; padding: 6px 14px;
+}
+html[data-frame="deusexmd"][data-window-style] button:hover:not(:disabled):not(#x), html[data-frame="deusexmd"][data-window-style] .controls button:hover:not(:disabled):not(#x),
+html[data-frame="deusexmd"][data-window-style] button:is(.primary, .active):not(#x), html[data-frame="deusexmd"][data-window-style] .controls button:is(.primary, .active):not(#x), html[data-frame="deusexmd"][data-window-style] .badge.active:not(#x) { background: #fff; color: #000; }
+html[data-frame="deusexmd"][data-window-style] button:disabled:not(#x) { background: rgba(255, 255, 255, .06); color: rgba(255, 255, 255, .32); }
+html[data-frame="deusexmd"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button):not(#x) { background: transparent; color: #fff; padding: 4px 8px; text-transform: none; }
+html[data-frame="deusexmd"][data-window-style] :is(.track-main, .track-menu-btn, .row-menu button, .context-menu button):hover:not(:disabled):not(#x) { background: rgba(255, 255, 255, .16); color: #fff; }
+/* Playlist entries are label boxes too */
+html[data-frame="deusexmd"] .track { border: 0; border-radius: 0; margin: 3px 6px 3px 0; background: #000; }
+html[data-frame="deusexmd"] .track-title { font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: #fff; }
+html[data-frame="deusexmd"][data-window-style] .track.current { background: #fff; }
+html[data-frame="deusexmd"] .track.current :is(.track-title, .track-main, .track-menu-btn) { color: #000; }
+html[data-frame="deusexmd"][data-window-style] .badge { width: 46px; height: 46px; padding: 0; }
+html[data-frame="deusexmd"][data-window-style] .play-button { width: 56px; height: 52px; padding: 0; }
+/* The arrow tab: thin white chevron, no box until hovered */
+html[data-frame="deusexmd"][data-window-style] .edge-tab { background: transparent !important; border: 0; color: #fff; }
+html[data-frame="deusexmd"][data-window-style] .edge-tab:hover { background: #fff !important; color: #000; }
+/* Fields: black with a white underline */
+html[data-frame="deusexmd"][data-window-style] :is(.staged, input:not([type]), input[type="text"], select, .dropdown-select-trigger) { border: 0; border-bottom: 1px solid #fff; border-radius: 0; background: #000; color: #fff; }
+html[data-frame="deusexmd"][data-window-style] .staged-row:nth-child(odd) { background: rgba(255, 255, 255, .05); }
+/* Sliders: a thin white line over a dark one, a square white handle */
+html[data-frame="deusexmd"][data-window-style] .progress-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 0; box-shadow: none; }
+html[data-frame="deusexmd"][data-window-style] .progress-slider::-webkit-slider-thumb { width: 12px; height: 20px; margin-top: -8px; border-radius: 0; border: 0; background: #fff; box-shadow: none; }
+/* Scrollbar: a thin white line on a faint track, as in the game's text box */
+html[data-frame="deusexmd"] .os-theme-app { --os-size: 10px; --os-padding-perpendicular: 3px; --os-padding-axis: 0px; --os-track-border-radius: 0; --os-handle-border-radius: 0; --os-track-bg: rgba(255, 255, 255, .12); --os-track-bg-hover: rgba(255, 255, 255, .12); --os-track-bg-active: rgba(255, 255, 255, .12); --os-handle-bg: #fff; --os-handle-bg-hover: #fff; --os-handle-bg-active: #fff; }
+html[data-frame="deusexmd"] .os-theme-app .os-scrollbar-track, html[data-frame="deusexmd"] .os-theme-app .os-scrollbar-handle { box-shadow: none; }
+/* The custom menu bar (Windows and Linux): black strip, label boxes, the open one white */
+html[data-frame="deusexmd"][data-window-style] .custom-topbar { background: rgba(0, 0, 0, .85); border-bottom: 1px solid rgba(255, 255, 255, .12); box-shadow: none; }
+html[data-frame="deusexmd"][data-window-style] .custom-topbar button:not(#x) { background: transparent; color: #fff; padding: 0 12px; text-transform: uppercase; }
+html[data-frame="deusexmd"][data-window-style] .custom-topbar :is(.topbar-title:hover, .topbar-title.open, .topbar-entry:hover, .topbar-window-buttons button:hover):not(#x) { background: #fff; color: #000; }
+html[data-frame="deusexmd"][data-window-style] .topbar-dropdown { border: 1px solid rgba(255, 255, 255, .15); border-radius: 0; background: rgba(0, 0, 0, .92); box-shadow: none; }
+html[data-frame="deusexmd"][data-window-style] .custom-topbar .topbar-window-buttons .close:hover:not(#x) { background: #d9574b; color: #fff; }
+
+/* ---- Drop-down lists (src/components/DropdownSelect.tsx): the app's own, instead of the system select ----
+   The closed field is styled together with the other fields (see the `.dropdown-select-trigger` entries in the field rules above);
+   the open list is a panel in the theme's style, with the chosen entry marked. */
+.dropdown-select-trigger { display: inline-flex; align-items: center; justify-content: space-between; gap: 10px; box-sizing: border-box; cursor: pointer; user-select: none; text-align: start; }
+.dropdown-select-trigger:focus-visible, .dropdown-select-trigger.open { outline: 1px solid var(--accent); outline-offset: -1px; }
+.dropdown-select-trigger.disabled { opacity: .5; cursor: default; }
+.dropdown-select-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dropdown-select-arrow { flex: none; opacity: .75; transition: transform .15s; }
+.dropdown-select-trigger.open .dropdown-select-arrow { transform: rotate(180deg); }
+.dropdown-select-popup { z-index: 2000; box-sizing: border-box; max-width: min(520px, calc(100vw - 16px)); color: var(--text); font-size: 14px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow); overflow: hidden; }
+.dropdown-select-scroll { max-height: min(40vh, 320px); padding: 4px; }
+.dropdown-select-option { padding: 7px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dropdown-select-option.active { background: var(--track-hover); }
+.dropdown-select-option.selected { background: var(--track-current); box-shadow: inset 3px 0 0 var(--accent); font-weight: 600; }
+.dropdown-select-option.disabled { opacity: .4; cursor: default; }
+html[data-window-style="experimental"] .dropdown-select-popup { border-radius: min(14px, var(--layout-panel-radius)); }
+html[data-window-style="experimental"] .dropdown-select-option { border-radius: min(10px, var(--layout-button-radius)); }
+/* Detroit */
+html[data-frame="detroit"] .dropdown-select-popup { border: 1px solid var(--line); border-radius: 0; outline: 1px solid var(--line-soft); outline-offset: -4px; background: color-mix(in srgb, var(--panel) 96%, transparent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 10px 30px rgba(0, 0, 0, .5), var(--glow-shadow); }
+html[data-frame="detroit"] .dropdown-select-option { border-radius: 0; text-transform: uppercase; letter-spacing: .08em; font-size: 13px; }
+html[data-frame="detroit"] .dropdown-select-option.active { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+html[data-frame="detroit"] .dropdown-select-option.selected { background: var(--brackets), var(--selected-glow); box-shadow: none; color: #fff; }
+/* RPG */
+html[data-frame="rpg"] .dropdown-select-popup { color: #3a2410; border: 4px solid transparent; border-radius: 12px; background: var(--parchment) padding-box, var(--wood) border-box; box-shadow: 0 0 0 1px var(--rpg-edge), inset 0 0 12px rgba(120, 80, 30, .35), 0 10px 26px rgba(0, 0, 0, .45); }
+html[data-frame="rpg"] .dropdown-select-option { border-radius: 7px; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; font-size: 13px; }
+html[data-frame="rpg"] .dropdown-select-option.active { background: rgba(180, 130, 60, .3); }
+html[data-frame="rpg"] .dropdown-select-option.selected { background: var(--gold-button); box-shadow: inset 0 0 0 1px var(--rpg-edge); color: #3a2410; }
+/* Orange terminal */
+html[data-frame="terminal"] .dropdown-select-popup { background: #000; color: var(--accent); border: 2px solid var(--accent); border-radius: 0; box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 40%, transparent); }
+html[data-frame="terminal"] .dropdown-select-option { border-radius: 0; }
+html[data-frame="terminal"] .dropdown-select-option.active, html[data-frame="terminal"] .dropdown-select-option.selected { background: var(--accent); color: var(--accent-text); box-shadow: none; }
+/* RE4 */
+html[data-frame="re4"] .dropdown-select-popup { border: 3px solid transparent; border-radius: 3px; background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box, rgba(10, 10, 11, .88) padding-box, linear-gradient(155deg, rgba(232, 229, 221, .9), rgba(90, 89, 84, .55) 28%, rgba(196, 193, 184, .65) 52%, rgba(62, 61, 58, .6) 78%, rgba(222, 219, 211, .75)) border-box; -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .55), 0 10px 28px rgba(0, 0, 0, .5); }
+html[data-frame="re4"] .dropdown-select-option { border-radius: 0; color: var(--muted); }
+html[data-frame="re4"] .dropdown-select-option.active, html[data-frame="re4"] .dropdown-select-option.selected { background: var(--brush-feather), var(--brush); color: #fff; box-shadow: none; text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
+/* RE Requiem */
+html[data-frame="requiem"] .dropdown-select-popup { border: var(--cell-line); border-radius: 0; background-image: var(--grid); background-color: rgb(21, 22, 23); clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); box-shadow: none; }
+html[data-frame="requiem"] .dropdown-select-option { border-radius: 0; border: var(--cell-line); margin: 2px 0; background: rgba(255, 255, 255, .03); }
+html[data-frame="requiem"] .dropdown-select-option.active { background: rgba(255, 255, 255, .13); }
+html[data-frame="requiem"] .dropdown-select-option.selected { background: var(--red-select); border-color: #e8575e; box-shadow: none; color: #fff; }
+/* Cyberpunk 2.0 */
+html[data-frame="cyberpunk2"] .dropdown-select-popup { border: 9px solid transparent; border-image: var(--cp-button) 22 fill / 9px stretch; border-radius: 0; background: transparent; box-shadow: none; }
+html[data-frame="cyberpunk2"] .dropdown-select-option { border-radius: 0; text-transform: uppercase; letter-spacing: .08em; font-size: 13px; }
+html[data-frame="cyberpunk2"] .dropdown-select-option.active { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+html[data-frame="cyberpunk2"] .dropdown-select-option.selected { background: color-mix(in srgb, var(--accent) 32%, transparent); box-shadow: inset 0 0 0 1px var(--accent); color: #fff; text-shadow: 0 0 8px var(--accent); }
+/* Deus Ex Original */
+html[data-frame="deusex"] .dropdown-select-popup { border: 3px solid; border-color: var(--bevel-out); border-radius: 6px; background: var(--plate); box-shadow: 0 8px 20px rgba(0, 0, 0, .55); }
+html[data-frame="deusex"] .dropdown-select-scroll { background: var(--well); border: 2px solid; border-color: var(--bevel-in); border-radius: 3px; margin: 3px; padding: 0; }
+html[data-frame="deusex"] .dropdown-select-option { border-radius: 0; border: 1px solid #3a3c40; }
+html[data-frame="deusex"] .dropdown-select-option.active { background: rgba(255, 255, 255, .12); }
+html[data-frame="deusex"] .dropdown-select-option.selected { outline: 2px solid #fff; outline-offset: -2px; background: rgba(255, 255, 255, .1); box-shadow: none; color: #fff; }
+/* Deus Ex MD */
+html[data-frame="deusexmd"] .dropdown-select-popup { background: rgba(0, 0, 0, .92); border: 1px solid rgba(255, 255, 255, .15); border-radius: 0; box-shadow: none; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+html[data-frame="deusexmd"] .dropdown-select-option { border-radius: 0; background: #000; color: #fff; text-transform: uppercase; letter-spacing: .03em; margin: 3px 0; }
+html[data-frame="deusexmd"] .dropdown-select-option.active, html[data-frame="deusexmd"] .dropdown-select-option.selected { background: #fff; color: #000; box-shadow: none; }
+
+
+
+/* The drop-down list scrolls with a classic scrollbar that has its own column next to the entries (nothing floats over them);
+   it is drawn like the progress bar by the ::-webkit-scrollbar rules above. */
+.dropdown-select-scroll { max-height: min(40vh, 320px); overflow-y: auto; overflow-x: hidden; padding: 4px; }
+.dropdown-select-scroll > [data-overlayscrollbars-viewport] { padding-inline-end: 0 !important; }
+html[data-frame="deusex"] .dropdown-select-scroll::-webkit-scrollbar-track { background: #131415; box-shadow: inset 0 0 0 2px #0a0a0b; border-radius: 2px; }
+html[data-frame="deusex"] .dropdown-select-scroll::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #8a8d92, #5a5d61); box-shadow: inset 0 0 0 1px #c3c6ca, inset 0 -1px 0 #2a2b2d; border-radius: 2px; }
+html[data-frame="deusexmd"] .dropdown-select-scroll::-webkit-scrollbar { width: 8px; }
+html[data-frame="deusexmd"] .dropdown-select-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, .12); border-radius: 0; box-shadow: none; }
+html[data-frame="deusexmd"] .dropdown-select-scroll::-webkit-scrollbar-thumb { background: #fff; border-radius: 0; box-shadow: none; }
+
+/* Cyberpunk 2.0: the drop-down list gets a solid dark background behind its frame image. */
+html[data-frame="cyberpunk2"] .dropdown-select-popup { background: rgba(6, 12, 20, .97) padding-box; }
+
+/* Cyberpunk 2.0 drop-down, matched to the theme: the same neon octagon frame as the panels, and entries drawn like its
+   buttons (hover: the hover image, chosen: the second design); a slim bar in its own column in the theme's colors. */
+html[data-frame="cyberpunk2"] .dropdown-select-popup { background: rgba(6, 12, 20, .97) padding-box; }
+html[data-frame="cyberpunk2"] .dropdown-select-option { border: 6px solid transparent; padding: 3px 10px; background: transparent; box-shadow: none; }
+html[data-frame="cyberpunk2"] .dropdown-select-option.active { border-image: var(--cp-button-hover) 22 fill / 6px stretch; background: transparent; }
+html[data-frame="cyberpunk2"] .dropdown-select-option.selected { border-image: var(--cp-chosen) 22 fill / 6px stretch; background: transparent; box-shadow: none; }
+html[data-frame="cyberpunk2"] .dropdown-select-scroll::-webkit-scrollbar { width: 12px; }
+html[data-frame="cyberpunk2"] .dropdown-select-scroll::-webkit-scrollbar-track:vertical { background: #08111c; box-shadow: inset 0 0 0 1px var(--border); border-radius: 0; }
+html[data-frame="cyberpunk2"] .dropdown-select-scroll::-webkit-scrollbar-thumb:vertical { background: linear-gradient(90deg, var(--progress-bar), var(--progress-bar-end)); border: 2px solid #08111c; border-radius: 0; box-shadow: none; filter: none; }
+
+/* Cyberpunk 2.0: the closed drop-down field looks like the other buttons (octagon image, hover image, capitals). */
+html[data-frame="cyberpunk2"][data-window-style] .dropdown-select-trigger:not(#x) {
+  border: 9px solid transparent; border-image: var(--cp-button) 22 fill / 9px stretch; border-radius: 0; clip-path: none;
+  background: transparent; color: var(--text); padding: 0 10px; min-height: 36px; text-transform: uppercase; letter-spacing: .08em; box-shadow: none; outline: 0;
+}
+html[data-frame="cyberpunk2"][data-window-style] .dropdown-select-trigger:hover:not(.disabled):not(#x) { border-image-source: var(--cp-button-hover); color: #fff; text-shadow: 0 0 8px var(--accent); }
+html[data-frame="cyberpunk2"][data-window-style] .dropdown-select-trigger.open:not(#x) { border-image-source: var(--cp-button-hover); color: #fff; text-shadow: 0 0 8px var(--accent); }
+html[data-frame="cyberpunk2"][data-window-style] .dropdown-select-trigger.disabled:not(#x) { opacity: .5; }
+
+/* The theme editor's rows are a grid of small columns: a drop-down in such a row takes all the columns after the label. */
+.color-row > .dropdown-select-trigger { grid-column: 2 / -1; min-width: 0; width: 100%; }
+
+/* Cyberpunk 2.0 scrollbar, centred: the pack's vertical track is a thin tube and its fill is a block, so the handle is made a
+   little narrower than the tube and centred in it (before, it was as wide as the whole bar and stuck to one side). */
+html[data-frame="cyberpunk2"] .os-theme-app.os-scrollbar-vertical .os-scrollbar-handle { width: 62%; right: 19%; }
+html[data-frame="cyberpunk2"] .os-theme-app.os-scrollbar-horizontal .os-scrollbar-handle { height: 62%; bottom: 19%; }
+
+/* The scrollbar floats over the content, so while an area scrolls its content (the library's "contents" element) keeps 40px free on the
+   scrollbar's side: right in left-to-right languages, left in right-to-left ones. The content then sits inside the window, beside the bar. */
+/* (!important: the library writes its own padding on that element as an inline style.) */
+html [data-overlayscrollbars-contents][data-overlayscrollbars-viewport~="overflowYScroll"] { padding-inline-end: 40px !important; box-sizing: border-box; }
+
+/* ---- Check boxes: drawn by the app, in the style of each theme (not the system's) ---- */
+input[type="checkbox"] {
+  -webkit-appearance: none; appearance: none; flex: none; box-sizing: border-box; margin: 0; width: 20px; height: 20px;
+  display: inline-grid; place-content: center; vertical-align: middle; cursor: pointer;
+  border: 2px solid var(--border); border-radius: 5px; background: var(--panel-2); color: var(--accent-text);
+}
+input[type="checkbox"]::after { content: ""; width: 10px; height: 10px; background: currentColor; transform: scale(0); transition: transform .1s; clip-path: polygon(14% 44%, 0 62%, 40% 100%, 100% 20%, 82% 0, 38% 64%); }
+input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent-border); }
+input[type="checkbox"]:checked::after { transform: scale(1); }
+input[type="checkbox"]:hover:not(:disabled) { border-color: var(--accent-border); }
+input[type="checkbox"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type="checkbox"]:disabled { opacity: .5; cursor: default; }
+html[data-window-style="experimental"] input[type="checkbox"] { border-radius: min(6px, var(--layout-input-radius)); }
+/* Detroit: square with corner brackets when ticked */
+html[data-frame="detroit"] input[type="checkbox"] { border-radius: 0; border: 1px solid var(--line); background: color-mix(in srgb, var(--accent) 10%, var(--panel-2)); color: #fff; }
+html[data-frame="detroit"] input[type="checkbox"]:checked { background: var(--brackets), var(--selected-glow); border-color: var(--line); box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 50%, transparent); }
+/* RPG: an inset parchment box with a gold tick */
+html[data-frame="rpg"] input[type="checkbox"] { border: 2px solid #7a4e24; border-radius: 6px; background: linear-gradient(180deg, #efe0b8, #f8eed2); box-shadow: inset 0 2px 4px rgba(90, 55, 20, .35); color: #3a2410; }
+html[data-frame="rpg"] input[type="checkbox"]:checked { background: var(--gold-button); border-color: var(--rpg-edge); box-shadow: inset 0 1px 0 rgba(255, 244, 207, .6), 0 1px 2px rgba(0, 0, 0, .35); }
+/* Orange terminal: a black box with an accent edge, filled accent when ticked */
+html[data-frame="terminal"] input[type="checkbox"] { border: 2px solid var(--accent); border-radius: 0; background: #000; color: var(--accent-text); }
+html[data-frame="terminal"] input[type="checkbox"]:checked { background: var(--accent); box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 55%, transparent); }
+/* RE4: a transparent box with the worn edge, the brush stroke when ticked */
+html[data-frame="re4"] input[type="checkbox"] { border: 2px solid rgba(232, 229, 221, .6); border-radius: 2px; background: transparent; color: #fff; }
+html[data-frame="re4"] input[type="checkbox"]:checked { background: var(--brush-feather), var(--brush); border-color: rgba(250, 248, 242, .95); }
+/* RE Requiem: a grid cell, red when ticked */
+html[data-frame="requiem"] input[type="checkbox"] { border: var(--cell-line); border-radius: 0; background: rgba(255, 255, 255, .05); color: #fff; }
+html[data-frame="requiem"] input[type="checkbox"]:checked { background: var(--red-select); border-color: #e8575e; box-shadow: 0 0 8px rgba(196, 52, 58, .5); }
+/* Cyberpunk 2.0: the octagon button image, the chosen design when ticked */
+html[data-frame="cyberpunk2"][data-window-style] input[type="checkbox"] { width: 26px; height: 26px; border: 7px solid transparent; border-image: var(--cp-button) 22 fill / 7px stretch; border-radius: 0; background: transparent; color: var(--accent-border); }
+html[data-frame="cyberpunk2"][data-window-style] input[type="checkbox"]::after { width: 10px; height: 10px; margin: -3px; }
+html[data-frame="cyberpunk2"][data-window-style] input[type="checkbox"]:checked { border-image-source: var(--cp-chosen); background: transparent; filter: drop-shadow(0 0 4px var(--accent)); }
+/* Deus Ex Original: a sunken well with a white tick */
+html[data-frame="deusex"] input[type="checkbox"] { border: 2px solid; border-color: var(--bevel-in); border-radius: 3px; background: var(--well); color: #fff; }
+html[data-frame="deusex"] input[type="checkbox"]:checked { background: var(--well); border-color: var(--bevel-in); outline: 2px solid #fff; outline-offset: -4px; }
+/* Deus Ex MD: a black box, white with a black tick when ticked */
+html[data-frame="deusexmd"] input[type="checkbox"] { border: 1px solid #fff; border-radius: 0; background: #000; color: #000; }
+html[data-frame="deusexmd"] input[type="checkbox"]:checked { background: #fff; border-color: #fff; }
+
+/* RE4, fix for Windows (Chromium): the worn edge was a gradient painted behind the whole panel, and the translucent dark fill let
+   it show through as a gray diagonal wash. The edge is now a real border image (it is drawn on the border only), and the panel
+   keeps just its dark, blurred fill. */
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open), html[data-frame="re4"][data-window-style] .player .controls {
+  border: 3px solid transparent; border-image: var(--re4-edge) 1; border-radius: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%), rgba(10, 10, 11, .72);
+}
+html[data-frame="re4"][data-window-style] .modal {
+  border: 3px solid transparent; border-image: var(--re4-edge) 1; border-radius: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%), rgba(10, 10, 11, .88);
+}
+html[data-frame="re4"][data-window-style] .topbar-dropdown, html[data-frame="re4"] .dropdown-select-popup {
+  border: 3px solid transparent; border-image: var(--re4-edge) 1; border-radius: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%), rgba(10, 10, 11, .92);
+}
+
+/* RE4: fainter edges and more see-through panels. The buttons keep the normal edge; panels and windows use this softer one. */
+html[data-frame="re4"] { --re4-edge-soft: linear-gradient(155deg, rgba(232, 229, 221, .38), rgba(90, 89, 84, .16) 30%, rgba(196, 193, 184, .26) 55%, rgba(62, 61, 58, .16) 80%, rgba(222, 219, 211, .32)); }
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open), html[data-frame="re4"][data-window-style] .player .controls {
+  border: 2px solid transparent; border-image: var(--re4-edge-soft) 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04), transparent 40%), rgba(10, 10, 11, .46);
+}
+html[data-frame="re4"][data-window-style] .modal {
+  border: 2px solid transparent; border-image: var(--re4-edge-soft) 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04), transparent 40%), rgba(10, 10, 11, .7);
+}
+html[data-frame="re4"][data-window-style] .topbar-dropdown, html[data-frame="re4"] .dropdown-select-popup {
+  border: 2px solid transparent; border-image: var(--re4-edge-soft) 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .04), transparent 40%), rgba(10, 10, 11, .8);
+}
+html[data-frame="re4"][data-window-style] .app { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 18px 44px rgba(0, 0, 0, .5); }
+
+/* The volume is compact: a click on the speaker button opens (and closes) a slider with a mute switch beside it. The slider takes no
+   space while closed and goes away at once on closing (nothing slides in the layout, so no other button is ever pushed); on opening
+   it only fades in. */
+@keyframes volume-slider-in { from { opacity: 0; } to { opacity: 1; } }
+.volume { display: flex; align-items: center; gap: 0; }
+.volume .volume-slider { display: none; align-items: center; gap: 8px; margin-inline-start: 8px; }
+.volume.open .volume-slider { display: flex; animation: volume-slider-in .15s ease; }
+.volume .volume-slider input[type="range"] { flex: none; display: block; width: 96px; margin: 0; cursor: pointer; }
+
+/* The open volume group looks like the control bar it sits in: the same border, colors and blur (each frame style lists
+   ".volume.open" beside ".controls" in its panel rules above; these are the plain and floating bases). */
+.volume.open { padding: 2px 8px; background: var(--controls-bg); border: 1px solid var(--border); border-radius: 10px; }
+html[data-window-style="experimental"] .volume.open { border: var(--panel-line); border-radius: min(var(--layout-panel-radius), 24px); background: var(--controls-fill); -webkit-backdrop-filter: blur(var(--layout-panel-blur)); backdrop-filter: blur(var(--layout-panel-blur)); box-shadow: var(--glow-shadow); }
+html[data-frame="cyberpunk2"][data-window-style] .volume.open { border-width: 6px; border-image-width: 6px; padding: 0 6px; }
+html[data-frame="rpg"][data-window-style] .volume.open { border-width: 4px; padding: 0 6px; }
+html[data-frame="re4"][data-window-style] .volume.open, html[data-frame="requiem"][data-window-style] .volume.open { padding: 0 6px; }
+html[data-frame="rpg"][data-window-style] .volume.open { background: linear-gradient(180deg, #6e4826, #4d3018) padding-box, var(--wood) border-box; }
+
+/* More room in the control bar. RPG: its gold corner ornaments are 40px, so the bar gets wide side padding and a taller body,
+   and the controls keep clear of them. */
+html[data-window-style="experimental"] .button-group { gap: 10px; }
+html[data-window-style="experimental"] .volume.open { padding: 4px 12px; margin-inline: 6px; }
+html[data-frame="rpg"][data-window-style] .player .controls { padding: 24px 56px; gap: 22px; }
+html[data-frame="rpg"][data-window-style] .button-group { gap: 14px; }
+html[data-frame="rpg"][data-window-style] .volume.open { padding: 8px 18px; margin-inline: 8px; }
+html[data-frame="rpg"][data-window-style] .volume .volume-slider { gap: 14px; }
+html[data-frame="rpg"][data-window-style] .download-popup { bottom: calc(var(--layout-controls-gap) + 130px); }
+
+/* The open volume group floats over the control bar (position absolute) anchored at the speaker button, so opening it moves nothing:
+   it covers the buttons next to it while it is open. The anchor keeps the speaker button's own size. */
+.volume-anchor { position: relative; flex: none; display: flex; align-items: center; }
+.volume.open { position: absolute; top: 50%; transform: translateY(-50%); inset-inline-start: calc(-1 * var(--vol-shift, 14px)); z-index: 40; white-space: nowrap; }
+.volume.open::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--controls-bg); }
+html[data-frame="rpg"] { --vol-shift: 26px; }
+html[data-frame="cyberpunk2"] { --vol-shift: 12px; }
+html[data-frame="re4"], html[data-frame="requiem"] { --vol-shift: 8px; }
+html[data-frame="detroit"], html[data-frame="terminal"], html[data-frame="deusex"], html[data-frame="deusexmd"] { --vol-shift: 14px; }
+
+/* RPG: the open volume group gets the same gold scroll-work corners as the control bar, a little smaller, with enough padding that the
+   buttons stay clear of them. */
+html[data-frame="rpg"][data-window-style] .volume.open {
+  background:
+    var(--rpg-corner-tl) top left / 28px 28px no-repeat border-box, var(--rpg-corner-tr) top right / 28px 28px no-repeat border-box,
+    var(--rpg-corner-bl) bottom left / 28px 28px no-repeat border-box, var(--rpg-corner-br) bottom right / 28px 28px no-repeat border-box,
+    linear-gradient(180deg, #6e4826, #4d3018) padding-box, var(--wood) border-box;
+  padding: 10px 26px; --vol-shift: 30px;
+}
+/* RPG: leave room between Play and the volume so the open group's corner ornaments do not cover Play. */
+html[data-frame="rpg"][data-window-style] .button-group { gap: 32px; }
+
+/* RPG, corners fixed: the volume group uses the control bar's own ornaments at full size (40px, they looked cut and squashed at 28px). Each
+   ornament's details sit within about 26px of its corner, so the padding keeps the buttons clear of them. */
+html[data-frame="rpg"][data-window-style] .volume.open {
+  background:
+    var(--rpg-corner-tl) top left / 40px 40px no-repeat border-box, var(--rpg-corner-tr) top right / 40px 40px no-repeat border-box,
+    var(--rpg-corner-bl) bottom left / 40px 40px no-repeat border-box, var(--rpg-corner-br) bottom right / 40px 40px no-repeat border-box,
+    linear-gradient(180deg, #6e4826, #4d3018) padding-box, var(--wood) border-box;
+  border: 5px solid transparent; border-radius: 16px; padding: 14px 28px; --vol-shift: 33px;
+  box-shadow: 0 0 0 1px var(--rpg-edge), inset 0 0 0 1px #c79a5a, inset 0 6px 14px rgba(0, 0, 0, .3), 0 12px 30px rgba(0, 0, 0, .45);
+}
+/* RPG: the group's own background is opaque, so it needs no underlay; the underlay was painted over the corner ornaments (that is why only
+   their outer arcs showed and the ring and dots were missing). */
+html[data-frame="rpg"][data-window-style] .volume.open::before { display: none; }
+/* RPG: the wide gap is for the left group (room for the open volume); the right group of buttons stays compact. */
+html[data-frame="rpg"][data-window-style] .controls > .button-group:last-child { gap: 14px; }
+
+/* Tighter control bar: smaller gaps between the buttons, so the progress bar gets more of the width. */
+html[data-window-style="experimental"] .controls { gap: 12px; }
+html[data-window-style="experimental"] .button-group { gap: 6px; }
+html[data-window-style="experimental"] .volume.open { margin-inline: 0; }
+html[data-frame="rpg"][data-window-style] .player .controls { padding: 22px 50px; gap: 14px; }
+html[data-frame="rpg"][data-window-style] .button-group { gap: 20px; }
+html[data-frame="rpg"][data-window-style] .controls > .button-group:last-child { gap: 8px; }
+html[data-frame="rpg"][data-window-style] .volume.open { padding-inline: 24px; --vol-shift: 29px; margin-inline: 0; }
+.timeline { gap: 8px; }
+
+/* Tighter still: smaller gaps and slimmer buttons in the control bar. */
+html[data-window-style="experimental"] .controls { gap: 8px; }
+html[data-window-style="experimental"] .button-group { gap: 3px; }
+html[data-window-style="experimental"] .controls button:not(.play-button) { padding-inline: 9px; }
+html[data-frame="rpg"][data-window-style] .player .controls { padding: 20px 46px; gap: 8px; }
+html[data-frame="rpg"][data-window-style] .button-group { gap: 12px; }
+html[data-frame="rpg"][data-window-style] .controls > .button-group:last-child { gap: 3px; }
+html[data-frame="rpg"][data-window-style] .volume.open { --vol-shift: 29px; }
+.timeline { gap: 6px; }
+
+/* ---- Deus Ex Origins buttons: like the game's menu tabs ----
+   Dark gray tabs with a thin light inner outline and a cut bottom-right corner (images made here, stretched with border-image so the
+   cut keeps its shape); lighter on hover, darker when pressed, a white inner outline when chosen. */
+html[data-frame="deusex"] {
+  --dx-btn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%23393b3e%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%238e9195%22%20stroke-width%3D%221.2%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-hover: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%234a4d51%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%23c7cacf%22%20stroke-width%3D%221.4%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-pressed: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%23222325%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%236c6f73%22%20stroke-width%3D%221.2%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-chosen: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%23393b3e%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%2F%3E%3C%2Fsvg%3E");
+}
+html[data-frame="deusex"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .dropdown-select-trigger:not(#x) {
+  border: 10px solid transparent; border-image: var(--dx-btn) 14 fill / 10px stretch; border-radius: 0; background: transparent; outline: 0; box-shadow: none;
+  color: #f2f2f2; text-shadow: 0 1px 0 #000; padding: 0 6px; min-height: 34px; letter-spacing: .03em;
+}
+html[data-frame="deusex"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):hover:not(:disabled):not(#x), html[data-frame="deusex"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):hover:not(:disabled):not(#x), html[data-frame="deusex"][data-window-style] .dropdown-select-trigger:hover:not(.disabled):not(#x) { border-image-source: var(--dx-btn-hover); background: transparent; color: #fff; }
+html[data-frame="deusex"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):active:not(:disabled):not(#x), html[data-frame="deusex"][data-window-style] .dropdown-select-trigger.open:not(#x) { border-image-source: var(--dx-btn-pressed); }
+html[data-frame="deusex"][data-window-style] button:is(.primary, .active, .play-button):not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .controls button:is(.primary, .active, .play-button):not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x) { border-image-source: var(--dx-btn-chosen); background: transparent; outline: 0; color: #fff; }
+html[data-frame="deusex"][data-window-style] button:disabled:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x) { opacity: .5; }
+html[data-frame="deusex"][data-window-style] .play-button:not(#x) { width: 62px; height: 52px; padding: 0; }
+html[data-frame="deusex"][data-window-style] .badge:not(#x) { border: 10px solid transparent; border-image: var(--dx-btn) 14 fill / 10px stretch; border-radius: 0; background: transparent; width: 48px; height: 44px; padding: 0; }
+html[data-frame="deusex"][data-window-style] .badge.active:not(#x) { border-image-source: var(--dx-btn-chosen); outline: 0; }
+
+/* ---- Deus Ex Origins, transparency: like the game's menus, the plates, wells, buttons and window let what is behind them show through ---- */
+html[data-frame="deusex"] {
+  --plate: linear-gradient(180deg, rgba(58, 60, 64, .66), rgba(42, 44, 47, .66));
+  --plate-light: linear-gradient(180deg, rgba(76, 79, 83, .72), rgba(56, 58, 62, .72));
+  --plate-solid: linear-gradient(180deg, #3a3c40, #2a2c2f);
+  --well: linear-gradient(180deg, rgba(19, 20, 21, .6), rgba(27, 28, 30, .6));
+  --dx-btn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%238e9195%22%20stroke-width%3D%221.2%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-hover: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%234a4d51%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%23c7cacf%22%20stroke-width%3D%221.4%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-pressed: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%23222325%22%20fill-opacity%3D%220.85%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%236c6f73%22%20stroke-width%3D%221.2%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-chosen: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C19%2040%2C33%201%2C33%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C18.6%2039.6%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C17.6%2038.4%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%2F%3E%3C%2Fsvg%3E");
+}
+html[data-frame="deusex"][data-window-style] .app { background: radial-gradient(ellipse at 50% 0%, rgba(31, 32, 34, .78), rgba(12, 13, 14, .72) 80%); }
+html[data-frame="deusex"] .dropdown-select-popup, html[data-frame="deusex"][data-window-style] .topbar-dropdown { background: var(--plate-solid); }
+html[data-frame="deusex"] .track { background: rgba(255, 255, 255, .02); }
+
+/* Deus Ex Origins: a crisper bottom-right cut on the buttons. The cut is smaller and sits fully inside the image's corner slice, so the
+   stretched image no longer bends it into a curve. */
+html[data-frame="deusex"] {
+  --dx-btn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C23%2045%2C33%201%2C33%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C22.5%2044.5%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C21.4%2042.6%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%238e9195%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-hover: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C23%2045%2C33%201%2C33%22%20fill%3D%22%234a4d51%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C22.5%2044.5%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C21.4%2042.6%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%23c7cacf%22%20stroke-width%3D%221.4%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-pressed: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C23%2045%2C33%201%2C33%22%20fill%3D%22%23222325%22%20fill-opacity%3D%220.85%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C22.5%2044.5%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C21.4%2042.6%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%236c6f73%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-chosen: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%221%2C1%2055%2C1%2055%2C23%2045%2C33%201%2C33%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%222.2%2C2.2%2053.8%2C2.2%2053.8%2C22.5%2044.5%2C31.8%202.2%2C31.8%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%225%2C5%2051%2C5%2051%2C21.4%2042.6%2C29%205%2C29%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+}
+
+/* Deus Ex Origins: the same bigger cut on the top-left and the bottom-right corners of the buttons (13 units of a 56 by 34 image, inside a
+   16-unit corner slice), drawn at 12px border width. */
+html[data-frame="deusex"] {
+  --dx-btn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C14%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%238e9195%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-hover: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C14%22%20fill%3D%22%234a4d51%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%23c7cacf%22%20stroke-width%3D%221.4%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-pressed: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C14%22%20fill%3D%22%23222325%22%20fill-opacity%3D%220.85%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%236c6f73%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-chosen: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C14%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+}
+html[data-frame="deusex"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .dropdown-select-trigger:not(#x), html[data-frame="deusex"][data-window-style] .badge:not(#x) {
+  border-width: 12px; border-image-slice: 16 fill; border-image-width: 12px; padding-inline: 4px; min-height: 36px;
+}
+html[data-frame="deusex"][data-window-style] .badge:not(#x) { width: 52px; height: 48px; padding: 0; }
+html[data-frame="deusex"][data-window-style] .play-button:not(#x) { width: 66px; height: 56px; padding: 0; }
+
+/* Deus Ex Origins: the top-left cut is smaller (7 units) than the bottom-right one (13 units). */
+html[data-frame="deusex"] {
+  --dx-btn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%228%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C8%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%228.6%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C8.6%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2211%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C11%22%20fill%3D%22none%22%20stroke%3D%22%238e9195%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-hover: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%228%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C8%22%20fill%3D%22%234a4d51%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%228.6%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C8.6%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2211%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C11%22%20fill%3D%22none%22%20stroke%3D%22%23c7cacf%22%20stroke-width%3D%221.4%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-pressed: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%228%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C8%22%20fill%3D%22%23222325%22%20fill-opacity%3D%220.85%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%228.6%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C8.6%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2211%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C11%22%20fill%3D%22none%22%20stroke%3D%22%236c6f73%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-chosen: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%228%2C1%2055%2C1%2055%2C20%2042%2C33%201%2C33%201%2C8%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%228.6%2C2.2%2053.8%2C2.2%2053.8%2C19.5%2041.6%2C31.8%202.2%2C31.8%202.2%2C8.6%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2211%2C5%2051%2C5%2051%2C18.4%2039.4%2C29%205%2C29%205%2C11%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+}
+
+/* Deus Ex Origins: the top-left cut is back to its earlier size (13 units) and the bottom-right cut is bigger (18 units). The corner slice is
+   20 units, drawn at 15px, so the top-left cut looks as before and the bottom-right one is about a third bigger. */
+html[data-frame="deusex"] {
+  --dx-btn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C15%2037%2C33%201%2C33%201%2C14%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C14.7%2036.7%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C13.8%2035.8%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%238e9195%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-hover: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C15%2037%2C33%201%2C33%201%2C14%22%20fill%3D%22%234a4d51%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C14.7%2036.7%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C13.8%2035.8%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%23c7cacf%22%20stroke-width%3D%221.4%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-pressed: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C15%2037%2C33%201%2C33%201%2C14%22%20fill%3D%22%23222325%22%20fill-opacity%3D%220.85%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C14.7%2036.7%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C13.8%2035.8%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%236c6f73%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-chosen: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256%22%20height%3D%2234%22%20viewBox%3D%220%200%2056%2034%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2055%2C1%2055%2C15%2037%2C33%201%2C33%201%2C14%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2053.8%2C2.2%2053.8%2C14.7%2036.7%2C31.8%202.2%2C31.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2051%2C5%2051%2C13.8%2035.8%2C29%205%2C29%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+}
+html[data-frame="deusex"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .dropdown-select-trigger:not(#x), html[data-frame="deusex"][data-window-style] .badge:not(#x) {
+  border-width: 15px; border-image-slice: 20 fill; border-image-width: 15px; padding-inline: 0; min-height: 40px;
+}
+html[data-frame="deusex"][data-window-style] .badge:not(#x) { width: 56px; height: 52px; padding: 0; }
+html[data-frame="deusex"][data-window-style] .play-button:not(#x) { width: 70px; height: 60px; padding: 0; }
+
+/* Deus Ex Origins, fix: the button images are now 72 by 48 units, so the 20-unit corner slices fit (in the 34-unit-high image they
+   overlapped and the sides vanished). The cuts are as intended: 13 units top left, 18 units bottom right. */
+html[data-frame="deusex"] {
+  --dx-btn: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2272%22%20height%3D%2248%22%20viewBox%3D%220%200%2072%2048%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2071%2C1%2071%2C29%2053%2C47%201%2C47%201%2C14%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2069.8%2C2.2%2069.8%2C28.7%2052.7%2C45.8%202.2%2C45.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2067%2C5%2067%2C27.8%2051.8%2C43%205%2C43%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%238e9195%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-hover: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2272%22%20height%3D%2248%22%20viewBox%3D%220%200%2072%2048%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2071%2C1%2071%2C29%2053%2C47%201%2C47%201%2C14%22%20fill%3D%22%234a4d51%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2069.8%2C2.2%2069.8%2C28.7%2052.7%2C45.8%202.2%2C45.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2067%2C5%2067%2C27.8%2051.8%2C43%205%2C43%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%23c7cacf%22%20stroke-width%3D%221.4%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-pressed: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2272%22%20height%3D%2248%22%20viewBox%3D%220%200%2072%2048%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2071%2C1%2071%2C29%2053%2C47%201%2C47%201%2C14%22%20fill%3D%22%23222325%22%20fill-opacity%3D%220.85%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2069.8%2C2.2%2069.8%2C28.7%2052.7%2C45.8%202.2%2C45.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2067%2C5%2067%2C27.8%2051.8%2C43%205%2C43%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%236c6f73%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+  --dx-btn-chosen: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2272%22%20height%3D%2248%22%20viewBox%3D%220%200%2072%2048%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2214%2C1%2071%2C1%2071%2C29%2053%2C47%201%2C47%201%2C14%22%20fill%3D%22%23393b3e%22%20fill-opacity%3D%220.78%22%20stroke%3D%22%23151617%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22miter%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2214.4%2C2.2%2069.8%2C2.2%2069.8%2C28.7%2052.7%2C45.8%202.2%2C45.8%202.2%2C14.4%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2217%2C5%2067%2C5%2067%2C27.8%2051.8%2C43%205%2C43%205%2C16.6%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E");
+}
+
+/* ---- Deus Ex Origins: lower, longer buttons; the arrow tab in the same style; custom playlist colors fixed ----
+   The frame image is drawn 11px wide but over a 5px border, so it reaches into the button instead of making it tall: the buttons are about
+   28px high and wide. The shape is also cut with a clip-path (the same two cuts), so a custom color set on an element (a playlist badge's
+   inline background) fills only the cut shape and no longer shows as colored square corners behind the frame. */
+html[data-frame="deusex"][data-window-style] button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x), html[data-frame="deusex"][data-window-style] .dropdown-select-trigger:not(#x), html[data-frame="deusex"][data-window-style] .badge:not(#x), html[data-frame="deusex"][data-window-style] .edge-tab:not(#x) {
+  border-width: 5px; border-image-slice: 20 fill; border-image-width: 11px; padding-inline: 14px; min-height: 28px;
+  clip-path: polygon(8.25px 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%, 0 8.25px);
+}
+html[data-frame="deusex"][data-window-style] .controls button:not(.track-main, .track-menu-btn, .row-menu button, .context-menu button, .custom-topbar button, .topbar-entry, .edge-tab, .badge):not(#x) { padding-inline: 12px; }
+html[data-frame="deusex"][data-window-style] .badge:not(#x) { width: 64px; height: 30px; min-height: 0; padding: 0; font-size: 12px; }
+html[data-frame="deusex"][data-window-style] .play-button:not(#x) { width: 62px; height: 36px; min-height: 0; padding: 0; }
+html[data-frame="deusex"][data-window-style] .edge-tab:not(#x) {
+  width: 30px; height: 62px; min-height: 0; padding: 0; opacity: 1; background: transparent; color: #f2f2f2; box-shadow: none; outline: 0;
+  border-style: solid; border-color: transparent; border-image-source: var(--dx-btn); border-radius: 0;
+}
+html[data-frame="deusex"][data-window-style] .edge-tab:hover:not(#x) { border-image-source: var(--dx-btn-hover); color: #fff; background: transparent; }
+/* Deus Ex Origins: badges sized to the 64px badge column. */
+html[data-frame="deusex"][data-window-style] .badge:not(#x) { width: 48px; height: 30px; }
+
+/* ---- Deus Ex Origins: the window has the same cut corners as the buttons (a smaller one top left, a bigger one bottom right) ----
+   The three outlines (dark, gray, light) are a border image; a clip-path with the same two cuts shapes the window and its see-through
+   background, so the desktop shows in the cut corners. Full screen is a plain rectangle again. */
+html[data-frame="deusex"] { --dx-window: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%20shape-rendering%3D%22geometricPrecision%22%3E%3Cpolygon%20points%3D%2220%2C1.5%2098.5%2C1.5%2098.5%2C63%2063%2C98.5%201.5%2C98.5%201.5%2C20%22%20fill%3D%22none%22%20stroke%3D%22%230b0b0c%22%20stroke-width%3D%223%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2220.6%2C4%2096%2C4%2096%2C62%2062%2C96%204%2C96%204%2C20.6%22%20fill%3D%22none%22%20stroke%3D%22%235b5e62%22%20stroke-width%3D%221.2%22%20stroke-linejoin%3D%22miter%22%2F%3E%3Cpolygon%20points%3D%2222%2C7%2093%2C7%2093%2C60.8%2060.8%2C93%207%2C93%207%2C22%22%20fill%3D%22none%22%20stroke%3D%22%239a9da1%22%20stroke-width%3D%221%22%20stroke-linejoin%3D%22miter%22%2F%3E%3C%2Fsvg%3E"); }
+html[data-frame="deusex"][data-window-style] .app:not(#x) {
+  border: 4px solid transparent; border-image: var(--dx-window) 40 / 36px stretch; border-radius: 0; box-shadow: none;
+  clip-path: polygon(17px 0, 100% 0, 100% calc(100% - 32px), calc(100% - 32px) 100%, 0 100%, 0 17px);
+}
+html[data-frame="deusex"][data-window-style][data-fullscreen="yes"] .app:not(#x) { border: 0; border-image: none; clip-path: none; }
+
+/* ---- Deus Ex Origins: the menu bar of the Windows and Linux builds, like the game's top menu ----
+   A dark gray plate holding tab buttons (the same image as every button: double outline, a cut at two corners); hover brightens a tab and
+   an open menu uses the white outline. The window buttons are tabs too. Entries of an open menu are plain rows. */
+html[data-frame="deusex"][data-window-style] .custom-topbar:not(#x) { height: 44px; padding: 0 26px 0 24px; gap: 4px; background: var(--plate); border-bottom: 2px solid #0e0e0f; box-shadow: inset 0 1px 0 #74777c; }
+html[data-frame="deusex"][data-window-style] .custom-topbar button:not(.topbar-entry):not(#x) {
+  border: 5px solid transparent; border-image: var(--dx-btn) 20 fill / 11px stretch; border-radius: 0; background: transparent; outline: 0; box-shadow: none;
+  min-height: 0; height: 32px; padding: 0 14px; color: #f2f2f2; text-shadow: 0 1px 0 #000; text-transform: none; letter-spacing: .03em;
+  clip-path: polygon(8.25px 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%, 0 8.25px);
+}
+html[data-frame="deusex"][data-window-style] .custom-topbar .topbar-window-buttons button:not(#x) { width: 40px; padding: 0; }
+html[data-frame="deusex"][data-window-style] .custom-topbar button:not(.topbar-entry):hover:not(#x) { border-image-source: var(--dx-btn-hover); background: transparent; color: #fff; }
+html[data-frame="deusex"][data-window-style] .custom-topbar .topbar-title.open:not(#x) { border-image-source: var(--dx-btn-chosen); color: #fff; }
+html[data-frame="deusex"][data-window-style] .custom-topbar .topbar-window-buttons .close:hover:not(#x) { border-image-source: var(--dx-btn-chosen); background: transparent; }
+html[data-frame="deusex"][data-window-style] .topbar-dropdown .topbar-entry:not(#x) { border: 0; border-image: none; clip-path: none; background: transparent; color: #f2f2f2; padding: 6px 12px; min-height: 0; height: auto; text-shadow: none; }
+html[data-frame="deusex"][data-window-style] .topbar-dropdown .topbar-entry:hover:not(#x) { background: rgba(255, 255, 255, .13); outline: 1px solid #c7cacf; outline-offset: -1px; }

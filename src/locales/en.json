@@ -374,6 +374,12 @@
     "appearance.frameRequiem": "Requiem (grid cells, notched corners, red selection)",
     "appearance.builtin.re-requiem": "RE Requiem",
     "appearance.frameCyberpunk2": "Cyberpunk 2.0 (neon image frames, image buttons)",
-    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0"
+    "appearance.builtin.cyberpunk-2": "Cyberpunk 2.0",
+    "appearance.frameDeusEx": "Deus Ex (beveled metal plates, inset wells)",
+    "appearance.builtin.deus-ex-original": "Deus Ex Origins",
+    "appearance.frameDeusExMd": "Deus Ex MD (black label boxes, white chosen box)",
+    "appearance.builtin.deus-ex-md": "Deus Ex MD",
+    "player.previousVideo": "Previous video",
+    "player.nextVideo": "Next video"
   }
 }

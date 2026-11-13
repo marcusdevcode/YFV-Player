@@ -24,6 +24,7 @@ import {
 import { LAYOUT_FIELDS, layoutOf, type LayoutField } from "../theme/windowLayout";
 import { IconByRef } from "./Icon";
 import ScrollArea from "./ScrollArea";
+import DropdownSelect from "./DropdownSelect";
 
 /** The layout settings of the progress bars: they work in every theme, not only the floating ones. */
 const PROGRESS_FIELDS = ["progressGlow", "progressGloss"];
@@ -159,7 +160,7 @@ export default function ThemesDialog() {
         <div className="row">
           <label className="grow">
             <span>{t("appearance.theme")}</span>{" "}
-            <select
+            <DropdownSelect
               value={selected === "system" || BUILTIN_THEMES.concat(custom).some((x) => x.id === selected) ? selected : "system"}
               onChange={(e) => {
                 setConfirmDelete(false);
@@ -177,7 +178,7 @@ export default function ThemesDialog() {
                   {c.name}
                 </option>
               ))}
-            </select>
+            </DropdownSelect>
           </label>
           <button onClick={() => (setCreating(!creating), setNewName(""))}>{t("appearance.new")}</button>
           <button onClick={() => void importTheme()}>{t("appearance.import")}</button>
@@ -198,10 +199,10 @@ export default function ThemesDialog() {
             <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder={t("appearance.newName")} autoFocus />
             <label>
               {t("appearance.newBase")}{" "}
-              <select value={newBase} onChange={(e) => setNewBase(e.target.value as ThemeBase)}>
+              <DropdownSelect value={newBase} onChange={(e) => setNewBase(e.target.value as ThemeBase)}>
                 <option value="dark">{t("appearance.dark")}</option>
                 <option value="light">{t("appearance.light")}</option>
-              </select>
+              </DropdownSelect>
             </label>
             <button type="submit" className="primary">
               {t("appearance.create")}
@@ -255,18 +256,18 @@ export default function ThemesDialog() {
           <section className="theme-group">
             <div className="color-row">
               <span className="color-label">{t("appearance.windowStyle")}</span>
-              <select
+              <DropdownSelect
                 value={theme.windowStyle ?? "regular"}
                 onChange={(e) => store.setWindowStyle(ensureEditable(), e.target.value as "regular" | "experimental")}
               >
                 <option value="regular">{t("appearance.styleRegular")}</option>
                 <option value="experimental">{t("appearance.styleFloating")}</option>
-              </select>
+              </DropdownSelect>
             </div>
             {theme.windowStyle === "experimental" && (
               <div className="color-row">
                 <span className="color-label">{t("appearance.frame")}</span>
-                <select value={theme.frame ?? "plain"} onChange={(e) => store.setFrame(ensureEditable(), e.target.value as FrameStyle)}>
+                <DropdownSelect value={theme.frame ?? "plain"} onChange={(e) => store.setFrame(ensureEditable(), e.target.value as FrameStyle)}>
                   <option value="plain">{t("appearance.framePlain")}</option>
                   <option value="detroit">{t("appearance.frameDetroit")}</option>
                   <option value="rpg">{t("appearance.frameRpg")}</option>
@@ -274,7 +275,9 @@ export default function ThemesDialog() {
                   <option value="re4">{t("appearance.frameRe4")}</option>
                   <option value="requiem">{t("appearance.frameRequiem")}</option>
                   <option value="cyberpunk2">{t("appearance.frameCyberpunk2")}</option>
-                </select>
+                  <option value="deusex">{t("appearance.frameDeusEx")}</option>
+                  <option value="deusexmd">{t("appearance.frameDeusExMd")}</option>
+                </DropdownSelect>
               </div>
             )}
             {theme.windowStyle === "experimental" && LAYOUT_FIELDS.filter((f) => !PROGRESS_FIELDS.includes(f.id)).map(layoutRow)}
