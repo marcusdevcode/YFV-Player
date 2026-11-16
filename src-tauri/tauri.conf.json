@@ -13,6 +13,7 @@
       {
         "label": "main",
         "transparent": true,
+        "acceptFirstMouse": true,
         "width": 1280,
         "height": 800,
         "minWidth": 640,

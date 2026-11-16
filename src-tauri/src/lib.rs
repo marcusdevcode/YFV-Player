@@ -119,12 +119,33 @@ fn menu_set_sidebar_side(side: String, menu: State<'_, SidebarMenu>) {
     let _ = menu.1.set_checked(side == "right");
 }
 
+/// TEMPORARY: print a line from the page in the terminal (to find the frozen picture).
+#[tauri::command]
+fn debug_trace(line: String) {
+    eprintln!("[trace] {line}");
+}
+
 /// Let the page start media by itself (the next track of a playlist). The system web view refuses that for
 /// media nobody started by hand (NotAllowedError), but accepts it from a script that native code runs.
 #[tauri::command]
 fn playback_allow_start(window: tauri::WebviewWindow) {
     let _ = window.eval("window.__startPlayback && window.__startPlayback()");
 }
+
+/// Development builds only: the tick of Dev -> "Windows-style menu bar", so the page can set it right after a reload.
+#[cfg(debug_assertions)]
+struct DevWindowsMenuTick(CheckMenuItem<tauri::Wry>);
+
+#[cfg(debug_assertions)]
+#[tauri::command]
+fn dev_set_windows_menu(checked: bool, tick: State<'_, DevWindowsMenuTick>) {
+    let _ = tick.0.set_checked(checked);
+}
+
+/// Release builds have no Dev menu: nothing to do.
+#[cfg(not(debug_assertions))]
+#[tauri::command]
+fn dev_set_windows_menu(_checked: bool) {}
 
 /// Show or hide the native menu bar of the window. The floating themes without a system title bar have their own
 /// menu bar in the page, so the native one is hidden there. (macOS has one menu for the whole screen: nothing to hide.)
@@ -393,7 +414,19 @@ pub fn run() {
                     .build()?;
                 menu = menu.item(&app_menu);
             }
-            let menu = menu.item(&file).item(&view).item(&download_menu).item(&window).item(&help).build()?;
+            #[allow(unused_mut)]
+            let mut menu = menu.item(&file).item(&view).item(&download_menu).item(&window).item(&help);
+            // Development builds only (`npm run dev`): a "Dev" menu for trying things that need another platform, and the web inspector.
+            // Its texts are English on purpose: it is a tool for the developer, not part of the app that is released.
+            #[cfg(debug_assertions)]
+            {
+                let windows_menu = CheckMenuItemBuilder::with_id("dev-windows-menu", "Windows-style menu bar (custom bar)").build(app)?;
+                let inspector = MenuItemBuilder::with_id("dev-inspector", "Open Inspector").accelerator("CmdOrCtrl+Alt+I").build(app)?;
+                let dev_menu = SubmenuBuilder::new(app, "Dev").item(&windows_menu).separator().item(&inspector).build()?;
+                menu = menu.item(&dev_menu);
+                app.manage(DevWindowsMenuTick(windows_menu));
+            }
+            let menu = menu.build()?;
             app.set_menu(menu)?;
             app.manage(texts);
             app.manage(youtube::download_queue::DownloadEngine::start(app.handle().clone()));
@@ -420,8 +453,16 @@ pub fn run() {
                     | "themes"
                     | "sidebar-left"
                     | "sidebar-right"
+                    | "dev-windows-menu"
             ) {
                 let _ = app.emit("menu", id);
+            }
+            // Development builds only: the Dev menu's inspector.
+            #[cfg(debug_assertions)]
+            if id == "dev-inspector" {
+                if let Some(window) = app.get_webview_window("main") {
+                    window.open_devtools();
+                }
             }
         })
         .plugin(tauri_plugin_dialog::init())
@@ -431,7 +472,7 @@ pub fn run() {
             app_data::library_load, app_data::library_save, app_data::thumbnail_save, app_data::thumbnail_import,
             app_data::thumbnail_delete, app_data::trash_files, app_data::text_file_read, app_data::text_file_write,
             app_data::settings_get, app_data::settings_set, app_data::settings_remove, app_data::theme_list, app_data::theme_save, app_data::theme_delete, app_data::language_list, app_data::language_save, app_data::language_delete,
-            app_data::position_note, menu_set_language, menu_set_sidebar_side, menu_set_visible, playback_allow_start,
+            app_data::position_note, menu_set_language, menu_set_sidebar_side, menu_set_visible, dev_set_windows_menu, playback_allow_start, debug_trace,
             youtube::youtube_commands::youtube_lookup, youtube::youtube_commands::downloads_configure,
             youtube::youtube_commands::downloads_snapshot, youtube::youtube_commands::downloads_enqueue,
             youtube::youtube_commands::downloads_move, youtube::youtube_commands::downloads_download_now,

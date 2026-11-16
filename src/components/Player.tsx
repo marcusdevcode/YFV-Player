@@ -68,6 +68,10 @@ const isAbort = (e: unknown) => e instanceof DOMException && e.name === "AbortEr
  * for example the next track of a playlist, but accepts it from a script that the native side runs:
  * the backend (playback_allow_start in lib.rs) calls the function registered here.
  */
+// TEMPORARY trace to the terminal.
+const trace = (msg: string) => void invoke("debug_trace", { line: `${new Date().toISOString().slice(11, 23)} hidden=${document.hidden} focus=${document.hasFocus()} ${msg}` }).catch(() => {});
+const mediaState = (v: HTMLMediaElement) => `t=${v.currentTime.toFixed(2)} paused=${v.paused} ready=${v.readyState} net=${v.networkState} seeking=${v.seeking} err=${v.error?.code ?? "-"} frames=${(v as HTMLVideoElement).getVideoPlaybackQuality?.().totalVideoFrames ?? "?"} w=${(v as HTMLVideoElement).videoWidth ?? "?"}`;
+
 function startAllowed(start: () => void) {
   const w = window as unknown as { __startPlayback?: () => void };
   w.__startPlayback = () => {
@@ -113,6 +117,11 @@ export default function Player() {
   const lastActivity = useRef(0);
   const lastSave = useRef(0);
   const lastFsToggle = useRef(0);
+  const audioSrcNow = useRef<string | undefined>(undefined); // the audio file address the shared audio element should have (see playBoth)
+  const awayPending = useRef(false); // the window was away since the video was last started: the next Play loads the video again first
+  const videoRefresh = useRef<Promise<void> | null>(null); // a reload of the video file that is under way (see refreshVideo)
+  const lastFsRequest = useRef(0); // when the user last asked for a full screen switch (only this decides whether a click is too soon)
+  const fsTarget = useRef<boolean | null>(null); // the state a full screen switch of ours is heading for, until the window has reached it
   const playToken = useRef(0); // bumped by pause/seek so a pending aligned start gives up
   const wantPlaying = useRef(false); // the user wants playback (set by play, cleared by pause)
   const ownPauseAt = useRef(0); // when pauseBoth last ran: its pause events arrive a little later
@@ -242,6 +251,39 @@ export default function Player() {
   }, []);
 
   /**
+   * Load the video file again, at the same position. After the window had been away, the web view can leave a paused video's loader stuck
+   * (no request is sent to the media server: a later seek never finishes, the picture stays a still image while the audio plays on).
+   * A video that was just loaded again has no such state. Only for a paused video with a separate audio file.
+   */
+  const refreshVideo = useCallback((force = false): Promise<void> => {
+    const v = videoRef.current;
+    if (!v || !audioRef.current || !v.currentSrc || videoRefresh.current) return videoRefresh.current ?? Promise.resolve();
+    if (!force && (!v.paused || wantPlaying.current)) return Promise.resolve();
+    const at = v.currentTime;
+    const src = v.currentSrc;
+    videoRefresh.current = (async () => {
+      const ready = once(v, ["loadedmetadata", "error"]);
+      v.src = src;
+      v.load();
+      await ready;
+      if (at > 0) {
+        const seeked = once(v, ["seeked", "error"]);
+        v.currentTime = at;
+        await seeked;
+      }
+      // Draw the picture layer again from scratch (hide, let the browser lay it out, show).
+      v.style.visibility = "hidden";
+      void v.offsetHeight;
+      v.style.visibility = "";
+    })()
+      .catch(() => {})
+      .finally(() => {
+        videoRefresh.current = null;
+      });
+    return videoRefresh.current;
+  }, []);
+
+  /**
    * Start playback. With a separate audio file: audio first, then the video from where the audio
    * is (slightly ahead, to absorb its own start-up delay), so both begin in sync.
    */
@@ -251,6 +293,20 @@ export default function Player() {
     if (!v) return;
     const token = ++playToken.current;
     wantPlaying.current = true;
+    if (videoRefresh.current) await videoRefresh.current; // the video is being loaded again: start when it is ready
+    if (awayPending.current && a) {
+      // Play after the window was away: load the video again first, so the picture surely starts.
+      awayPending.current = false;
+      await refreshVideo(true);
+      if (token !== playToken.current) return;
+    }
+    if (a && audioSrcNow.current && !a.getAttribute("src")) {
+      // The audio element lost its file (it was emptied or replaced): put it back and wait for it, or the seek below would never finish.
+      const loaded = once(a, ["loadedmetadata", "error"]);
+      a.src = audioSrcNow.current;
+      await loaded;
+    }
+    trace(`playBoth start suspended=${suspended.current} | video ${mediaState(v)} | audio ${a ? mediaState(a) : "none"}`);
     try {
       if (!a) {
         await v.play();
@@ -280,7 +336,9 @@ export default function Player() {
         await seeked;
         if (token !== playToken.current || a.paused) return;
       }
+      trace(`playBoth: video.play() | video ${mediaState(v)}`);
       await v.play();
+      trace(`playBoth: video.play() done | video ${mediaState(v)}`);
       leadKind.current = "start";
       leadStartTime.current = v.currentTime;
       leadPending.current = true;
@@ -291,7 +349,7 @@ export default function Player() {
         setError(tr("player.errPlayback", { error: String(e) }));
       } else if (!isAbort(e)) setError(tr("player.errPlayback", { error: String(e) }));
     }
-  }, []);
+  }, [refreshVideo]);
 
   /**
    * The window was hidden and is visible again. While hidden, WebKit pauses a muted video (the
@@ -341,13 +399,20 @@ export default function Player() {
     // Leaving only notes the time. The audio's time updates (see below) pause the picture once the
     // window has stayed away long enough, so quick back-and-forth switching never touches the video.
     const goAway = () => {
+      trace("goAway");
       if (performance.now() - lastFsToggle.current < FS_GUARD_MS) return; // a fullscreen switch, not leaving
       nativeFocused.current = appHadFocus = false;
       if (backgroundSince.current === null) backgroundSince.current = performance.now();
     };
     const goBack = () => {
+      trace(`goBack suspended=${suspended.current}`);
       nativeFocused.current = appHadFocus = true;
+      const wasAway = backgroundSince.current !== null;
       backgroundSince.current = null;
+      if (wasAway) {
+        awayPending.current = true; // the next Play loads the video again before starting (see playBoth)
+        void refreshVideo();
+      }
       if (!suspended.current) return;
       suspended.current = false;
       void rejoin();
@@ -363,7 +428,7 @@ export default function Player() {
       window.removeEventListener("keydown", goBack, true);
       void native.then((off) => off()).catch(() => {});
     };
-  }, [rejoin]);
+  }, [rejoin, refreshVideo]);
 
   useEffect(() => {
     const onVisible = () => {
@@ -436,24 +501,40 @@ export default function Player() {
 
   const toggleFullscreen = useCallback(async () => {
     const now = performance.now();
-    if (now - lastFsToggle.current < FS_GUARD_MS) return; // macOS animates the switch
+    // A click while our own switch is still under way is ignored (the system animates it). Resize events of the switch used to push the old
+    // guard time forward again and again, so a click made a second after entering full screen was swallowed: this checks only our own request.
+    if (fsTarget.current !== null && now - lastFsRequest.current < 2500) return;
+    lastFsRequest.current = now;
     lastFsToggle.current = now;
     try {
       const win = getCurrentWindow();
       const next = !(await win.isFullscreen());
+      fsTarget.current = next;
       // A fixed-size floating window would also block full screen on some systems.
       if (next && document.documentElement.dataset.windowResizable === "no") await win.setResizable(true);
+      // One request only: asking again while the system is still animating the switch can turn it round (it would then look as if the
+      // click did nothing). The page follows the window through its resize events (see below).
       await win.setFullscreen(next);
       setFullscreen(next);
     } catch (e) {
+      fsTarget.current = null;
       setError(tr("player.errFullscreen", { error: String(e) }));
-    }
-  }, []);
+    }  }, []);
 
   // Put the handlers on the shared elements while this player exists.
   useEffect(() => {
-    const forVideo = (e: Event) => mediaHandlers.current?.video[e.type]?.(e as MediaEvent);
-    const forAudio = (e: Event) => mediaHandlers.current?.audio[e.type]?.(e as MediaEvent);
+    const forVideo = (e: Event) => {
+      if (e.type !== "timeupdate") trace(`VIDEO ${e.type} ${mediaState(sharedVideo)}`);
+      mediaHandlers.current?.video[e.type]?.(e as MediaEvent);
+    };
+    const forAudio = (e: Event) => {
+      if (e.type !== "timeupdate") trace(`AUDIO ${e.type} ${mediaState(sharedAudio)}`);
+      mediaHandlers.current?.audio[e.type]?.(e as MediaEvent);
+    };
+    for (const t of ["waiting", "stalled", "suspend", "emptied", "abort", "seeking", "seeked", "playing", "loadeddata", "durationchange"]) {
+      sharedVideo.addEventListener(t, forVideo);
+      sharedAudio.addEventListener(t, forAudio);
+    }
     for (const type of MEDIA_EVENTS) {
       sharedVideo.addEventListener(type, forVideo);
       sharedAudio.addEventListener(type, forAudio);
@@ -473,6 +554,7 @@ export default function Player() {
     sharedVideo.src = videoSrc;
   }, [videoSrc, audioSrc]);
   useEffect(() => {
+    audioSrcNow.current = audioSrc;
     if (audioSrc) sharedAudio.src = audioSrc;
   }, [audioSrc]);
 
@@ -490,10 +572,19 @@ export default function Player() {
     const win = getCurrentWindow();
     const sync = async () => {
       const full = await win.isFullscreen();
+      // While our own switch is under way the in-between states are ignored (they made the page flip back and forth); if the window does not
+      // get there within a few seconds the request is given up and the window's real state is followed again.
+      if (fsTarget.current !== null && full !== fsTarget.current) {
+        if (performance.now() - lastFsRequest.current < 2500) return;
+        fsTarget.current = null;
+      }
       if (full !== usePlayerStore.getState().fullscreen) lastFsToggle.current = performance.now(); // entering/leaving fullscreen shuffles focus
       setFullscreen(full);
-      // A fixed-size floating window is resizable only while full screen.
-      if (document.documentElement.dataset.windowResizable === "no") void win.setResizable(full).catch(() => {});
+      // A fixed-size floating window is resizable only while full screen. While a switch of ours is under way the window is left alone (its own
+      // resize events used to lock it again before it had finished, and the click seemed to do nothing); the lock is set once the window
+      // has reached the state we asked for.
+      if (fsTarget.current !== null && full === fsTarget.current) fsTarget.current = null;
+      if (fsTarget.current === null && document.documentElement.dataset.windowResizable === "no") void win.setResizable(full).catch(() => {});
     };
     void sync();
     const unlisten = win.onResized(() => void sync());

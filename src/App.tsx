@@ -27,7 +27,7 @@ import { usePlaylistLibraryStore } from "./store/playlistLibraryStore";
 import { usePlayerStore } from "./store/playerStore";
 import { usePlaybackPositionStore } from "./store/playbackPositionStore";
 import { loadImportedLanguages } from "./translationFiles";
-import { loadSettings, startSavingSettings } from "./generalSettings";
+import { loadSettings, startSavingSettings, takeReopenThemesRequest } from "./generalSettings";
 import { activeTheme, useThemeStore } from "./store/themeStore";
 import { IS_MAC, layoutOf } from "./theme/windowLayout";
 import { applyThemeToDocument } from "./theme/themeEngine";
@@ -61,13 +61,14 @@ export default function App() {
     document.documentElement.dataset.fullscreen = fullscreen ? "yes" : "no";
   }, [fullscreen]);
   const { t } = useT();
+  const devWindowsMenu = useInterfaceStore((s) => s.devWindowsMenu); // Dev menu (development builds): try the Windows menu bar here
   const customTopbar = useThemeStore((s) => {
     const th = activeTheme(s);
     return th.windowStyle === "experimental" && !layoutOf(th).titleBar;
   });
   const dragStrip = useThemeStore((s) => {
     const th = activeTheme(s);
-    return IS_MAC && th.windowStyle === "experimental" && !layoutOf(th).titleBar;
+    return IS_MAC && !devWindowsMenu && th.windowStyle === "experimental" && !layoutOf(th).titleBar;
   });
 
   // The remembered settings (panel, last video, positions, volume) load from files at startup.
@@ -83,6 +84,7 @@ export default function App() {
     void loadImportedLanguages().then(() => Promise.all([loadSettings(), useThemeStore.getState().load()])).then(() => {
       applyThemeToDocument(activeTheme(useThemeStore.getState()));
       startSavingSettings();
+      if (takeReopenThemesRequest()) useInterfaceStore.getState().setThemesOpen(true); // the page was reloaded by a theme change: bring the dialog back
       settingsLoaded = true;
       check();
     });
@@ -94,7 +96,11 @@ export default function App() {
   const theme = useThemeStore((s) => activeTheme(s));
   useEffect(() => {
     applyThemeToDocument(theme);
-  }, [theme]);
+  }, [theme, devWindowsMenu]);
+  // The Dev menu's tick follows the saved switch (after a reload the page knows it, the native menu has to be told).
+  useEffect(() => {
+    if (import.meta.env.DEV) void invoke("dev_set_windows_menu", { checked: devWindowsMenu }).catch(() => {});
+  }, [devWindowsMenu]);
   useEffect(() => {
     const query = matchMedia("(prefers-color-scheme: dark)");
     const onChange = (e: MediaQueryListEvent) => useThemeStore.getState().setSystemDark(e.matches);
@@ -214,6 +220,7 @@ export default function App() {
         // A click on the ticked entry un-ticks it natively: put the tick back on the real language.
         void invoke("menu_set_language", { code: useInterfaceStore.getState().language }).catch(() => {});
       }
+      if (e.payload === "dev-windows-menu") useInterfaceStore.getState().setDevWindowsMenu(!useInterfaceStore.getState().devWindowsMenu);
       if (e.payload === "toggle-sidebar") useInterfaceStore.getState().toggleSidebar();
       if (e.payload === "sidebar-left" || e.payload === "sidebar-right") {
         useInterfaceStore.getState().setSidebarSide(e.payload === "sidebar-left" ? "left" : "right");
@@ -255,7 +262,7 @@ export default function App() {
   return (
     <div className="app" onContextMenu={showGeneralMenu}>
       {/* Floating themes without the system title bar get their own menu bar (hidden in full screen). */}
-      {customTopbar && !IS_MAC && !fullscreen && <CustomTopBar />}
+      {customTopbar && (!IS_MAC || devWindowsMenu) && !fullscreen && <CustomTopBar />}
       {/* macOS keeps its native menu at the top of the screen: only a strip to drag the window. */}
       {dragStrip && !fullscreen && <div className="window-drag-strip" data-tauri-drag-region />}
       <ContextMenu />

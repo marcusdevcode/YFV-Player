@@ -15,6 +15,8 @@ interface InterfaceState {
   themesOpen: boolean;
   /** The download manager (View -> Downloads…). */
   downloadsOpen: boolean;
+  /** Development only (Dev menu): show the Windows/Linux style custom menu bar on this platform too, to try it. */
+  devWindowsMenu: boolean;
   toggleSidebar: () => void;
   /** The user places the panel by hand: it stays there (until the language is changed). */
   setSidebarSide: (side: SidebarSide) => void;
@@ -23,7 +25,19 @@ interface InterfaceState {
   setSettingsOpen: (open: boolean) => void;
   setThemesOpen: (open: boolean) => void;
   setDownloadsOpen: (open: boolean) => void;
+  setDevWindowsMenu: (on: boolean) => void;
 }
+
+// Development only (Dev menu): the "Windows-style menu bar" switch is remembered in the web view's own storage, so it survives the page reload
+// that follows a theme change (the saved general settings file is not for developer switches).
+const DEV_MENU_KEY = "dev.windowsMenuBar";
+const savedDevWindowsMenu = () => {
+  try {
+    return import.meta.env.DEV && localStorage.getItem(DEV_MENU_KEY) === "yes";
+  } catch {
+    return false;
+  }
+};
 
 // Not persisted here: src/generalSettings.ts saves language and panel state in the general settings file.
 export const useInterfaceStore = create<InterfaceState>()((set) => ({
@@ -33,6 +47,7 @@ export const useInterfaceStore = create<InterfaceState>()((set) => ({
   settingsOpen: false,
   themesOpen: false,
   downloadsOpen: false,
+  devWindowsMenu: savedDevWindowsMenu(),
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   // Moving it to the other side also opens it, so the change is visible.
   setSidebarSide: (sidebarSide) => set({ sidebarSide, sidebarOpen: true }),
@@ -42,4 +57,12 @@ export const useInterfaceStore = create<InterfaceState>()((set) => ({
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   setThemesOpen: (themesOpen) => set({ themesOpen }),
   setDownloadsOpen: (downloadsOpen) => set({ downloadsOpen }),
+  setDevWindowsMenu: (devWindowsMenu) => {
+    try {
+      localStorage.setItem(DEV_MENU_KEY, devWindowsMenu ? "yes" : "no");
+    } catch {
+      /* the switch then only lasts until the next reload */
+    }
+    set({ devWindowsMenu });
+  },
 }));

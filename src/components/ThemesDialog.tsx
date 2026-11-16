@@ -25,6 +25,7 @@ import { LAYOUT_FIELDS, layoutOf, type LayoutField } from "../theme/windowLayout
 import { IconByRef } from "./Icon";
 import ScrollArea from "./ScrollArea";
 import DropdownSelect from "./DropdownSelect";
+import { saveSettingsAndReload } from "../generalSettings";
 
 /** The layout settings of the progress bars: they work in every theme, not only the floating ones. */
 const PROGRESS_FIELDS = ["progressGlow", "progressGloss"];
@@ -164,7 +165,9 @@ export default function ThemesDialog() {
               value={selected === "system" || BUILTIN_THEMES.concat(custom).some((x) => x.id === selected) ? selected : "system"}
               onChange={(e) => {
                 setConfirmDelete(false);
+                const changed = e.target.value !== selected;
                 store.select(e.target.value);
+                if (changed) void saveSettingsAndReload({ reopenThemes: true }); // a fresh page, so the video keeps playing normally with the new theme
               }}
             >
               <option value="system">{t("appearance.system")}</option>

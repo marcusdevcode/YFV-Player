@@ -170,6 +170,11 @@ macOS and Windows code signing (so the OS doesn't warn on first launch) needs se
 - **A video won't play (error 4):** the file's codec isn't supported by the system's web view (typically VP9/AV1 or MKV/AVI). H.264/AAC MP4 works everywhere.
 - **Don't commit large media files.** Keep test videos outside the repository.
 
-## Inspecting the interface in development
+## The Dev menu (development only)
 
-In `npm run dev` a right-click shows the system context menu with **Inspect Element** (the page's own context menus are off in development). Hold **Alt (Option)** while right-clicking to get the app's own menu instead. Built releases are not affected.
+`npm run dev` adds a **Dev** menu to the menu bar (it is not in released builds):
+
+- **Windows-style menu bar (custom bar):** shows the Windows/Linux menu bar (the one drawn inside the window) on this platform too, for floating themes without a system title bar, so you can check how it looks and works on macOS. The tick shows whether it is on, and the choice is remembered across page reloads (a theme change reloads the page).
+- **Open Inspector** (Cmd/Ctrl+Alt+I): opens the web inspector.
+
+The system's right-click menu is off everywhere (the app has its own context menus), so use the Dev menu for the inspector.

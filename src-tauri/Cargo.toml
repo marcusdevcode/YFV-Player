@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.2.0"
+version = "0.2.2"
 description = "Video player"
 authors = ["marcusdevcode"]
 license = "GPL-3.0-or-later"
@@ -19,7 +19,6 @@ tauri = { version = "2", features = ["image-png", "macos-private-api"] }
 tauri-plugin-dialog = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
-tiny_http = "0.12"
 trash = "5"
 libc = "0.2"
 

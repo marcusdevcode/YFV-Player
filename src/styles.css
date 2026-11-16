@@ -422,7 +422,7 @@ html[data-frame="detroit"] {
   --selected-glow: radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--accent) 55%, transparent), color-mix(in srgb, var(--accent) 14%, transparent) 70%);
 }
 /* Panels: square, thin outer line, a second line inside, a light top edge, a faint blue sheen */
-html[data-frame="detroit"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice, .edge-tab) {
+html[data-frame="detroit"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice, .edge-tab) {
   border: 1px solid var(--line); border-radius: 0;
   outline: 1px solid var(--line-soft); outline-offset: -5px;
   background-image: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 55%);
@@ -554,7 +554,7 @@ html[data-frame="terminal"][data-window-style] .topbar-dropdown .topbar-entry { 
 html[data-frame="terminal"][data-window-style] .topbar-separator { background: var(--accent); }
 html[data-frame="terminal"][data-window-style] .window-drag-strip { position: static; flex: none; height: 22px; background: var(--accent); }
 /* Panels and dialogs: square, bordered by thin lines */
-html[data-frame="terminal"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="terminal"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: 2px solid var(--accent); border-radius: 0; backdrop-filter: none; box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 html[data-frame="terminal"][data-window-style] .modal h2 { margin: -26px -26px 12px; padding: 4px 12px; background: var(--accent); color: var(--accent-text); font-size: 15px; text-shadow: none; }
@@ -587,7 +587,7 @@ html[data-frame="re4"][data-window-style] .app {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .12), 0 18px 44px rgba(0, 0, 0, .55);
 }
 /* Panels: no frame, a lit top edge and a faint paper sheen, like the page of a book */
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   /* A worn light-gray edge, bright where the light hits and dark where it is rubbed away, like the book in the game menu */
   border: 3px solid transparent; border-radius: 3px;
   background:
@@ -638,7 +638,7 @@ html[data-frame="requiem"] {
 }
 html[data-frame="requiem"][data-window-style] .app { background: linear-gradient(180deg, #151617, #0b0c0d); box-shadow: 0 0 0 1px rgba(255, 255, 255, .14), 0 18px 44px rgba(0, 0, 0, .55); }
 /* Panels: square cells on a grid, with a notch cut into the top-right corner */
-html[data-frame="requiem"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="requiem"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: var(--cell-line); border-radius: 0; backdrop-filter: blur(var(--layout-panel-blur));
   background-image: var(--grid), linear-gradient(180deg, rgba(255, 255, 255, .04), transparent);
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
@@ -718,7 +718,7 @@ html[data-frame="cyberpunk2"][data-window-style] .app {
 }
 html[data-frame="cyberpunk2"][data-window-style][data-fullscreen="yes"] .app { border: 0; border-image: none; background: var(--window-fill); }
 /* Panels and dialogs inside it: the thinner octagon outline */
-html[data-frame="cyberpunk2"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="cyberpunk2"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: 9px solid transparent; border-image: var(--cp-button) 22 fill / 9px stretch; border-radius: 0; backdrop-filter: none; box-shadow: none; outline: 0;
   background: transparent;
 }
@@ -936,7 +936,7 @@ html[data-frame="re4"][data-window-style] .edge-tab:hover::before { background-i
 @media (prefers-reduced-motion: reduce) { html[data-frame="re4"][data-window-style] .edge-tab::before { animation: none !important; } }
 
 /* RE4: the control bar, the playlist and the badge column use the same solid panel background as the dialogs */
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal), html[data-frame="re4"][data-window-style] .player .controls {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal), html[data-frame="re4"][data-window-style] .player .controls {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
     var(--panel) padding-box,
@@ -945,7 +945,7 @@ html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .vol
 }
 
 /* RE4, corrected: dark and blurred (frosted), like the dialogs on their dimmed backdrop. The video shows through the blur. */
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open), html[data-frame="re4"][data-window-style] .player .controls {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open)), html[data-frame="re4"][data-window-style] .player .controls {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%) padding-box,
     rgba(10, 10, 11, .72) padding-box,
@@ -972,7 +972,7 @@ html[data-frame="deusex"] {
 html[data-frame="deusex"] :is(body, button, input, select) { font-family: inherit; letter-spacing: .03em; }
 html[data-frame="deusex"][data-window-style] .app { background: radial-gradient(ellipse at 50% 0%, #1f2022, #0c0d0e 80%); box-shadow: 0 0 0 1px #000, 0 0 0 3px #3b3d40, 0 20px 40px rgba(0, 0, 0, .6); }
 /* Plates: a beveled edge (light on top and left, dark on the bottom and right) around a metal gradient */
-html[data-frame="deusex"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="deusex"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: 3px solid; border-color: var(--bevel-out); border-radius: 12px; background: var(--plate); backdrop-filter: none; outline: 0;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08), 0 8px 20px rgba(0, 0, 0, .55);
 }
@@ -1032,7 +1032,7 @@ html[data-frame="deusexmd"][data-window-style] .app {
     #0a0b0d;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, .1), 0 18px 44px rgba(0, 0, 0, .6);
 }
-html[data-frame="deusexmd"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open, .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+html[data-frame="deusexmd"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open), .modal, .context-menu, .row-menu, .download-popup, .update-banner, .notice) {
   border: 1px solid rgba(255, 255, 255, .1); border-radius: 0; outline: 0; box-shadow: none;
   background: rgba(0, 0, 0, .74); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
 }
@@ -1219,7 +1219,7 @@ html[data-frame="deusexmd"] input[type="checkbox"]:checked { background: #fff; b
 /* RE4, fix for Windows (Chromium): the worn edge was a gradient painted behind the whole panel, and the translucent dark fill let
    it show through as a gray diagonal wash. The edge is now a real border image (it is drawn on the border only), and the panel
    keeps just its dark, blurred fill. */
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open), html[data-frame="re4"][data-window-style] .player .controls {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open)), html[data-frame="re4"][data-window-style] .player .controls {
   border: 3px solid transparent; border-image: var(--re4-edge) 1; border-radius: 0;
   background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent 40%), rgba(10, 10, 11, .72);
 }
@@ -1234,7 +1234,7 @@ html[data-frame="re4"][data-window-style] .topbar-dropdown, html[data-frame="re4
 
 /* RE4: fainter edges and more see-through panels. The buttons keep the normal edge; panels and windows use this softer one. */
 html[data-frame="re4"] { --re4-edge-soft: linear-gradient(155deg, rgba(232, 229, 221, .38), rgba(90, 89, 84, .16) 30%, rgba(196, 193, 184, .26) 55%, rgba(62, 61, 58, .16) 80%, rgba(222, 219, 211, .32)); }
-html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, .volume.open), html[data-frame="re4"][data-window-style] .player .controls {
+html[data-frame="re4"][data-window-style] :is(.badges, .sidebar, .controls, :where(.volume.open)), html[data-frame="re4"][data-window-style] .player .controls {
   border: 2px solid transparent; border-image: var(--re4-edge-soft) 1;
   background: linear-gradient(180deg, rgba(255, 255, 255, .04), transparent 40%), rgba(10, 10, 11, .46);
 }
@@ -1468,3 +1468,138 @@ html[data-frame="deusex"][data-window-style] .custom-topbar .topbar-title.open:n
 html[data-frame="deusex"][data-window-style] .custom-topbar .topbar-window-buttons .close:hover:not(#x) { border-image-source: var(--dx-btn-chosen); background: transparent; }
 html[data-frame="deusex"][data-window-style] .topbar-dropdown .topbar-entry:not(#x) { border: 0; border-image: none; clip-path: none; background: transparent; color: #f2f2f2; padding: 6px 12px; min-height: 0; height: auto; text-shadow: none; }
 html[data-frame="deusex"][data-window-style] .topbar-dropdown .topbar-entry:hover:not(#x) { background: rgba(255, 255, 255, .13); outline: 1px solid #c7cacf; outline-offset: -1px; }
+
+/* RPG: the window's gold corner ornaments are 40px, so the menu bar (Windows and Linux) keeps wide space on the left and right and its
+   first title and the window buttons no longer sit under them. */
+html[data-frame="rpg"][data-window-style] .custom-topbar { padding: 0 54px 0 52px; }
+html[data-frame="rpg"][data-window-style] .custom-topbar .topbar-window-buttons { gap: 6px; }
+
+/* RPG: the right-click menu (and the row menu) keep wide padding so their entries stay clear of the gold corner ornaments. */
+html[data-frame="rpg"][data-window-style] :is(.context-menu, .row-menu) { padding: 24px 36px; gap: 8px; }
+html[data-frame="rpg"][data-window-style] :is(.context-menu, .row-menu) button { padding: 8px 12px; }
+
+/* RE4: right-click menus (and the other pop-up panels) are dark and frosted like the control bar, but solid enough to read:
+   the same worn edge and blur, 92% opaque. */
+html[data-frame="re4"][data-window-style] :is(.context-menu, .row-menu, .download-popup, .update-banner, .notice) {
+  border: 2px solid transparent; border-image: var(--re4-edge-soft) 1; border-radius: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .05), transparent 40%), rgba(10, 10, 11, .92);
+  -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+}
+html[data-frame="re4"][data-window-style] :is(.context-menu, .row-menu) { padding: 6px; }
+
+/* ---- RE4: right-click menu entries and playlist entries, hovered or chosen, look like the control bar buttons ----
+   The brush stroke behind the text and the bright worn edge (a ring drawn by ::before); while hovered the edge travels along the entry. */
+html[data-frame="re4"][data-window-style] :is(.context-menu button, .row-menu button):not(#x) { position: relative; border-radius: 0; }
+html[data-frame="re4"][data-window-style] :is(.context-menu button, .row-menu button, .track)::before {
+  content: ""; position: absolute; inset: 0; padding: 2px; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: var(--re4-edge-bright) 0 0 / 300% 100% no-repeat;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+html[data-frame="re4"][data-window-style] :is(.context-menu button, .row-menu button):hover:not(:disabled):not(#x),
+html[data-frame="re4"][data-window-style] .track:hover:not(.dragging):not(#x),
+html[data-frame="re4"][data-window-style] .track.current:not(#x) {
+  background: var(--brush-feather), var(--brush); -webkit-mask-image: none; mask-image: none; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+}
+html[data-frame="re4"][data-window-style] :is(.context-menu button, .row-menu button):hover:not(:disabled)::before,
+html[data-frame="re4"][data-window-style] .track:hover::before,
+html[data-frame="re4"][data-window-style] .track.current::before { opacity: 1; }
+html[data-frame="re4"][data-window-style] :is(.context-menu button, .row-menu button):hover:not(:disabled)::before,
+html[data-frame="re4"][data-window-style] .track:hover::before { animation: re4-ring-travel 1.4s linear infinite; }
+html[data-frame="re4"][data-window-style] .track.current:not(:hover)::before { animation: none; }
+html[data-frame="re4"][data-window-style] :is(.track-main, .track-menu-btn):hover:not(:disabled):not(#x) { background: transparent; }
+html[data-frame="re4"] .track:hover .track-title, html[data-frame="re4"] .track.current .track-title { color: #fff; }
+@media (prefers-reduced-motion: reduce) { html[data-frame="re4"][data-window-style] :is(.context-menu button, .row-menu button, .track)::before { animation: none !important; } }
+
+/* ---- RE4: a clearer border on pop-up menus, and the window's menu bar (Windows and Linux) behaves like the right-click menu ----
+   Menus use the full worn edge (the faint one is for big panels). Menu bar titles, drop-down entries and window buttons get the same hover
+   as the right-click menu entries: the brush stroke behind the text and a bright edge that travels along the item; an open title keeps the edge. */
+html[data-frame="re4"][data-window-style] :is(.context-menu, .row-menu):not(#x), html[data-frame="re4"][data-window-style] .topbar-dropdown:not(#x) {
+  border: 2px solid transparent; border-image: var(--re4-edge) 1;
+}
+html[data-frame="re4"][data-window-style] .custom-topbar :is(button.topbar-title, button.topbar-entry, .topbar-window-buttons button):not(#x) { position: relative; border-radius: 0; }
+html[data-frame="re4"][data-window-style] .custom-topbar :is(button.topbar-title, button.topbar-entry, .topbar-window-buttons button)::before {
+  content: ""; position: absolute; inset: 0; padding: 2px; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: var(--re4-edge-bright) 0 0 / 300% 100% no-repeat;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+html[data-frame="re4"][data-window-style] .custom-topbar :is(button.topbar-title, button.topbar-entry, .topbar-window-buttons button):hover:not(:disabled)::before,
+html[data-frame="re4"][data-window-style] .custom-topbar button.topbar-title.open::before { opacity: 1; }
+html[data-frame="re4"][data-window-style] .custom-topbar :is(button.topbar-title, button.topbar-entry, .topbar-window-buttons button):hover:not(:disabled)::before { animation: re4-ring-travel 1.4s linear infinite; }
+html[data-frame="re4"][data-window-style] .custom-topbar :is(button.topbar-title, button.topbar-entry, .topbar-window-buttons button):hover:not(:disabled):not(#x),
+html[data-frame="re4"][data-window-style] .custom-topbar button.topbar-title.open:not(#x) { background: var(--brush-feather), var(--brush); color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
+html[data-frame="re4"][data-window-style] .topbar-dropdown { background: linear-gradient(180deg, rgba(255, 255, 255, .05), transparent 40%), rgba(10, 10, 11, .94); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); }
+@media (prefers-reduced-motion: reduce) { html[data-frame="re4"][data-window-style] .custom-topbar button::before { animation: none !important; } }
+
+/* RPG: a smaller right-click menu (and row menu): small corner ornaments, less padding, smaller text, narrower. */
+html[data-frame="rpg"][data-window-style] :is(.context-menu, .row-menu):not(#x) {
+  background:
+    var(--rpg-corner-tl) top left / 24px 24px no-repeat border-box, var(--rpg-corner-tr) top right / 24px 24px no-repeat border-box,
+    var(--rpg-corner-bl) bottom left / 24px 24px no-repeat border-box, var(--rpg-corner-br) bottom right / 24px 24px no-repeat border-box,
+    var(--parchment) padding-box, var(--wood) border-box;
+  border-width: 4px; border-radius: 12px; padding: 14px 20px; gap: 2px; min-width: 150px;
+}
+html[data-frame="rpg"][data-window-style] :is(.context-menu, .row-menu) button { padding: 5px 8px; font-size: 12px; letter-spacing: .04em; }
+html[data-frame="rpg"][data-window-style] :is(.context-menu, .row-menu) .separator, html[data-frame="rpg"][data-window-style] .context-menu hr { margin: 3px 0; }
+html[data-frame="rpg"][data-window-style] .context-menu .context-separator { margin: 3px 4px; }
+
+/* RPG: the playing playlist entry looks like a control bar button (brown wood bevel with the gold edge and cream text), not the gold chosen button. */
+html[data-frame="rpg"][data-window-style] .track.current:not(#x) {
+  border: 2px solid var(--rpg-edge); border-radius: 10px; background: var(--wood-button);
+  box-shadow: inset 0 1px 0 rgba(255, 235, 190, .35), inset 0 0 0 1px #a97c46, 0 2px 3px rgba(0, 0, 0, .35);
+  color: #f5e6c4;
+}
+html[data-frame="rpg"][data-window-style] .track.current:not(#x) :is(.track-main, .track-title, .track-menu-btn) { color: #f5e6c4; text-shadow: 0 1px 1px rgba(0, 0, 0, .5); }
+html[data-frame="rpg"][data-window-style] .track.current:not(#x) .track-main:hover:not(:disabled) { background: transparent; }
+/* RPG: the playing entry's corners follow the control bar buttons' (same radius, same border, same inner gold line). */
+html[data-frame="rpg"][data-window-style] .track.current:not(#x) { border-radius: 12px; }
+html[data-frame="rpg"][data-window-style] .track.current:not(#x) .track-main { border-radius: 9px; }
+
+/* RPG: the playing playlist entry carries the control bar's gold corner ornaments (ring, curl and dots), a little smaller. */
+html[data-frame="rpg"][data-window-style] .track.current:not(#x) {
+  background:
+    var(--rpg-corner-tl) top left / 26px 26px no-repeat border-box, var(--rpg-corner-tr) top right / 26px 26px no-repeat border-box,
+    var(--rpg-corner-bl) bottom left / 26px 26px no-repeat border-box, var(--rpg-corner-br) bottom right / 26px 26px no-repeat border-box,
+    var(--wood-button);
+  border-width: 3px;
+}
+/* (the dark border was painted over the ornaments' arcs: the border is now transparent over a dark border-box layer, so the arcs show) */
+html[data-frame="rpg"][data-window-style] .track.current:not(#x) {
+  border: 3px solid transparent;
+  background:
+    var(--rpg-corner-tl) top left / 26px 26px no-repeat border-box, var(--rpg-corner-tr) top right / 26px 26px no-repeat border-box,
+    var(--rpg-corner-bl) bottom left / 26px 26px no-repeat border-box, var(--rpg-corner-br) bottom right / 26px 26px no-repeat border-box,
+    var(--wood-button) padding-box, linear-gradient(var(--rpg-edge), var(--rpg-edge)) border-box;
+}
+
+/* RPG: hovering another playlist entry gives it the playing entry's look (wood bevel, gold corner ornaments, cream text). Every entry has the same
+   3px border width, so nothing shifts when the look changes. */
+html[data-frame="rpg"][data-window-style] .track:not(#x) { border-width: 3px; border-left-style: solid; border-right-style: solid; border-left-color: transparent; border-right-color: transparent; }
+html[data-frame="rpg"][data-window-style] .track:hover:not(.current):not(.dragging):not(#x) {
+  border-radius: 12px;
+  background:
+    var(--rpg-corner-tl) top left / 26px 26px no-repeat border-box, var(--rpg-corner-tr) top right / 26px 26px no-repeat border-box,
+    var(--rpg-corner-bl) bottom left / 26px 26px no-repeat border-box, var(--rpg-corner-br) bottom right / 26px 26px no-repeat border-box,
+    var(--wood-button) padding-box, linear-gradient(var(--rpg-edge), var(--rpg-edge)) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 190, .35), inset 0 0 0 1px #a97c46, 0 2px 3px rgba(0, 0, 0, .35);
+}
+html[data-frame="rpg"][data-window-style] .track:hover:not(.current):not(.dragging):not(#x) :is(.track-main, .track-title, .track-menu-btn) { color: #f5e6c4; text-shadow: 0 1px 1px rgba(0, 0, 0, .5); }
+html[data-frame="rpg"][data-window-style] .track:hover:not(.current):not(.dragging):not(#x) .track-main:hover:not(:disabled) { background: transparent; }
+
+/* RPG: no dark band above and below the playing/hovered playlist entry. The wood now fills the whole box (the 3px border area too) and the
+   dark outline is a thin 1px line inside it, so the ornaments' arcs sit on the wood instead of on a black strip. */
+html[data-frame="rpg"][data-window-style] .track.current:not(#x),
+html[data-frame="rpg"][data-window-style] .track:hover:not(.current):not(.dragging):not(#x) {
+  background:
+    var(--rpg-corner-tl) top left / 26px 26px no-repeat border-box, var(--rpg-corner-tr) top right / 26px 26px no-repeat border-box,
+    var(--rpg-corner-bl) bottom left / 26px 26px no-repeat border-box, var(--rpg-corner-br) bottom right / 26px 26px no-repeat border-box,
+    var(--wood-button) border-box;
+  box-shadow: inset 0 0 0 1px var(--rpg-edge), inset 0 2px 0 rgba(255, 235, 190, .3), 0 2px 3px rgba(0, 0, 0, .35);
+}
+
+/* RPG: the time numbers in the control bar (current time and duration) are cream, #f5e6c4, like the other bar text. */
+html[data-frame="rpg"][data-window-style] .controls .time:not(#x) { color: #f5e6c4; text-shadow: 0 1px 1px rgba(0, 0, 0, .5); }
+
+/* RPG: the playlist, the badge column and the control bar each get their own compositing layer, so loading a new video behind them does not
+   repaint them (their background used to vanish for a moment when videos were switched). */
+html[data-frame="rpg"][data-window-style] :is(.sidebar, .badges, .controls) { will-change: transform; transform: translateZ(0); backface-visibility: hidden; }

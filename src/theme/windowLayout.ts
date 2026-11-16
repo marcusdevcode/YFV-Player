@@ -1,10 +1,14 @@
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useInterfaceStore } from "../store/interfaceStore";
 import registry from "./registry.json";
 import type { Theme } from "./themeEngine";
 
 /** macOS has its menu bar at the top of the screen, so only Windows and Linux get the custom menu bar. */
 export const IS_MAC = navigator.userAgent.includes("Mac");
+
+/** The custom menu bar is used on Windows and Linux, and (development only, Dev menu) on macOS when asked for. */
+export const usesCustomMenuBar = () => !IS_MAC || useInterfaceStore.getState().devWindowsMenu;
 
 /** One setting of the floating window style, from the registry (src/theme/registry.json). */
 export interface LayoutField {
@@ -39,6 +43,27 @@ export function layoutOf(theme: Theme): WindowLayout {
  * Put the theme's window style on the page and the window: CSS variables for the sizes, and the
  * native window's title bar, shadow, resizing and background (src/styles.css reads the variables).
  */
+/** Images kept alive so the browser does not have to decode them again (see keepFrameImagesReady). */
+const keptFrameImages: HTMLImageElement[] = [];
+
+/**
+ * The RPG style draws its corner ornaments as background images that come from CSS variables (data URIs). Decoded again each time the
+ * style of a panel is recalculated, they can make the panel's background vanish for a moment while a new video loads. Loading them once
+ * as image objects, and keeping those, leaves them decoded and cached.
+ */
+function keepFrameImagesReady() {
+  if (keptFrameImages.length) return;
+  const style = getComputedStyle(document.documentElement);
+  for (const name of ["--rpg-corner-tl", "--rpg-corner-tr", "--rpg-corner-bl", "--rpg-corner-br"]) {
+    const url = style.getPropertyValue(name).trim().match(/^url\(["']?(.*?)["']?\)$/)?.[1];
+    if (!url) continue;
+    const image = new Image();
+    image.src = url;
+    void image.decode().catch(() => {});
+    keptFrameImages.push(image);
+  }
+}
+
 export function applyWindowLayout(theme: Theme, playerBackground: string) {
   const root = document.documentElement;
   const floating = theme.windowStyle === "experimental";
@@ -69,16 +94,17 @@ export function applyWindowLayout(theme: Theme, playerBackground: string) {
   set("controls-gap", `${layout.controlsGap}px`);
   set("playlist-gap", `${layout.playlistGap}px`);
   root.dataset.frame = floating && theme.frame ? theme.frame : "plain";
+  if (root.dataset.frame === "rpg") keepFrameImagesReady();
   root.dataset.windowStyle = floating ? "experimental" : "regular";
   // Without the system title bar the window gets its own menu bar (CustomTopBar), so the native one is hidden
   // (macOS keeps its menu at the top of the screen: hiding does not apply there).
-  root.dataset.customTopbar = floating && !framed && !IS_MAC ? "yes" : "no";
+  root.dataset.customTopbar = floating && !framed && usesCustomMenuBar() ? "yes" : "no";
   const resizable = !floating || layout.resizable;
   root.dataset.windowResizable = resizable ? "yes" : "no";
 
   const window = getCurrentWindow();
   const decorated = !floating || framed;
-  void invoke("menu_set_visible", { visible: !(floating && !framed && !IS_MAC) }).catch(() => {});
+  void invoke("menu_set_visible", { visible: !(floating && !framed && usesCustomMenuBar()) }).catch(() => {});
   void window.setDecorations(decorated).catch(() => {});
   void window.setShadow(decorated).catch(() => {});
   void window.isFullscreen().then((full) => window.setResizable(resizable || full)).catch(() => {});

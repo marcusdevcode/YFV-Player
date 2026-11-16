@@ -139,3 +139,38 @@ export function startSavingSettings() {
   sendDownloadEngineConfig();
   void save(); // writes the file for the first time (and migrates old settings)
 }
+
+const REOPEN_THEMES_KEY = "reopenThemesDialog";
+
+/** True once, right after a reload that was asked to bring the Themes dialog back. */
+export function takeReopenThemesRequest(): boolean {
+  try {
+    const yes = sessionStorage.getItem(REOPEN_THEMES_KEY) === "yes";
+    sessionStorage.removeItem(REOPEN_THEMES_KEY);
+    return yes;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Write the general settings now, then reload the page. Used after another theme is picked: the web view sometimes refuses to
+ * play a video after the whole theme changed under it, and a fresh page does not. The saved settings bring the page back
+ * with the new theme, and the open video returns paused at its saved position.
+ */
+export async function saveSettingsAndReload(options: { reopenThemes?: boolean } = {}): Promise<void> {
+  // The Themes dialog closes with the page: remember to open it again once the page is back.
+  if (options.reopenThemes) {
+    try {
+      sessionStorage.setItem(REOPEN_THEMES_KEY, "yes");
+    } catch {
+      /* the dialog then stays closed after the reload */
+    }
+  }
+  try {
+    await invoke("settings_set", { name: FILE, value: JSON.stringify(current(), null, 2) });
+  } catch {
+    /* a failed save is reported by the normal saving; the reload still happens */
+  }
+  window.location.reload();
+}
